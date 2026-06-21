@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-HK">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="香港涼茶歷史與 STEAM 教學網頁遊戲：採藥、煲茶、科學實驗與創新方案。"
+    />
+    <meta property="og:title" content="涼茶歷史 STEAM 煲製局" />
+    <meta
+      property="og:description"
+      content="一款結合街坊情境、歷史問答、科學數據、工程設計與反思回顧的香港涼茶文化遊戲。"
+    />
+    <meta property="og:image" content="./assets/hong-kong-herbal-shop.webp" />
+    <title>涼茶歷史 STEAM 煲製局</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#app">跳到主要內容</a>
+    <div class="shop-backdrop" aria-hidden="true"></div>
+    <div class="texture" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand-lockup" aria-label="涼茶歷史 STEAM 煲製局">
+        <span class="brand-mark">茶</span>
+        <span>
+          <strong>涼茶歷史 STEAM 煲製局</strong>
+          <small>Hong Kong herbal tea STEAM game</small>
+        </span>
+      </div>
+      <nav aria-label="主要導覽">
+        <a href="#tea-menu">選茶</a>
+        <a href="#history">歷史</a>
+        <a href="#game-panel">任務</a>
+        <a href="#guide">圖鑑</a>
+      </nav>
+    </header>
+
+    <main id="app" class="page-shell">
+      <section class="hero-section" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="kicker">香港歷史閱讀 × STEAM · 非物質文化遺產</p>
+          <h1 id="hero-title">把一碗涼茶變成 STEAM 作品</h1>
+          <p>
+            你不只是煲茶，而是要照顧街坊、閱讀歷史、控制水火、分析數據，並設計一個能保育涼茶文化的創新方案。
+          </p>
+          <a class="primary-action" href="#tea-menu">接受任務</a>
+        </div>
+
+        <aside class="coach-panel" aria-label="老師提示">
+          <div class="coach-face" aria-hidden="true">
+            <img src="./assets/tea-history-teacher-logo.png" alt="" />
+          </div>
+          <div>
+            <strong>涼茶歷史老師</strong>
+            <p id="coach-line">
+              歡迎來到涼茶歷史課。好遊戲不是只要贏，而是讓你玩完之後看得懂一間老涼茶舖，也能提出創新方案。
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="pedagogy-strip" aria-label="學習流程">
+        <div><strong>1</strong><span>街坊個案</span></div>
+        <div><strong>2</strong><span>歷史判斷</span></div>
+        <div><strong>3</strong><span>採藥煲茶</span></div>
+        <div><strong>4</strong><span>科學實驗</span></div>
+        <div><strong>5</strong><span>創新方案</span></div>
+      </section>
+
+      <section id="tea-menu" class="menu-section" aria-labelledby="menu-title">
+        <div class="section-heading">
+          <h2 id="menu-title">選一張涼茶任務卡</h2>
+          <p>每張卡都是一個學習場景：你會看到街坊需要、歷史故事、配方線索、科學數據和 STEAM 創新任務。</p>
+        </div>
+        <div id="tea-grid" class="tea-grid" aria-live="polite"></div>
+        <div id="personal-record" class="personal-record" aria-live="polite"></div>
+      </section>
+
+      <section id="history" class="history-section" aria-labelledby="history-title">
+        <div class="section-heading">
+          <h2 id="history-title">涼茶完整發展歷史</h2>
+          <p>從遠古藥草傳說到 2006 年列入國家級非物質文化遺產，涼茶見證華南地區千年的生活文化。</p>
+        </div>
+        <div id="timeline-panel" class="timeline-panel"></div>
+        <div class="culture-box">
+          <h3>為甚麼涼茶重要？</h3>
+          <ul id="culture-panel"></ul>
+        </div>
+      </section>
+
+      <section id="game-panel" class="game-panel" aria-live="polite">
+        <div class="screen-head">
+          <div>
+            <p id="stage-label" class="stage-label">準備上課</p>
+            <h2 id="stage-title">選一款涼茶</h2>
+          </div>
+          <div class="screen-actions">
+            <div id="difficulty-selector" class="difficulty-selector" aria-label="選擇遊戲模式"></div>
+            <button id="reset-button" class="ghost-button" type="button">重新開始</button>
+          </div>
+        </div>
+
+        <div id="history-screen" class="stage active-stage">
+          <div class="empty-state">
+            <div class="stamp-block">茶</div>
+            <p>先選一款涼茶。你會完成「街坊個案、歷史題、採藥問答、炮製手藝、煲茶火候、科學實驗、創新方案」七步 STEAM 任務。</p>
+          </div>
+        </div>
+
+        <div id="gather-screen" class="stage"></div>
+        <div id="prep-screen" class="stage"></div>
+        <div id="cook-screen" class="stage"></div>
+        <div id="lab-screen" class="stage"></div>
+        <div id="innovation-screen" class="stage"></div>
+        <div id="result-screen" class="stage"></div>
+      </section>
+
+      <section id="guide" class="guide-section" aria-labelledby="guide-title">
+        <div class="section-heading">
+          <h2 id="guide-title">藥材與文化圖鑑</h2>
+          <p>認識每味草木的線索與文化脈絡。遊戲內容作歷史與民俗教育用途，不作醫療建議。</p>
+        </div>
+        <div id="ingredient-guide" class="ingredient-guide"></div>
+      </section>
+    </main>
+
+    <div class="school-badge" aria-label="學校名稱">基督教聖約教會堅樂中學</div>
+
+    <script src="./src/app.js" defer></script>
+  </body>
+</html>
