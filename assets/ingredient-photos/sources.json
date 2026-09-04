@@ -1,0 +1,110 @@
+[
+  {
+    "id": "honeysuckle",
+    "localFile": "assets/ingredient-photos/honeysuckle.jpg",
+    "sourceFile": "Dried honeysuckle.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Dried_honeysuckle.jpg"
+  },
+  {
+    "id": "chrysanthemum",
+    "localFile": "assets/ingredient-photos/chrysanthemum.jpg",
+    "sourceFile": "Dried chrysanthemum flowers.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Dried_chrysanthemum_flowers.jpg"
+  },
+  {
+    "id": "kapok",
+    "localFile": "assets/ingredient-photos/kapok.jpg",
+    "sourceFile": "mu-mian-hua.jpg",
+    "sourcePage": "https://tcmwiki.com/wiki/%E6%9C%A8%E6%A3%89%E8%8A%B1"
+  },
+  {
+    "id": "pueraria",
+    "localFile": "assets/ingredient-photos/pueraria.jpg",
+    "sourceFile": "bu-zha-ye.jpg",
+    "sourcePage": "https://tcmwiki.com/wiki/%E5%B8%83%E6%B8%A3%E5%8F%B6"
+  },
+  {
+    "id": "sophora",
+    "localFile": "assets/ingredient-photos/sophora.jpg",
+    "sourceFile": "Huai-Hua-Huai-Hua-Flos-Sophora-Japonica-Sophora-Flowers-Pagodatree-Flower_700x700.webp",
+    "sourcePage": "https://healthwisdom.shop/products/huai-hua-flos-sophora-japonica-sophora-flowers-pagodatree-flower"
+  },
+  {
+    "id": "herbBundle",
+    "localFile": "assets/ingredient-photos/herbBundle.jpg",
+    "sourceFile": "Chinese traditional medicine.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Chinese_traditional_medicine.jpg"
+  },
+  {
+    "id": "selfheal",
+    "localFile": "assets/ingredient-photos/selfheal.jpg",
+    "sourceFile": "HK Chinese Medicine ??? Prunella Vulgaris 1.JPG",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:HK_Chinese_Medicine_%3F%3F%3F_Prunella_Vulgaris_1.JPG"
+  },
+  {
+    "id": "jigucao",
+    "localFile": "assets/ingredient-photos/jigucao.jpg",
+    "sourceFile": "ji-gu-cao.jpg",
+    "sourcePage": "https://www.meso.it/old.tcmwiki.com/wiki/%E9%B8%A1%E9%AA%A8%E8%8D%89.html"
+  },
+  {
+    "id": "hempseed",
+    "localFile": "assets/ingredient-photos/hempseed.jpg",
+    "sourceFile": "huo-ma-ren.jpg",
+    "sourcePage": "https://tcmwiki.com/wiki/huo-ma-ren"
+  },
+  {
+    "id": "monkfruit",
+    "localFile": "assets/ingredient-photos/monkfruit.jpg",
+    "sourceFile": "Dried monk fruit (20240123).jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Dried_monk_fruit_(20240123).jpg"
+  },
+  {
+    "id": "mistletoe",
+    "localFile": "assets/ingredient-photos/mistletoe.jpg",
+    "sourceFile": "sang-ji-sheng.jpg",
+    "sourcePage": "https://tcmwiki.com/wiki/sang-ji-sheng"
+  },
+  {
+    "id": "sugarcane",
+    "localFile": "assets/ingredient-photos/sugarcane.jpg",
+    "sourceFile": "Sugarcane-1_5000x.jpg",
+    "sourcePage": "https://healingherbalsoups.com/products/sugarcane-rhizoma-imperatae-and-honeysuckle-drink"
+  },
+  {
+    "id": "imperatae",
+    "localFile": "assets/ingredient-photos/imperatae.jpg",
+    "sourceFile": "bai-mao-gen.jpg",
+    "sourcePage": "https://tcmwiki.com/wiki/bai-mao-gen"
+  },
+  {
+    "id": "licorice",
+    "localFile": "assets/ingredient-photos/licorice.jpg",
+    "sourceFile": "Licorice slices (20240123).jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Licorice_slices_(20240123).jpg"
+  },
+  {
+    "id": "mint",
+    "localFile": "assets/ingredient-photos/mint.jpg",
+    "sourceFile": "Dried mint on dehydrator.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Dried_mint_on_dehydrator.jpg"
+  },
+  {
+    "id": "rocksugar",
+    "localFile": "assets/ingredient-photos/rocksugar.jpg",
+    "sourceFile": "Single crystal yellow rock sugar.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Single_crystal_yellow_rock_sugar.jpg"
+  },
+  {
+    "id": "water",
+    "localFile": "assets/ingredient-photos/water.jpg",
+    "sourceFile": "Glass-of-water.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Glass-of-water.jpg"
+  },
+  {
+    "id": "pot",
+    "localFile": "assets/ingredient-photos/pot.jpg",
+    "sourceFile": "user-provided-copper-kettle-photo.png",
+    "sourcePage": "User provided image in Codex chat, 2026-06-21"
+  }
+]
