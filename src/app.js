@@ -32,46 +32,57 @@ const sourceCards = [
   {
     source: "史料卡 A：民間傳說把神農嘗百草、諸葛亮南征與草藥湯連起來，反映古人以草木解毒、避疫的想像。",
     question: "這段材料最適合用來說明甚麼？",
-    options: ["民間記憶如何保存藥草觀念", "涼茶完全由現代工廠發明", "涼茶只是一種普通茶葉"],
+    options: ["民間記憶如何保存藥草觀念", "二十世紀包裝飲品如何改變涼茶銷售", "個人飲食偏好如何形成地方傳說"],
     answer: 0,
     explain: "傳說未必能直接當作史實，但能反映社群如何理解疾病、環境與草藥。"
   },
   {
     source: "史料卡 B：嶺南暑濕、疫病流行，葛洪在羅浮山行醫，採本地草木配成湯藥，回應地方病患。",
     question: "這段材料顯示涼茶早期原型與哪個因素最有關？",
-    options: ["地理氣候與在地藥草", "外國汽水文化", "宮廷宴會禮儀"],
+    options: ["地理氣候與在地藥草", "城市商業品牌的包裝推廣", "地方官府的公共衛生制度"],
     answer: 0,
     explain: "涼茶不是抽象配方，而是嶺南人面對暑濕瘴疫的在地回應。"
   },
   {
     source: "史料卡 C：唐宋以後，居民按季節、病症與體質調配複方，部分家族配方代代相傳。",
     question: "這段材料最能支持哪個觀點？",
-    options: ["涼茶逐漸由治病藥劑走入日常生活", "涼茶沒有任何傳承方式", "所有涼茶配方完全相同"],
+    options: ["涼茶逐漸由治病藥劑走入日常生活", "涼茶主要依靠單一名醫統一配方", "涼茶只在瘟疫年份才有社會作用"],
     answer: 0,
     explain: "按季節與體質調配，說明涼茶成為民間日常養生與家族傳承的一部分。"
   },
   {
     source: "史料卡 D：清代市井繁榮，廣州出現涼茶鋪；粵人南下謀生後，涼茶傳入香港，服務工人與街坊。",
     question: "這段材料反映涼茶發展出現了甚麼轉變？",
-    options: ["由家庭與民間方子走向商業與城市生活", "完全離開華南地區", "只在學校實驗室出現"],
+    options: ["由家庭與民間方子走向商業與城市生活", "由街頭飲品轉為只屬私人家族儀式", "由藥草湯轉為主要依靠西式飲料市場"],
     answer: 0,
     explain: "街頭涼茶鋪使涼茶成為城市服務、移民與市井文化的一部分。"
   },
   {
     source: "史料卡 E：五六十年代香港涼茶舖常見銅壺招牌，碼頭工人、窮孩子和街坊都可能在店中得到照顧。",
     question: "這段材料最能說明涼茶舖的哪種社會功能？",
-    options: ["社區互助與基層醫藥支援", "只售賣奢侈甜品", "只服務遊客拍照"],
+    options: ["社區互助與基層醫藥支援", "主要作為高收入人士的社交會所", "主要反映戰後旅遊消費興起"],
     answer: 0,
     explain: "涼茶舖不只是飲品店，也承載街坊人情、廉價保健與消息交流。"
   },
   {
     source: "史料卡 F：2006 年涼茶列入國家級非物質文化遺產，保育重點包括手藝、配方、生活習俗與文化記憶。",
     question: "非遺保護最重視的是甚麼？",
-    options: ["活態傳承與文化價值", "只保存一個包裝盒", "只追求銷售數字"],
+    options: ["活態傳承與文化價值", "只保存商標和包裝設計", "只以市場佔有率判斷文化重要性"],
     answer: 0,
     explain: "非遺重視活態文化：人如何學習、傳承、改良並繼續使用這套知識。"
   }
 ];
+
+const sourceReliabilityQuestion = {
+  question: "高手史料可靠性：哪份資料最適合研究 1950 年代香港涼茶舖如何照顧基層街坊？",
+  options: [
+    "1950年代涼茶舖老照片配合當年報章報道，可觀察店舖空間、顧客與時代語境，但仍要留意拍攝角度局限。",
+    "2026年的品牌宣傳短片，能完整反映1950年代所有涼茶舖的真實情況。",
+    "一位長者的口述回憶，可直接代表全港所有工人和街坊的經歷。"
+  ],
+  answer: 0,
+  explain: "研究歷史要考慮年代、作者、目的、來源性質和局限；一手史料有價值，但也要互相印證。"
+};
 
 const cultureNotes = [
   "身體層面：嶺南高溫多雨，濕熱容易帶來喉痛、口瘡、疲倦、腸胃不適與皮膚問題。",
@@ -106,7 +117,7 @@ const teas = [
     },
     historyQuestion: {
       question: "五花茶的故事最能說明涼茶哪一項特色？",
-      options: ["按地方氣候與民間經驗調配", "只用普通茶葉沖泡", "完全沒有藥草成分"],
+      options: ["按地方氣候與民間經驗調配", "主要由近代品牌廣告推動家庭飲用", "主要用來取代日常清水飲用"],
       answer: 0,
       explain: "五花茶由濕熱環境與民間採花經驗形成，正好說明涼茶是因地制宜的藥草飲。"
     },
@@ -135,7 +146,7 @@ const teas = [
     story: "相傳嶺南鄉下爆發嚴重時疫，多位鄉村大夫各自拿出祖傳藥方，把治療發熱、瘡毒、風寒、濕氣的草藥融合。早年香港碼頭工人勞損嚴重，身上容易生瘡，最常飲用廿四味。民間有句話：「廿四味，食得苦，先得福」。",
     dilemma: {
       question: "這碗茶最應強調哪種歷史意義？",
-      options: ["底層勞工用廉價藥飲抵受惡劣環境", "它是甜品", "它只服務富貴人家"],
+      options: ["底層勞工用廉價藥飲抵受惡劣環境", "城市中產以苦味飲品作身份象徵", "商家以苦味塑造高級消費形象"],
       answer: 0,
       explain: "廿四味和碼頭勞工、瘡毒、濕熱、廉價醫藥的社會背景密切相關。"
     },
@@ -170,7 +181,7 @@ const teas = [
     story: "植物學家胡秀英教授幼年身患重病，鄉間醫生用救必應把她救活。長大後她在香港研究本土植物，挑選崗梅、救必應、苦丁茶三種冬青植物，研製三冬茶，用於咽喉發炎與風熱感冒，是現代科學結合傳統涼茶的代表故事。",
     dilemma: {
       question: "三冬茶最適合用來討論甚麼？",
-      options: ["傳統經驗如何與現代植物研究互相補充", "所有傳說都等於科學證明", "香港沒有本土植物"],
+      options: ["傳統經驗如何與現代植物研究互相補充", "口述記憶可直接取代科學觀察", "本土植物研究只適合做標本收藏"],
       answer: 0,
       explain: "三冬茶的亮點不是神化藥效，而是把傳統經驗放進研究與整理的脈絡。"
     },
@@ -211,7 +222,7 @@ const teas = [
     },
     historyQuestion: {
       question: "1960 年代工廠區感冒茶流行，最能反映哪種香港社會現實？",
-      options: ["基層工人勞動強度高，又缺乏充足醫療和休息保障", "香港市民只把涼茶當高級消閒", "工廠區完全沒有健康問題"],
+      options: ["基層工人勞動強度高，又缺乏充足醫療和休息保障", "涼茶舖主要因工業區娛樂消費而流行", "工廠醫療制度已完全取代民間調理"],
       answer: 0,
       explain: "感冒茶大受歡迎，反映工業化下的勞工健康、工作環境與基層生活壓力。"
     },
@@ -316,7 +327,7 @@ const teas = [
     },
     historyQuestion: {
       question: "舊香港涼茶舖除了賣飲品，還承載了甚麼？",
-      options: ["街坊社交與底層互助", "只供皇宮使用", "只賣外國汽水"],
+      options: ["街坊社交與底層互助", "主要作為商業品牌宣傳場地", "主要反映市民轉向西式飲品"],
       answer: 0,
       explain: "涼茶舖是街坊交流、勞工歇腳和窮人獲得廉價調理的地方。"
     },
@@ -343,7 +354,7 @@ const archiveUnlocks = {
         type: "single",
         tag: "歷史與社會考證",
         question: "根據文獻 A，為什麼五花茶在嶺南民間，特別是婦女與兒童之間，普及率會比廿四味更高？",
-        options: ["因為五花茶的售價比廿四味便宜十倍。", "因為五花茶使用花類藥材，口感微甜且具芳香，比極度苦澀的廿四味更易被婦孺接受，適合日常家庭防病。", "因為五花茶是清朝宮廷流傳出來的秘方。"],
+        options: ["因為五花茶較常被包裝成城市品牌飲品。", "因為五花茶使用花類藥材，口感微甜且具芳香，比極度苦澀的廿四味更易被婦孺接受，適合日常家庭防病。", "因為五花茶主要由醫館作急症重藥使用。"],
         answers: [1],
         explain: "五花茶的歷史重點是家庭化、日常化和易入口；學生要從文本讀出民間普及的社會原因。"
       },
@@ -516,7 +527,7 @@ const archiveUnlocks = {
         type: "single",
         tag: "工程解難",
         question: "如果把這段史料轉成遊戲任務，最合理的工程挑戰是甚麼？",
-        options: ["在水資源有限下設計節水煲製和儲水流程。", "把所有涼茶倒掉重新煲。", "只增加糖分來掩蓋問題。"],
+        options: ["在水資源有限下設計節水煲製和儲水流程。", "維持原本大量煲製流程以保留傳統味道。", "把資源集中在包裝宣傳以增加銷量。"],
         answers: [0],
         explain: "舊香港關卡應把歷史事件變成工程問題：節水、儲存、流程控制和社區照顧。"
       }
@@ -609,7 +620,7 @@ const difficultyModes = {
   novice: {
     name: "新手",
     label: "導學模式",
-    text: "提示更溫和，適合第一次認識涼茶歷史的同學。",
+    text: "顯示目標範圍、NPC 提示和資源影響，事件只有兩個選項，並容許一次時間重試。",
     hintPenalty: 1,
     wrongPenalty: 6,
     needleStep: 3,
@@ -617,12 +628,16 @@ const difficultyModes = {
     cookHighStep: 4,
     cookLowStep: 2,
     supportBonus: 6,
-    scoreMultiplier: 1.04
+    scoreMultiplier: 1.04,
+    eventChoices: 2,
+    retry: true,
+    revealTargets: true,
+    startingResources: { money: 140, water: 72, herbs: 48, time: 300, satisfaction: 82 }
   },
   normal: {
     name: "普通",
     label: "課堂模式",
-    text: "歷史閱讀、科學數據和創新設計取得平衡。",
+    text: "不直接給完整答案，需要從史料推算火候與時間；事件有三個選項。",
     hintPenalty: 3,
     wrongPenalty: 10,
     needleStep: 4,
@@ -630,12 +645,16 @@ const difficultyModes = {
     cookHighStep: 5,
     cookLowStep: 3,
     supportBonus: 0,
-    scoreMultiplier: 1
+    scoreMultiplier: 1,
+    eventChoices: 3,
+    retry: false,
+    revealTargets: false,
+    startingResources: { money: 120, water: 60, herbs: 42, time: 260, satisfaction: 76 }
   },
   expert: {
     name: "高手",
     label: "挑戰模式",
-    text: "反應更快、扣分更重，適合熟悉任務後挑戰高分。",
+    text: "史料較少、證據較複雜、資源壓力更大；目標不完整顯示，重要選擇不能重試。",
     hintPenalty: 5,
     wrongPenalty: 14,
     needleStep: 5,
@@ -643,8 +662,64 @@ const difficultyModes = {
     cookHighStep: 6,
     cookLowStep: 4,
     supportBonus: -4,
-    scoreMultiplier: 0.96
+    scoreMultiplier: 0.96,
+    eventChoices: 3,
+    retry: false,
+    revealTargets: false,
+    startingResources: { money: 92, water: 42, herbs: 34, time: 210, satisfaction: 66 }
   }
+};
+
+const UPGRADES = {
+  improvedStove: {
+    name: "改良茶爐",
+    cost: 120,
+    level: 2,
+    text: "火候穩定度 +5%，煲製時間容錯增加。",
+    effects: { timingTolerance: 0.05, heatStability: 5 }
+  },
+  thermometer: {
+    name: "溫度計",
+    cost: 180,
+    level: 3,
+    text: "煲茶頁可查看實時溫度，實驗室溫度誤差減少。",
+    effects: { labAccuracy: 4 },
+    unlocks: ["temperatureReading"]
+  },
+  phSensor: {
+    name: "pH Sensor",
+    cost: 250,
+    level: 4,
+    text: "解鎖 pH Measurement 與 Lab Advanced Mode。",
+    effects: { labAccuracy: 5 },
+    unlocks: ["phMeasurement", "labAdvanced"]
+  },
+  waterSaver: {
+    name: "節水裝置",
+    cost: 220,
+    level: 3,
+    text: "每次加水消耗較少食水，制水事件壓力下降。",
+    effects: { waterSaving: 0.25, sustainability: 4 }
+  },
+  smartPot: {
+    name: "Smart Pot Prototype",
+    cost: 400,
+    level: 5,
+    text: "解鎖自動溫度警示，創新方案科技分更易達高分。",
+    effects: { autoTemperatureAlert: 1, technology: 5 },
+    unlocks: ["smartPotPrototype"]
+  }
+};
+
+const AUDIO_SCENES = {
+  menu: { bpm: 76, volume: 0.9, melody: [392, 440, 523.25, 440, 392, 329.63, 392, 293.66], wave: "triangle", taps: 2 },
+  archive: { bpm: 64, volume: 0.45, melody: [293.66, 329.63, 392, 329.63, 293.66], wave: "sine", taps: 1 },
+  street: { bpm: 82, volume: 0.82, melody: [392, 523.25, 587.33, 523.25, 440, 392], wave: "triangle", taps: 3 },
+  ingredient: { bpm: 102, volume: 0.86, melody: [440, 523.25, 587.33, 659.25, 587.33, 523.25], wave: "triangle", taps: 3 },
+  brewing: { bpm: 84, volume: 0.95, melody: [329.63, 392, 440, 523.25, 440, 392], wave: "sawtooth", taps: 4 },
+  lab: { bpm: 92, volume: 0.72, melody: [523.25, 587.33, 659.25, 783.99, 659.25, 587.33], wave: "square", taps: 1 },
+  innovation: { bpm: 96, volume: 0.9, melody: [440, 523.25, 659.25, 783.99, 659.25, 523.25], wave: "triangle", taps: 2 },
+  result: { bpm: 76, volume: 0.88, melody: [523.25, 587.33, 659.25, 587.33, 523.25, 440, 392, 440], wave: "triangle", taps: 2 }
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -664,7 +739,7 @@ const sfxVolumeInput = $("#sfx-volume");
 const audioMutedInput = $("#audio-muted");
 const resourcePanel = $("#resource-panel");
 
-const SAVE_VERSION = 2;
+const SAVE_VERSION = 3;
 const AUDIO_SETTINGS_KEY = "teaSteamAudioSettings";
 
 const teaConfig = Object.fromEntries(teas.map((tea) => {
@@ -697,36 +772,56 @@ const randomEvents = [
   {
     id: "water-shortage",
     title: "制水記憶",
-    text: "今日水務供應不穩，街坊都在省水。",
-    effects: { water: -18, satisfaction: -2 },
+    text: "今日區內臨時制水，食水供應減少。你要決定如何應對。",
+    options: [
+      { id: "less-water", label: "減少每煲水量", text: "相對節省食水，但味道和街坊接受度下降。", effects: { water: 15, satisfaction: -3 }, modifiers: { tasteQuality: -5, maxWaterMl: -350 } },
+      { id: "buy-water", label: "購買額外食水", text: "成本上升，但保持服務量。", effects: { money: -30, water: 25 }, requires: { money: 30 } },
+      { id: "serve-less", label: "減少服務人數", text: "保留食水並騰出時間，但街坊會失望。", effects: { water: 20, satisfaction: -8, time: 10 }, modifiers: { communityImpact: -5 } }
+    ],
     difficulty: ["standard", "expert"]
   },
   {
     id: "hot-weather",
     title: "天氣炎熱",
     text: "濕熱天氣令街坊需求增加，服務壓力上升。",
-    effects: { time: -8, satisfaction: 4 },
+    options: [
+      { id: "prioritize-heat", label: "優先服務濕熱個案", text: "照顧最急切街坊，但操作時間變緊。", effects: { satisfaction: 7, time: -14 }, modifiers: { communityImpact: 5 } },
+      { id: "small-batches", label: "分小批煲製", text: "較節省風險，品質稍為下降。", effects: { water: 5, herbs: -4, satisfaction: 2 }, modifiers: { tasteQuality: -2 } },
+      { id: "extra-helper", label: "請街坊幫手", text: "多花少量銅錢，換取時間與人情。", effects: { money: -12, time: 18, satisfaction: 4 }, modifiers: { culture: 3 } }
+    ],
     difficulty: ["novice", "standard", "expert"]
   },
   {
     id: "herb-price",
     title: "藥材漲價",
-    text: "部分乾藥材來貨少，採購成本上升。",
-    effects: { money: -18, herbs: -6 },
+    text: "部分乾藥材來貨少，採購成本上升。你要在真實性、成本與份量之間取捨。",
+    options: [
+      { id: "full-price", label: "照價購買", text: "保存傳統配方質素，但成本很高。", effects: { money: -35, herbs: 8 }, modifiers: { tasteQuality: 5 }, requires: { money: 35 } },
+      { id: "substitute", label: "便宜替代方案", text: "支出較低，但史料真實性下降。", effects: { money: -10, herbs: 5 }, modifiers: { authenticity: -5 }, requires: { money: 10 } },
+      { id: "smaller-dose", label: "減少份量", text: "保留藥材庫存，但街坊可能覺得不夠足料。", effects: { herbs: 10, satisfaction: -6 }, modifiers: { tasteQuality: -4 } }
+    ],
     difficulty: ["standard", "expert"]
   },
   {
     id: "school-visit",
     title: "學校參觀",
     text: "學生參觀涼茶舖，需要較易入口和清楚解說。",
-    effects: { satisfaction: 6, time: -5 },
+    options: [
+      { id: "guided-tour", label: "安排導賞", text: "花時間講解史料與藥材，文化點大增。", effects: { time: -20, satisfaction: 5 }, modifiers: { culture: 10 } },
+      { id: "reading-card", label: "只派簡介卡", text: "成本低，仍能留下閱讀線索。", effects: { money: -5, satisfaction: 1 }, modifiers: { culture: 4 }, requires: { money: 5 } },
+      { id: "decline", label: "拒絕參觀", text: "保留時間，但錯過教育機會。", effects: { time: 10, satisfaction: -6 }, modifiers: { culture: -4 } }
+    ],
     difficulty: ["novice", "standard", "expert"]
   },
   {
     id: "elder-visit",
     title: "老街坊到訪",
     text: "老街坊重視傳統味道，對火候與茶色更敏感。",
-    effects: { satisfaction: 3, herbs: -4 },
+    options: [
+      { id: "listen-story", label: "聽口述歷史", text: "增加文化理解，但會用去時間。", effects: { time: -16, satisfaction: 6 }, modifiers: { culture: 8, authenticity: 3 } },
+      { id: "standard-service", label: "照常服務", text: "維持流程，沒有太大風險。", effects: { money: 4, satisfaction: 2 }, modifiers: { tasteQuality: 1 } },
+      { id: "rush", label: "催促離開", text: "節省時間，但人情味大跌。", effects: { time: 10, satisfaction: -10 }, modifiers: { culture: -6 } }
+    ],
     difficulty: ["expert"]
   }
 ];
@@ -748,16 +843,24 @@ let historyAnswered = false;
 let historyCorrect = false;
 let dilemmaAnswered = false;
 let dilemmaCorrect = false;
+let reliabilityAnswered = false;
+let reliabilityCorrect = false;
 let hintsUsed = 0;
 let insightLog = [];
 let lab = { water: 1800, time: 25, heat: 55, ratio: 100 };
+let labInquiry = defaultLabInquiry();
 let labMetrics = null;
 let innovation = { product: null, sensor: null, audience: null, value: null };
+let innovationAppliedEffects = { product: null, sensor: null, audience: null, value: null };
+let innovationJustification = "";
 let currentDifficulty = "normal";
 let intelUnlocked = false;
 let resources = { money: 120, water: 60, herbs: 42, time: 260, satisfaction: 76 };
 let activeEvents = [];
 let resourceLog = [];
+let modifiers = defaultModifiers();
+let cookStarted = false;
+let forcedOutcome = null;
 let lastScoreBreakdown = null;
 let audioSettings = { musicVolume: 35, sfxVolume: 65, muted: false };
 let musicState = {
@@ -768,7 +871,9 @@ let musicState = {
   steamSource: null,
   steamGain: null,
   isPlaying: false,
-  nextTime: 0
+  nextTime: 0,
+  scene: "menu",
+  intensity: 0
 };
 
 function difficulty() {
@@ -824,7 +929,7 @@ function sfxGainValue() {
 function applyAudioSettings() {
   if (musicState.master && musicState.context) {
     musicState.master.gain.cancelScheduledValues(musicState.context.currentTime);
-    musicState.master.gain.setValueAtTime(musicGainValue(), musicState.context.currentTime);
+    musicState.master.gain.setValueAtTime(musicGainValue() * currentAudioScene().volume, musicState.context.currentTime);
   }
   if (musicState.sfxMaster && musicState.context) {
     musicState.sfxMaster.gain.cancelScheduledValues(musicState.context.currentTime);
@@ -930,21 +1035,48 @@ function stopSteamAmbience() {
   musicState.steamGain = null;
 }
 
+function currentAudioScene() {
+  return AUDIO_SCENES[musicState.scene] || AUDIO_SCENES.menu;
+}
+
+function secondsPerBeat(scene = currentAudioScene()) {
+  return 60 / scene.bpm;
+}
+
+function setAudioScene(sceneName) {
+  const nextScene = AUDIO_SCENES[sceneName] ? sceneName : "menu";
+  if (musicState.scene === nextScene) return;
+  musicState.scene = nextScene;
+  musicState.nextTime = musicState.context ? musicState.context.currentTime + 0.05 : 0;
+  if (musicState.master && musicState.context && musicState.isPlaying) {
+    musicState.master.gain.cancelScheduledValues(musicState.context.currentTime);
+    musicState.master.gain.setValueAtTime(Math.max(musicState.master.gain.value, 0.0001), musicState.context.currentTime);
+    musicState.master.gain.exponentialRampToValueAtTime(musicGainValue() * currentAudioScene().volume, musicState.context.currentTime + 0.8);
+  }
+}
+
+function setMusicIntensity(level) {
+  musicState.intensity = clamp(level, 0, 2);
+}
+
 function scheduleMusicBar(startTime) {
-  const melody = [392, 440, 523.25, 440, 392, 329.63, 392, 293.66];
+  const scene = currentAudioScene();
+  const beat = secondsPerBeat(scene);
   const answer = [523.25, 587.33, 659.25, 587.33, 523.25, 440, 392, 440];
-  const harmony = [196, 220, 261.63, 293.66];
-  const activeMelody = Math.round(startTime * 10) % 2 ? answer : melody;
+  const activeMelody = Math.round(startTime * 10) % 2 ? answer : scene.melody;
+  const intensity = musicState.scene === "brewing" ? musicState.intensity : 0;
+  const volumeBoost = 1 + intensity * 0.26;
   activeMelody.forEach((note, index) => {
-    playTone(note, startTime + index * 0.48, 0.36, index % 3 ? "triangle" : "sine", 0.038);
+    playTone(note, startTime + index * beat, beat * 0.72, scene.wave, 0.032 * scene.volume * volumeBoost);
   });
-  harmony.forEach((note, index) => {
-    playTone(note, startTime + index * 0.96, 0.88, "sine", 0.022);
+  [196, 220, 261.63, 293.66].forEach((note, index) => {
+    playTone(note, startTime + index * beat * 2, beat * 1.8, "sine", 0.016 * scene.volume);
   });
-  playKettleTap(startTime + 0.18, 1240, 0.018);
-  playKettleTap(startTime + 1.62, 990, 0.014);
-  playKettleTap(startTime + 3.16, 1420, 0.016);
-  playTone(783.99, startTime + 3.36, 0.38, "triangle", 0.02);
+  const tapCount = scene.taps + intensity;
+  for (let index = 0; index < tapCount; index += 1) {
+    playKettleTap(startTime + 0.18 + index * beat * 1.4, 960 + index * 130, 0.012 + intensity * 0.004);
+  }
+  if (scene.wave === "square") playTone(783.99, startTime + beat * 6, beat * 0.7, "triangle", 0.016);
 }
 
 function scheduleBackgroundMusic() {
@@ -952,7 +1084,7 @@ function scheduleBackgroundMusic() {
   if (!context || !musicState.isPlaying) return;
   while (musicState.nextTime < context.currentTime + 2.5) {
     scheduleMusicBar(musicState.nextTime);
-    musicState.nextTime += 3.68;
+    musicState.nextTime += secondsPerBeat() * 8;
   }
 }
 
@@ -965,7 +1097,7 @@ async function startBackgroundMusic() {
   musicState.nextTime = context.currentTime + 0.08;
   master.gain.cancelScheduledValues(context.currentTime);
   master.gain.setValueAtTime(Math.max(master.gain.value, 0.0001), context.currentTime);
-  master.gain.exponentialRampToValueAtTime(musicGainValue(), context.currentTime + 0.5);
+  master.gain.exponentialRampToValueAtTime(musicGainValue() * currentAudioScene().volume, context.currentTime + 0.5);
   startSteamAmbience();
   scheduleBackgroundMusic();
   musicState.timer = setInterval(scheduleBackgroundMusic, 900);
@@ -1092,6 +1224,37 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+function defaultModifiers() {
+  return {
+    tasteQuality: 0,
+    authenticity: 0,
+    culture: 0,
+    research: 0,
+    communityImpact: 0,
+    timingTolerance: 0,
+    heatStability: 0,
+    labAccuracy: 0,
+    waterSaving: 0,
+    maxWaterMl: 0,
+    timeOutPenalty: 0,
+    timeOutHandled: false,
+    timeRetryUsed: false,
+    satisfactionCrisis: false
+  };
+}
+
+function defaultLabInquiry() {
+  return {
+    hypothesis: null,
+    variable: "time",
+    result: "color",
+    trials: [],
+    conclusion: null,
+    evidence: null,
+    recorded: false
+  };
+}
+
 function formatResourceValue(key, value) {
   if (key === "water") return `${value}L`;
   if (key === "time") return `${Math.floor(value / 60)}:${String(value % 60).padStart(2, "0")}`;
@@ -1100,10 +1263,12 @@ function formatResourceValue(key, value) {
 }
 
 function resetResources() {
-  resources = { money: 120, water: 60, herbs: 42, time: 260, satisfaction: 76 };
-  activeEvents = chooseRandomEvents();
+  resources = { ...difficulty().startingResources };
+  activeEvents = chooseRandomEvents().map((event) => ({ ...event, resolved: false, choice: null }));
   resourceLog = [];
-  activeEvents.forEach((event) => applyResourceChange(event.effects, event.title, { silent: true }));
+  modifiers = defaultModifiers();
+  cookStarted = false;
+  forcedOutcome = null;
   renderResourcePanel();
 }
 
@@ -1113,17 +1278,87 @@ function chooseRandomEvents() {
   return shuffle(randomEvents.filter((event) => event.difficulty.includes(mode))).slice(0, count);
 }
 
+function changeResource(type, amount, reason, options = {}) {
+  const changes = typeof type === "object" ? type : { [type]: amount };
+  return applyResourceChange(changes, typeof type === "object" ? amount : reason, typeof type === "object" ? reason || {} : options);
+}
+
 function applyResourceChange(changes, reason, options = {}) {
   const before = { ...resources };
   Object.entries(changes).forEach(([key, delta]) => {
     const max = key === "satisfaction" ? 100 : key === "time" ? 999 : 999;
     resources[key] = clamp(Math.round((resources[key] || 0) + delta), 0, max);
   });
-  const deltas = Object.entries(changes).map(([key, delta]) => `${resourceLabel(key)} ${formatResourceValue(key, before[key])} → ${formatResourceValue(key, resources[key])}（${delta > 0 ? "+" : ""}${delta}${key === "water" ? "L" : key === "satisfaction" ? "%" : ""}）`);
+  const deltas = Object.entries(changes).map(([key, delta]) => `${resourceLabel(key)} ${formatResourceValue(key, before[key] || 0)} → ${formatResourceValue(key, resources[key])}（${delta > 0 ? "+" : ""}${delta}${key === "water" ? "L" : key === "satisfaction" ? "%" : key === "time" ? "分鐘" : ""}）`);
   resourceLog.unshift({ reason, deltas });
   resourceLog = resourceLog.slice(0, 5);
   if (!options.silent) coachLine.textContent = `${reason}：${deltas.join("；")}`;
   renderResourcePanel();
+  if (!options.skipConsequences) checkResourceConsequences(reason);
+  return true;
+}
+
+function reverseEffects(effects = {}) {
+  return Object.fromEntries(Object.entries(effects).map(([key, value]) => [key, -value]));
+}
+
+function canApplyResourceEffects(effects = {}) {
+  return Object.entries(effects).every(([key, delta]) => delta >= 0 || (resources[key] || 0) >= Math.abs(delta));
+}
+
+function blockedResourceMessage(effects = {}) {
+  const blocked = Object.entries(effects).find(([key, delta]) => delta < 0 && (resources[key] || 0) < Math.abs(delta));
+  if (!blocked) return "";
+  const [key, delta] = blocked;
+  return `${resourceLabel(key)}不足，需要 ${Math.abs(delta)}，目前只有 ${formatResourceValue(key, resources[key] || 0)}。`;
+}
+
+function applyModifierChanges(changes = {}) {
+  Object.entries(changes).forEach(([key, delta]) => {
+    modifiers[key] = (modifiers[key] || 0) + delta;
+  });
+}
+
+function checkResourceConsequences(reason = "") {
+  if (!activeTea || forcedOutcome) return;
+  if (resources.satisfaction <= 20 && !modifiers.satisfactionCrisis) {
+    modifiers.satisfactionCrisis = true;
+    modifiers.communityImpact -= 8;
+    resourceLog.unshift({ reason: "街坊信任危機", deltas: ["滿意度低於 20%，最終評價會下降"] });
+    resourceLog = resourceLog.slice(0, 5);
+    coachLine.textContent = "街坊信任危機：NPC 會變得不信任你的判斷，最後評價會被拉低。";
+  }
+  if (resources.time <= 0 && !modifiers.timeOutHandled) {
+    handleTimeOut(reason);
+  }
+  renderResourcePanel();
+}
+
+function handleTimeOut(reason = "") {
+  modifiers.timeOutHandled = true;
+  stopCooking();
+  if (difficulty().retry && !modifiers.timeRetryUsed) {
+    modifiers.timeRetryUsed = true;
+    resources.time = 90;
+    resources.satisfaction = clamp(resources.satisfaction - 4, 0, 100);
+    resourceLog.unshift({ reason: "TIME_OUT 新手重試", deltas: ["時間補回 1:30，但滿意度 -4"] });
+    coachLine.textContent = "時間用盡。新手模式容許一次重試，請調整策略。";
+    modifiers.timeOutHandled = false;
+    return;
+  }
+  if (currentDifficulty === "normal") {
+    modifiers.timeOutPenalty = 18;
+    resources.time = 30;
+    resources.satisfaction = clamp(resources.satisfaction - 12, 0, 100);
+    resourceLog.unshift({ reason: "TIME_OUT 扣分", deltas: ["普通模式保留任務，但總分會扣 18 分"] });
+    coachLine.textContent = "時間用盡。普通模式不會即時失敗，但總分會大幅扣分。";
+    return;
+  }
+  forcedOutcome = {
+    title: "TIME_OUT",
+    reason: `時間用盡，${currentDifficulty === "expert" ? "高手模式本關失敗" : "重試機會已用完，本關結束"}。${reason ? `觸發原因：${reason}` : ""}`
+  };
+  setTimeout(() => renderForcedResult(forcedOutcome.title, forcedOutcome.reason), 0);
 }
 
 function resourceLabel(key) {
@@ -1143,9 +1378,7 @@ function renderResourcePanel() {
     resourcePanel.innerHTML = "";
     return;
   }
-  const eventHtml = activeEvents.length
-    ? `<div class="event-strip">${activeEvents.map((event) => `<span><b>${event.title}</b>${event.text}</span>`).join("")}</div>`
-    : `<div class="event-strip"><span><b>平穩開局</b>今日沒有突發事件，適合先熟習流程。</span></div>`;
+  const eventHtml = renderEventStrip();
   resourcePanel.innerHTML = `
     <div class="resource-grid">
       <span><b>銅錢</b>${resources.money}</span>
@@ -1154,9 +1387,70 @@ function renderResourcePanel() {
       <span><b>時間</b>${formatResourceValue("time", resources.time)}</span>
       <span><b>滿意度</b>${npcMood()} ${resources.satisfaction}%</span>
     </div>
+    ${renderResourceWarnings()}
     ${eventHtml}
     ${resourceLog.length ? `<p class="resource-last">${resourceLog[0].reason}：${resourceLog[0].deltas.join("；")}</p>` : ""}
   `;
+}
+
+function renderResourceWarnings() {
+  const warnings = [];
+  if (resources.water <= 0) warnings.push("水量不足，無法繼續煲製。請購買水、減少份量或放棄本次任務。");
+  if (resources.herbs <= 0) warnings.push("藥材不足，無法開始煲茶。");
+  if (resources.money <= 0) warnings.push("銅錢不足，不能購買補給、使用高級感測器或升級設備。");
+  if (resources.satisfaction <= 20) warnings.push("街坊信任危機：最終評價會下降。");
+  if (!warnings.length) return "";
+  return `<div class="resource-warnings">${warnings.map((warning) => `<span>${warning}</span>`).join("")}</div>`;
+}
+
+function renderEventStrip() {
+  if (!activeEvents.length) {
+    return `<div class="event-strip"><span><b>平穩開局</b>今日沒有突發事件，適合先熟習流程。</span></div>`;
+  }
+  return `
+    <div class="event-strip event-choice-strip">
+      ${activeEvents.map((event) => `
+        <section class="event-card ${event.resolved ? "is-resolved" : ""}">
+          <div>
+            <b>${event.title}</b>
+            <p>${event.text}</p>
+            ${event.resolved ? `<small>已選擇：${event.choice?.label || "已處理"}。${event.choice?.text || ""}</small>` : ""}
+          </div>
+          ${event.resolved ? "" : `
+            <div class="event-options">
+              ${eventOptionsForMode(event).map((option) => {
+                const disabled = !canApplyResourceEffects(option.effects);
+                return `<button class="mini-button" type="button" data-event="${event.id}" data-event-option="${option.id}" ${disabled ? "disabled" : ""} title="${option.text}${disabled ? `（${blockedResourceMessage(option.effects)}）` : ""}">${option.label}</button>`;
+              }).join("")}
+            </div>
+          `}
+        </section>
+      `).join("")}
+    </div>
+  `;
+}
+
+function eventOptionsForMode(event) {
+  return event.options.slice(0, difficulty().eventChoices || 3);
+}
+
+function applyEventChoice(eventId, optionId) {
+  const event = activeEvents.find((item) => item.id === eventId);
+  if (!event || event.resolved) return;
+  const option = event.options.find((item) => item.id === optionId);
+  if (!option) return;
+  if (!canApplyResourceEffects(option.effects)) {
+    coachLine.textContent = blockedResourceMessage(option.effects);
+    playSfx("wrong");
+    return;
+  }
+  event.resolved = true;
+  event.choice = option;
+  applyModifierChanges(option.modifiers);
+  applyResourceChange(option.effects, `${event.title}：${option.label}`);
+  addInsight(`事件決策：${event.title}選擇「${option.label}」，後果是${option.text}`);
+  playSfx("paper");
+  renderResourcePanel();
 }
 
 function shuffle(items) {
@@ -1168,10 +1462,20 @@ function addInsight(text) {
 }
 
 function blankRecord() {
-  return { saveVersion: SAVE_VERSION, completed: {}, bestScores: {}, archives: {}, archiveAnswers: {}, shop: { level: 1, coins: 0, reputation: 0, research: 0, culture: 0 }, lastPlayed: null };
+  return {
+    saveVersion: SAVE_VERSION,
+    completed: {},
+    bestScores: {},
+    archives: {},
+    archiveAnswers: {},
+    shop: { level: 1, coins: 0, reputation: 0, research: 0, culture: 0, upgrades: {} },
+    lastPlayed: null
+  };
 }
 
 function normalizeRecord(record = {}) {
+  const upgrades = record.shop?.upgrades || {};
+  const boughtCount = Object.values(upgrades).filter(Boolean).length;
   return {
     saveVersion: SAVE_VERSION,
     completed: record.completed || {},
@@ -1179,11 +1483,12 @@ function normalizeRecord(record = {}) {
     archives: record.archives || {},
     archiveAnswers: record.archiveAnswers || {},
     shop: {
-      level: record.shop?.level || 1,
+      level: Math.max(record.shop?.level || 1, Math.min(5, 1 + boughtCount)),
       coins: record.shop?.coins || 0,
       reputation: record.shop?.reputation || 0,
       research: record.shop?.research || 0,
-      culture: record.shop?.culture || 0
+      culture: record.shop?.culture || 0,
+      upgrades
     },
     lastPlayed: record.lastPlayed || null
   };
@@ -1191,6 +1496,7 @@ function normalizeRecord(record = {}) {
 
 function migrateSaveData(store) {
   const migrated = store?.profiles ? store : { activePlayer: DEFAULT_PLAYER, profiles: { [DEFAULT_PLAYER]: store || blankRecord() } };
+  migrated.saveVersion = SAVE_VERSION;
   migrated.activePlayer = sanitizePlayerName(migrated.activePlayer);
   migrated.profiles = migrated.profiles || {};
   Object.keys(migrated.profiles).forEach((player) => {
@@ -1257,6 +1563,7 @@ function loadRecord() {
 function saveRecord(record) {
   const store = loadRecordStore();
   const player = sanitizePlayerName(store.activePlayer);
+  store.saveVersion = SAVE_VERSION;
   store.activePlayer = player;
   store.profiles[player] = normalizeRecord(record);
   saveRecordStore(store);
@@ -1291,16 +1598,87 @@ function hasMasterBadge(record = loadRecord()) {
   return completedTeaIds(record).length === teas.length;
 }
 
+function hasUpgrade(id, record = loadRecord()) {
+  return Boolean(record.shop?.upgrades?.[id]);
+}
+
+function upgradeEffects(record = loadRecord()) {
+  return Object.entries(UPGRADES).reduce((effects, [id, upgrade]) => {
+    if (!record.shop?.upgrades?.[id]) return effects;
+    Object.entries(upgrade.effects || {}).forEach(([key, value]) => {
+      effects[key] = (effects[key] || 0) + value;
+    });
+    return effects;
+  }, {});
+}
+
+function buyUpgrade(id) {
+  const upgrade = UPGRADES[id];
+  if (!upgrade) return;
+  const record = loadRecord();
+  record.shop = record.shop || { level: 1, coins: 0, reputation: 0, research: 0, culture: 0, upgrades: {} };
+  record.shop.upgrades = record.shop.upgrades || {};
+  if (record.shop.upgrades[id]) {
+    coachLine.textContent = `${upgrade.name} 已經購買，不需要重複購買。`;
+    return;
+  }
+  if (activeTea && resources.money <= 0) {
+    coachLine.textContent = "任務中的銅錢已用盡，不能即場升級設備。請先完成或重開任務。";
+    playSfx("wrong");
+    return;
+  }
+  if ((record.shop.coins || 0) < upgrade.cost) {
+    coachLine.textContent = `研習幣不足，購買 ${upgrade.name} 需要 ${upgrade.cost}，目前只有 ${record.shop.coins || 0}。`;
+    playSfx("wrong");
+    return;
+  }
+  record.shop.coins -= upgrade.cost;
+  record.shop.upgrades[id] = true;
+  record.shop.level = Math.max(record.shop.level || 1, upgrade.level || 1, Math.min(5, 1 + Object.values(record.shop.upgrades).filter(Boolean).length));
+  saveRecord(record);
+  renderPersonalRecord(record);
+  coachLine.textContent = `已購買 ${upgrade.name}。之後煲製和實驗會得到相應支援。`;
+  playSfx("success");
+}
+
+function renderUpgradeShop(record) {
+  const shop = record.shop || { coins: 0, upgrades: {} };
+  return `
+    <section class="upgrade-shop">
+      <div class="shop-head">
+        <h4>升級茶舖</h4>
+        <span>研習幣 ${shop.coins || 0}</span>
+      </div>
+      <div class="upgrade-grid">
+        ${Object.entries(UPGRADES).map(([id, upgrade]) => {
+          const bought = Boolean(shop.upgrades?.[id]);
+          const affordable = (shop.coins || 0) >= upgrade.cost;
+          return `
+            <article class="${bought ? "is-owned" : ""}">
+              <strong>Lv.${upgrade.level} ${upgrade.name}</strong>
+              <p>${upgrade.text}</p>
+              <button class="mini-button" type="button" data-buy-upgrade="${id}" ${bought || !affordable ? "disabled" : ""}>
+                ${bought ? "已擁有" : `購買 ${upgrade.cost}`}
+              </button>
+            </article>
+          `;
+        }).join("")}
+      </div>
+    </section>
+  `;
+}
+
 function updateRecord(total, breakdown = null) {
   const record = loadRecord();
   record.completed[activeTea.id] = true;
   record.bestScores[activeTea.id] = Math.max(record.bestScores[activeTea.id] || 0, total);
-  record.shop = record.shop || { level: 1, coins: 0, reputation: 0, research: 0, culture: 0 };
-  record.shop.coins += Math.max(4, Math.round(total / 10));
+  record.shop = record.shop || { level: 1, coins: 0, reputation: 0, research: 0, culture: 0, upgrades: {} };
+  record.shop.upgrades = record.shop.upgrades || {};
+  record.shop.coins += Math.max(24, Math.round(total * 0.72));
   record.shop.reputation += Math.max(1, Math.round(resources.satisfaction / 24));
-  record.shop.research += Math.max(1, Math.round((breakdown?.lab || 0) / 5));
-  record.shop.culture += Math.max(1, Math.round((breakdown?.history || 0) / 4));
-  record.shop.level = Math.min(5, 1 + Math.floor((record.shop.coins + record.shop.research + record.shop.culture) / 45));
+  record.shop.research += Math.max(1, Math.round(((breakdown?.lab || 0) + (modifiers.research || 0)) / 4));
+  record.shop.culture += Math.max(1, Math.round(((breakdown?.history || 0) + (modifiers.culture || 0)) / 4));
+  record.shop.level = Math.max(record.shop.level || 1, Math.min(5, 1 + Object.values(record.shop.upgrades).filter(Boolean).length));
   record.lastPlayed = {
     teaId: activeTea.id,
     teaName: activeTea.name,
@@ -1347,6 +1725,7 @@ function renderPersonalRecord(record = loadRecord()) {
           </span>
         `).join("")}
       </div>
+      ${renderUpgradeShop(record)}
     </section>
   `;
 }
@@ -1356,6 +1735,8 @@ function setStage(name, title, label, options = {}) {
   $(`#${name}-screen`).classList.add("active-stage");
   stageTitle.textContent = title;
   stageLabel.textContent = label;
+  const sceneMap = { history: activeTea ? "street" : "menu", gather: "ingredient", prep: "ingredient", cook: "brewing", lab: "lab", innovation: "innovation", result: "result" };
+  setAudioScene(sceneMap[name] || "menu");
   renderResourcePanel();
   if (options.scroll !== false) {
     requestAnimationFrame(() => {
@@ -1454,6 +1835,7 @@ function openArchiveModal(teaId) {
   const tea = teas.find((item) => item.id === teaId);
   const archive = archiveUnlocks[teaId];
   if (!tea || !archive || !archiveModalRoot) return;
+  setAudioScene("archive");
   archiveModalRoot.innerHTML = `
     <div class="archive-modal-backdrop" role="presentation"></div>
     <section class="archive-modal" role="dialog" aria-modal="true" aria-labelledby="archive-modal-title">
@@ -1490,6 +1872,7 @@ function openArchiveModal(teaId) {
 function closeArchiveModal() {
   archiveModalRoot && (archiveModalRoot.innerHTML = "");
   document.body.classList.remove("has-archive-modal");
+  setAudioScene(activeTea ? "street" : "menu");
 }
 
 function selectedArchiveAnswers(questionIndex) {
@@ -1652,12 +2035,17 @@ function selectTea(teaId) {
   historyCorrect = false;
   dilemmaAnswered = false;
   dilemmaCorrect = false;
+  reliabilityAnswered = false;
+  reliabilityCorrect = false;
   hintsUsed = 0;
   insightLog = [];
   const config = configForTea(activeTea);
   lab = { water: config.labTarget.water, time: config.labTarget.brewTime, heat: 55, ratio: 100 };
+  labInquiry = defaultLabInquiry();
   labMetrics = calculateLabMetrics();
   innovation = { product: null, sensor: null, audience: null, value: null };
+  innovationAppliedEffects = { product: null, sensor: null, audience: null, value: null };
+  innovationJustification = "";
   intelUnlocked = false;
   lastScoreBreakdown = null;
   resetResources();
@@ -1717,11 +2105,19 @@ function renderHistory() {
           </div>
           <p id="history-feedback">再答一題歷史題，完成「理解先於操作」的學習步驟。</p>
         </section>
+        ${currentDifficulty === "expert" ? renderReliabilityQuestion() : ""}
         <button class="solid-button" type="button" id="start-gather">開始採藥</button>
       </div>
     </div>
   `;
-  $("#start-gather").addEventListener("click", renderGather);
+  $("#start-gather").addEventListener("click", () => {
+    if (activeEvents.some((event) => !event.resolved)) {
+      coachLine.textContent = "請先在資源欄處理今日的社區事件，再開始採藥。事件選擇會影響後續煲製。";
+      playSfx("wrong");
+      return;
+    }
+    renderGather();
+  });
   $("#unlock-intel")?.addEventListener("click", unlockIntel);
   document.querySelectorAll("[data-history-answer]").forEach((button) => {
     button.addEventListener("click", () => verifyHistory(Number(button.dataset.historyAnswer)));
@@ -1729,7 +2125,23 @@ function renderHistory() {
   document.querySelectorAll("[data-dilemma-answer]").forEach((button) => {
     button.addEventListener("click", () => verifyDilemma(Number(button.dataset.dilemmaAnswer)));
   });
+  document.querySelectorAll("[data-reliability-answer]").forEach((button) => {
+    button.addEventListener("click", () => verifyReliability(Number(button.dataset.reliabilityAnswer)));
+  });
   setStage("history", activeTea.name, "第一關：理解情境");
+}
+
+function renderReliabilityQuestion() {
+  return `
+    <section class="history-quiz source-reliability" aria-live="polite">
+      <span class="source-type">【Source Reliability】</span>
+      <h4>${sourceReliabilityQuestion.question}</h4>
+      <div class="choice-row">
+        ${sourceReliabilityQuestion.options.map((option, index) => `<button class="choice-button" type="button" data-reliability-answer="${index}">${option}</button>`).join("")}
+      </div>
+      <p id="reliability-feedback">高手模式要判斷資料的年代、作者、目的和局限。</p>
+    </section>
+  `;
 }
 
 function renderTargetContext(tea) {
@@ -1744,10 +2156,21 @@ function renderTargetContext(tea) {
       </article>
       <article>
         <span class="source-type">【遊戲模擬】</span>
-        <p>本遊戲為課堂節奏縮短成模擬操作；評分目標為水量 ${config.simulationTarget.water} ml、時間 ${config.simulationTarget.brewTime} 分鐘、火候「${heatTargetLabel(tea)}」。</p>
+        <p>${simulationTargetText(tea)}</p>
       </article>
     </section>
   `;
+}
+
+function simulationTargetText(tea = activeTea) {
+  const config = configForTea(tea);
+  if (difficulty().revealTargets) {
+    return `本遊戲為課堂節奏縮短成模擬操作；評分目標為水量 ${config.simulationTarget.water} ml、時間 ${config.simulationTarget.brewTime} 分鐘、火候「${heatTargetLabel(tea)}」。`;
+  }
+  if (currentDifficulty === "expert") {
+    return `本遊戲為課堂節奏縮短成模擬操作；高手模式隱藏精確目標，請根據史料、NPC 症狀、茶色與火候推斷。`;
+  }
+  return `本遊戲為課堂節奏縮短成模擬操作；請根據史料判斷水量、時間與「${heatTargetLabel(tea)}」是否配合。`;
 }
 
 function renderNpcCard(tea) {
@@ -1786,10 +2209,12 @@ function renderIntelPanel(tea) {
 
 function renderFactStrip() {
   const config = configForTea(activeTea);
+  const waterText = !intelUnlocked ? "閱讀情報後解鎖" : difficulty().revealTargets ? `${config.simulationTarget.water} ml` : currentDifficulty === "expert" ? "由茶色與藥材推斷" : "避免過濃或過淡";
+  const timeText = !intelUnlocked ? "閱讀情報後解鎖" : difficulty().revealTargets ? `${config.simulationTarget.brewTime} 分鐘` : currentDifficulty === "expert" ? "由史料與火候推斷" : "按藥材類型估算";
   return `
     <div class="fact-strip ${intelUnlocked ? "" : "is-locked"}" aria-label="煲製資料">
-      <div><span>模擬水量</span><strong>${intelUnlocked ? `${config.simulationTarget.water} ml` : "閱讀情報後解鎖"}</strong></div>
-      <div><span>模擬時間</span><strong>${intelUnlocked ? `${config.simulationTarget.brewTime} 分鐘` : "閱讀情報後解鎖"}</strong></div>
+      <div><span>模擬水量</span><strong>${waterText}</strong></div>
+      <div><span>模擬時間</span><strong>${timeText}</strong></div>
       <div><span>味道記憶</span><strong>${intelUnlocked ? activeTea.taste : "從 NPC 線索推敲"}</strong></div>
     </div>
   `;
@@ -1849,6 +2274,23 @@ function verifyHistory(answerIndex) {
     historyCorrect ? "史料推理準確，街坊更信任你" : "史料推理未準確，需要多花時間補救"
   );
   coachLine.textContent = historyCorrect ? "文化分到手。懂得來龍去脈，煲出來才不只是糖水。" : "答錯也算學到。下一步用手藝補分。";
+}
+
+function verifyReliability(answerIndex) {
+  if (reliabilityAnswered) return;
+  reliabilityAnswered = true;
+  reliabilityCorrect = answerIndex === sourceReliabilityQuestion.answer;
+  $("#reliability-feedback").textContent = reliabilityCorrect
+    ? `判斷正確。${sourceReliabilityQuestion.explain}`
+    : `這個結論證據不足。${sourceReliabilityQuestion.explain}`;
+  markChoiceButtons("[data-reliability-answer]", sourceReliabilityQuestion.answer, answerIndex, reliabilityCorrect);
+  applyModifierChanges(reliabilityCorrect ? { culture: 4, research: 3, authenticity: 2 } : { authenticity: -3 });
+  applyResourceChange(
+    reliabilityCorrect ? { satisfaction: 3, time: -3 } : { time: -8, satisfaction: -3 },
+    reliabilityCorrect ? "史料可靠性判斷準確" : "史料可靠性判斷需修正"
+  );
+  addInsight(sourceReliabilityQuestion.explain);
+  playSfx(reliabilityCorrect ? "correct" : "wrong");
 }
 
 function renderGather() {
@@ -2009,8 +2451,98 @@ function hitPrep() {
   }
 }
 
+function maxWaterAvailableMl() {
+  const config = configForTea(activeTea);
+  const cap = Math.max(600, Math.round(config.simulationTarget.water * 1.45 + (modifiers.maxWaterMl || 0)));
+  return Math.min(cap, (resources.water || 0) * 100);
+}
+
+function canAddWater(change) {
+  if (change <= 0) return true;
+  return resources.water > 0 && water + change <= maxWaterAvailableMl();
+}
+
+function estimatedCookTemperature() {
+  if (heat === "high") return Math.min(100, 92 + Math.floor(cookTime / 6));
+  if (heat === "medium") return Math.min(88, 72 + Math.floor(cookTime / 8));
+  if (heat === "low") return Math.min(72, 58 + Math.floor(cookTime / 10));
+  return Math.max(28, 42 - Math.floor(cookTime / 12));
+}
+
+function autoTemperatureAlert() {
+  if (containsIngredient("honeysuckle") && heat === "high" && cookTime > 8) {
+    return "智能煲警示：花葉類藥材正在高溫久煮，請轉中火或提早出爐。";
+  }
+  const target = configForTea(activeTea).simulationTarget;
+  if (Math.abs(cookTime - target.brewTime) <= 3 && heat === target.heat) {
+    return "智能煲警示：接近最佳火候區，可準備完成出爐。";
+  }
+  return "智能煲正在監察溫度與時間。";
+}
+
+function renderBrewResourceActions() {
+  const waterProblem = resources.water <= 0;
+  const herbProblem = resources.herbs <= 0;
+  if (!waterProblem && !herbProblem) return "";
+  return `
+    <section class="resource-actions">
+      <h4>${waterProblem ? "水量不足，無法繼續煲製" : "藥材不足，無法開始煲茶"}</h4>
+      <div class="button-row">
+        ${waterProblem ? `
+          <button class="mini-button" type="button" data-brew-action="buy-water">購買水</button>
+          <button class="mini-button" type="button" data-brew-action="smaller-serving">減少份量</button>
+        ` : ""}
+        ${herbProblem ? `<button class="mini-button" type="button" data-brew-action="buy-herbs">購買藥材</button>` : ""}
+        <button class="mini-button danger-button" type="button" data-brew-action="abandon">放棄本次任務</button>
+      </div>
+    </section>
+  `;
+}
+
+function handleBrewResourceAction(action) {
+  if (action === "buy-water") {
+    const effects = { money: -20, water: 20 };
+    if (!canApplyResourceEffects(effects)) {
+      coachLine.textContent = "銅錢不足，不能購買額外食水。";
+      playSfx("wrong");
+      return;
+    }
+    applyResourceChange(effects, "購買額外食水");
+  }
+  if (action === "smaller-serving") {
+    applyModifierChanges({ tasteQuality: -5, communityImpact: -3 });
+    applyResourceChange({ water: 8, satisfaction: -6 }, "減少份量，換取少量食水");
+  }
+  if (action === "buy-herbs") {
+    const effects = { money: -24, herbs: 12 };
+    if (!canApplyResourceEffects(effects)) {
+      coachLine.textContent = "銅錢不足，不能購買額外藥材。";
+      playSfx("wrong");
+      return;
+    }
+    applyResourceChange(effects, "購買額外藥材");
+  }
+  if (action === "abandon") {
+    forcedOutcome = { title: "任務放棄", reason: "你選擇停止本次煲製，保留反思但本關不會得分。" };
+    renderForcedResult(forcedOutcome.title, forcedOutcome.reason);
+    return;
+  }
+  playSfx("click");
+  renderCook();
+}
+
+function brewingIntensity() {
+  const target = configForTea(activeTea).simulationTarget;
+  const closeness = 100 - Math.abs(cookTime - target.brewTime) * 5;
+  if (closeness >= 84 && heat === target.heat) return 2;
+  if (heat !== "off") return 1;
+  return 0;
+}
+
 function renderCook() {
   const config = configForTea(activeTea);
+  const effects = upgradeEffects();
+  const canReadTemperature = hasUpgrade("thermometer") || hasUpgrade("smartPot");
   $("#cook-screen").innerHTML = `
     <div class="cook-layout">
       <div class="pot-visual" style="--steam-opacity: ${heat === "off" ? 0.12 : 0.62}">
@@ -2043,14 +2575,15 @@ function renderCook() {
           </article>
           <article>
             <span class="source-type">【遊戲模擬】</span>
-            <p>本關目標：${config.simulationTarget.water} ml、${config.simulationTarget.brewTime} 分鐘、${heatTargetLabel(activeTea)}。</p>
+            <p>${simulationTargetText(activeTea)}</p>
           </article>
         </section>
         <div class="control-group">
           <h3>水量控制</h3>
           ${renderModeHint("water")}
-          <p>目前 <strong id="water-value">${water}</strong> ml。</p>
+          <p>目前 <strong id="water-value">${water}</strong> ml。可用水量上限約 ${maxWaterAvailableMl()} ml。</p>
           <div class="meter-line"><span id="water-fill" class="meter-fill"></span></div>
+          ${renderBrewResourceActions()}
           <div class="button-row">
             <button class="mini-button" type="button" data-water="100">加 100 ml</button>
             <button class="mini-button" type="button" data-water="500">加 500 ml</button>
@@ -2060,7 +2593,8 @@ function renderCook() {
         <div class="control-group">
           <h3>火候選擇</h3>
           ${renderModeHint("heat")}
-          <p>現在是 <strong id="heat-value">${heatLabel()}</strong>。</p>
+          <p>現在是 <strong id="heat-value">${heatLabel()}</strong>。${canReadTemperature ? `溫度計估算 ${estimatedCookTemperature()}°C。` : "購買溫度計後可查看實時溫度。"}</p>
+          ${effects.autoTemperatureAlert ? `<p class="mode-hint mode-${currentDifficulty}">${autoTemperatureAlert()}</p>` : ""}
           <div class="button-row">
             <button class="mini-button" type="button" data-heat="high">猛火 100°C</button>
             <button class="mini-button" type="button" data-heat="medium">中火 80°C</button>
@@ -2084,9 +2618,15 @@ function renderCook() {
   document.querySelectorAll("[data-water]").forEach((button) => {
     button.addEventListener("click", () => {
       const change = Number(button.dataset.water);
+      if (change > 0 && !canAddWater(change)) {
+        coachLine.textContent = resources.water <= 0 ? "水量不足，無法繼續煲製。請先購買水或減少份量。" : `超過本關可用水量上限 ${maxWaterAvailableMl()} ml，請改用少量多次或節水方案。`;
+        playSfx("wrong");
+        return;
+      }
       water = Math.max(0, water + change);
       if (change > 0) {
-        applyResourceChange({ water: -Math.round(change / 100), satisfaction: change >= 500 ? -1 : 1 }, `加水 ${change} ml：茶味變淡、可服務口感怕苦的街坊`);
+        const waterCost = Math.max(1, Math.ceil((change / 100) * (1 - (effects.waterSaving || 0))));
+        applyResourceChange({ water: -waterCost, satisfaction: change >= 500 ? -1 : 1 }, `加水 ${change} ml：茶味變淡、可服務口感怕苦的街坊`);
         playSfx("click");
       } else {
         applyResourceChange({ satisfaction: -1 }, `減水 ${Math.abs(change)} ml：濃度上升，但可能變苦`);
@@ -2094,8 +2634,16 @@ function renderCook() {
       updateCookUi();
     });
   });
+  document.querySelectorAll("[data-brew-action]").forEach((button) => {
+    button.addEventListener("click", () => handleBrewResourceAction(button.dataset.brewAction));
+  });
   document.querySelectorAll("[data-heat]").forEach((button) => {
     button.addEventListener("click", () => {
+      if (button.dataset.heat !== "off" && resources.money <= 0) {
+        coachLine.textContent = "銅錢不足，不能再添燃料或使用高耗能火候。";
+        playSfx("wrong");
+        return;
+      }
       heat = button.dataset.heat;
       coachLine.textContent =
         heat === "medium" && containsIngredient("honeysuckle") ? "中火平煎正確。金銀花質地輕浮，微沸即可，能保留芳香成分。" :
@@ -2117,6 +2665,13 @@ function renderCook() {
 
 function finishCooking() {
   stopCooking();
+  if (forcedOutcome) return;
+  if (water <= 0 || resources.water <= 0) {
+    coachLine.textContent = "水量不足，無法完成煲製。請先購買水或減少份量。";
+    playSfx("wrong");
+    renderCook();
+    return;
+  }
   const quality = brewingQualityScore();
   const satisfactionDelta = quality >= 80 ? 8 : quality >= 60 ? 2 : -8;
   const waterDelta = water > configForTea(activeTea).simulationTarget.water * 1.25 ? -5 : 0;
@@ -2130,11 +2685,13 @@ function finishCooking() {
 
 function brewingQualityScore() {
   const config = configForTea(activeTea);
-  const waterScore = Math.max(0, 100 - Math.abs(water - config.simulationTarget.water) / 12);
-  const timeScore = Math.max(0, 100 - Math.abs(cookTime - config.simulationTarget.brewTime) * 4);
+  const effects = upgradeEffects();
+  const tolerance = 1 + (effects.timingTolerance || 0);
+  const waterScore = Math.max(0, 100 - Math.abs(water - config.simulationTarget.water) / (12 * tolerance));
+  const timeScore = Math.max(0, 100 - Math.abs(cookTime - config.simulationTarget.brewTime) * (4 / tolerance));
   const heatScore = heat === config.simulationTarget.heat ? 100 : heat === "off" ? 25 : 62;
   const flowerPenalty = containsIngredient("honeysuckle") && heat === "high" && cookTime > 8 ? 22 : 0;
-  return Math.round(clamp((waterScore + timeScore + heatScore) / 3 - flowerPenalty, 0, 100));
+  return Math.round(clamp((waterScore + timeScore + heatScore) / 3 - flowerPenalty + (modifiers.tasteQuality || 0) + (effects.heatStability || 0), 0, 100));
 }
 
 function npcReactionForBrew(quality) {
@@ -2153,15 +2710,47 @@ function heatLabel() {
 
 function startCooking() {
   if (cookTimer) return;
+  if (forcedOutcome) return;
+  if (resources.herbs <= 0) {
+    coachLine.textContent = "藥材不足，無法開始煲茶。請先購買補給或重新規劃份量。";
+    playSfx("wrong");
+    renderCook();
+    return;
+  }
+  if (resources.water <= 0 || water <= 0) {
+    coachLine.textContent = "水量不足，無法繼續煲製。請先處理食水問題。";
+    playSfx("wrong");
+    renderCook();
+    return;
+  }
+  if (resources.money <= 0) {
+    coachLine.textContent = "銅錢不足，不能再添燃料開始煲製。";
+    playSfx("wrong");
+    return;
+  }
   if (heat === "off") {
     coachLine.textContent = "先開火。清水與藥草都準備好了，只欠火候。";
     return;
   }
-  applyResourceChange({ time: -6, money: -2 }, "開始煲製，燃料成本與課堂時間開始消耗");
+  if (!cookStarted) {
+    const herbCost = Math.max(5, activeTea.ingredients.length * 2);
+    if (resources.herbs < herbCost) {
+      coachLine.textContent = `藥材不足，這款茶至少需要 ${herbCost} 份藥材，現在只有 ${resources.herbs}。`;
+      playSfx("wrong");
+      renderCook();
+      return;
+    }
+    cookStarted = true;
+    applyResourceChange({ herbs: -herbCost, time: -6, money: -2 }, "開始煲製，藥材、燃料成本與課堂時間開始消耗");
+  } else {
+    applyResourceChange({ time: -3, money: -1 }, "繼續煲製，燃料與時間持續消耗");
+  }
+  if (forcedOutcome) return;
   playSfx("click");
   cookTimer = setInterval(() => {
     cookTime += heat === "high" ? difficulty().cookHighStep : heat === "medium" ? 3 : difficulty().cookLowStep;
     if (cookTime % 12 === 0) applyResourceChange({ time: -2, money: heat === "high" ? -2 : -1 }, "煲製持續進行，時間與燃料繼續消耗", { silent: true });
+    setMusicIntensity(brewingIntensity());
     updateCookUi();
   }, 650);
 }
@@ -2169,6 +2758,7 @@ function startCooking() {
 function stopCooking() {
   if (cookTimer) clearInterval(cookTimer);
   cookTimer = null;
+  setMusicIntensity(0);
 }
 
 function updateCookUi() {
@@ -2193,30 +2783,224 @@ function teaColorEstimate() {
   return Math.min(94, base + darkFromSelfheal + yellowFromHoneysuckle);
 }
 
-function calculateLabMetrics() {
+function calculateLabMetrics(sample = lab) {
   const config = configForTea(activeTea);
-  const ratio = lab.ratio / 100;
-  const concentration = Math.max(0.45, Math.min(1.9, (config.labTarget.water / lab.water) * ratio));
-  const heatFactor = lab.heat / 55;
-  const timeFactor = lab.time / config.labTarget.brewTime;
-  const flowerPenalty = containsIngredient("honeysuckle") && lab.heat > 85 ? 16 : 0;
+  const ratio = sample.ratio / 100;
+  const concentration = Math.max(0.45, Math.min(1.9, (config.labTarget.water / sample.water) * ratio));
+  const heatFactor = sample.heat / 55;
+  const timeFactor = sample.time / config.labTarget.brewTime;
+  const flowerPenalty = containsIngredient("honeysuckle") && sample.heat > 85 ? 16 : 0;
   const bitterness = Math.round(Math.min(100, 22 + concentration * 30 + timeFactor * 18 + (activeTea.id === "twenty-four" ? 22 : 0)));
-  const temperature = Math.round(55 + lab.heat * 0.55 + Math.min(18, lab.time * 0.28));
-  const ph = Math.max(5.2, Math.min(7.4, 7.2 - concentration * 0.55 - timeFactor * 0.22 + (lab.water > config.labTarget.water ? 0.18 : 0)));
+  const accuracy = upgradeEffects().labAccuracy || 0;
+  const temperature = Math.round(55 + sample.heat * 0.55 + Math.min(18, sample.time * 0.28) - accuracy * 0.35);
+  const ph = Math.max(5.2, Math.min(7.4, 7.2 - concentration * 0.55 - timeFactor * 0.22 + (sample.water > config.labTarget.water ? 0.18 : 0)));
   const selfhealDark = containsIngredient("selfheal") ? 24 : 0;
   const honeysuckleYellow = containsIngredient("honeysuckle") ? 8 : 0;
   const color = Math.round(Math.min(100, 18 + concentration * 28 + timeFactor * 18 + heatFactor * 8 + selfhealDark + honeysuckleYellow));
   const heatSuitability =
-    activeTea.preferredHeat === "medium" ? Math.max(0, 22 - Math.abs(lab.heat - 80) * 0.8) :
-    activeTea.preferredHeat === "low" ? Math.max(0, 22 - Math.abs(lab.heat - 65) * 0.7) :
-    Math.max(0, 18 - Math.abs(lab.heat - 95) * 0.5);
-  const dampHeat = Math.round(Math.min(100, concentration * 34 + timeFactor * 22 + heatSuitability + (lab.water >= config.labTarget.water * 0.85 ? 10 : 0) - flowerPenalty));
+    activeTea.preferredHeat === "medium" ? Math.max(0, 22 - Math.abs(sample.heat - 80) * 0.8) :
+    activeTea.preferredHeat === "low" ? Math.max(0, 22 - Math.abs(sample.heat - 65) * 0.7) :
+    Math.max(0, 18 - Math.abs(sample.heat - 95) * 0.5);
+  const dampHeat = Math.round(Math.min(100, concentration * 34 + timeFactor * 22 + heatSuitability + (sample.water >= config.labTarget.water * 0.85 ? 10 : 0) - flowerPenalty));
   return { bitterness, temperature, ph: ph.toFixed(1), color, dampHeat, concentration: concentration.toFixed(2), flowerPenalty };
+}
+
+function labVariableLabel(value = labInquiry.variable) {
+  return { water: "水量", time: "煲製時間", heat: "火力", ratio: "藥材比例" }[value] || "變項";
+}
+
+function labMetricLabel(value = labInquiry.result) {
+  return { color: "茶色深度", temperature: "溫度", ph: "pH", concentration: "濃度" }[value] || "結果";
+}
+
+function trialValuesFor(variable) {
+  const config = configForTea(activeTea);
+  const values = {
+    water: [config.labTarget.water * 0.8, config.labTarget.water, config.labTarget.water * 1.2],
+    time: [config.labTarget.brewTime * 0.6, config.labTarget.brewTime, config.labTarget.brewTime * 1.4],
+    heat: [55, 78, 95],
+    ratio: [70, 100, 130]
+  }[variable] || [1, 2, 3];
+  return values.map((value) => Math.round(value));
+}
+
+function runLabTrials() {
+  if (!labInquiry.hypothesis) {
+    coachLine.textContent = "請先提出 Hypothesis，再進行三次試驗。";
+    playSfx("wrong");
+    return;
+  }
+  const values = trialValuesFor(labInquiry.variable);
+  labInquiry.trials = values.map((value, index) => {
+    const sample = { ...lab, [labInquiry.variable]: value };
+    const metrics = calculateLabMetrics(sample);
+    return { trial: index + 1, value, sample, metrics };
+  });
+  labInquiry.evidence = null;
+  addInsight(`Lab 探究：以${labVariableLabel()}為自變項，完成三次模擬試驗。`);
+  playSfx("sensor");
+  renderLab();
+}
+
+function isLabInquiryComplete() {
+  return Boolean(labInquiry.hypothesis && labInquiry.trials.length >= 3 && labInquiry.conclusion && labInquiry.evidence);
+}
+
+function renderLabChoiceGroup(key, title, choices) {
+  return `
+    <div class="lab-choice-group">
+      <h4>${title}</h4>
+      <div class="choice-row">
+        ${choices.map((choice) => `
+          <button class="choice-button ${labInquiry[key] === choice.id ? "is-correct" : ""}" type="button" data-lab-choice="${key}" data-value="${choice.id}">
+            ${choice.label}
+          </button>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderTrialTable() {
+  if (!labInquiry.trials.length) return `<p class="hint-text">選好假設、自變項與結果指標後，按「進行三次試驗」。</p>`;
+  return `
+    <table class="trial-table">
+      <thead>
+        <tr>
+          <th>Trial</th>
+          <th>${labVariableLabel()}</th>
+          <th>Temperature</th>
+          <th>Colour</th>
+          <th>pH</th>
+          <th>Concentration</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${labInquiry.trials.map((trial) => `
+          <tr>
+            <td>${trial.trial}</td>
+            <td>${trial.value}</td>
+            <td>${trial.metrics.temperature}</td>
+            <td>${trial.metrics.color}</td>
+            <td>${trial.metrics.ph}</td>
+            <td>${trial.metrics.concentration}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function resultValueForTrial(trial) {
+  const value = trial.metrics[labInquiry.result];
+  return Number(value);
+}
+
+function renderTrialGraph() {
+  if (!labInquiry.trials.length) return "";
+  const values = labInquiry.trials.map(resultValueForTrial);
+  const max = Math.max(...values, 1);
+  return `
+    <div class="trial-graph" aria-label="試驗圖表">
+      <div class="graph-head">
+        <strong>X 軸：${labVariableLabel()}</strong>
+        <strong>Y 軸：${labMetricLabel()}</strong>
+      </div>
+      ${labInquiry.trials.map((trial) => {
+        const value = resultValueForTrial(trial);
+        return `
+          <div class="graph-row">
+            <span>Trial ${trial.trial}</span>
+            <i style="--bar:${Math.max(8, (value / max) * 100)}%"></i>
+            <b>${value}</b>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function evidenceChoices() {
+  if (labInquiry.trials.length < 3) return [];
+  const first = labInquiry.trials[0];
+  const last = labInquiry.trials[labInquiry.trials.length - 1];
+  const firstResult = resultValueForTrial(first);
+  const lastResult = resultValueForTrial(last);
+  return [
+    {
+      id: "trend",
+      label: `Trial 1-3 顯示${labVariableLabel()}由 ${first.value} 變成 ${last.value}，${labMetricLabel()}由 ${firstResult} 變成 ${lastResult}。`
+    },
+    {
+      id: "single",
+      label: `只看 Trial 2 的數據已足夠作結論。`
+    },
+    {
+      id: "memory",
+      label: `單靠記憶中的味道判斷，不需要數據。`
+    }
+  ];
+}
+
+function renderLabInquiry() {
+  const variableChoices = [
+    { id: "water", label: "Water 水量" },
+    { id: "time", label: "Time 時間" },
+    { id: "heat", label: "Heat 火力" },
+    { id: "ratio", label: "Herb Ratio 藥材比例" }
+  ];
+  const metricChoices = [
+    { id: "color", label: "Colour 茶色" },
+    { id: "temperature", label: "Temperature 溫度" },
+    { id: "ph", label: "pH" },
+    { id: "concentration", label: "Concentration 濃度" }
+  ];
+  return `
+    <section class="lab-inquiry">
+      <div class="simulation-warning">本實驗室數據為遊戲模擬模型，用作學習變項、控制變量及數據分析，不代表真實藥效或醫療效果。</div>
+      ${renderLabChoiceGroup("hypothesis", "Step 1 Hypothesis：增加煲製時間會令茶色變深。", [
+        { id: "support", label: "支持" },
+        { id: "not-support", label: "不支持" },
+        { id: "unknown", label: "未能判斷" }
+      ])}
+      ${renderLabChoiceGroup("variable", "Step 2 Independent Variable：只改變一項自變項。", variableChoices)}
+      ${renderLabChoiceGroup("result", "Step 3 Graph Y-axis：選擇觀察結果。", metricChoices)}
+      <div class="button-row">
+        <button class="solid-button" type="button" id="run-trials">進行三次試驗</button>
+      </div>
+      <div class="lab-data-block">
+        <h4>Step 4 Data Table</h4>
+        ${renderTrialTable()}
+      </div>
+      <div class="lab-data-block">
+        <h4>Step 5 Graph</h4>
+        ${renderTrialGraph()}
+      </div>
+      ${renderLabChoiceGroup("conclusion", "Step 6 Conclusion：數據是否支持原來的假設？", [
+        { id: "support", label: "支持" },
+        { id: "partial", label: "部分支持" },
+        { id: "not-support", label: "不支持" },
+        { id: "insufficient", label: "證據不足" }
+      ])}
+      <div class="lab-choice-group">
+        <h4>Step 7 Evidence：選出最有力證據。</h4>
+        <div class="choice-row">
+          ${evidenceChoices().map((choice) => `
+            <button class="choice-button ${labInquiry.evidence === choice.id ? "is-correct" : ""}" type="button" data-lab-choice="evidence" data-value="${choice.id}">
+              ${choice.label}
+            </button>
+          `).join("") || "<p class='hint-text'>完成三次試驗後才可選證據。</p>"}
+        </div>
+      </div>
+    </section>
+  `;
 }
 
 function renderLab() {
   stopCooking();
   labMetrics = calculateLabMetrics();
+  const hasPhSensor = hasUpgrade("phSensor");
+  const hasThermometer = hasUpgrade("thermometer") || hasUpgrade("smartPot");
   $("#lab-screen").innerHTML = `
     <div class="lab-layout">
       <section class="lab-panel">
@@ -2229,10 +3013,12 @@ function renderLab() {
         ${renderSlider("ratio", "藥材比例", lab.ratio, 60, 150, 5, "%")}
         ${renderTcmLabBridge()}
         ${renderFormulaNote()}
+        ${renderLabInquiry()}
         <div class="button-row">
           <button class="solid-button" type="button" id="record-lab">記錄實驗結果</button>
-          <button class="ghost-button" type="button" id="go-innovation">進入創新方案</button>
+          <button class="ghost-button" type="button" id="go-innovation" ${isLabInquiryComplete() ? "" : "disabled"}>進入創新方案</button>
         </div>
+        <p class="mode-hint mode-${currentDifficulty}">${isLabInquiryComplete() ? "探究記錄完整，可以進入創新方案。" : "請完成 Hypothesis、三次 Trial、Conclusion 和 Evidence，才可進入創新方案。"}</p>
       </section>
       <section class="lab-dashboard" aria-live="polite">
         ${renderMetric("苦味值", labMetrics.bitterness, "越高越苦，適合討論可接受味道與藥材濃度。")}
@@ -2240,13 +3026,13 @@ function renderLab() {
         ${renderMetric("濕熱應對指數", labMetrics.dampHeat, "綜合濃度、時間與慢火表現的模擬指標。")}
         <div class="metric-card">
           <span>溫度</span>
-          <strong>${labMetrics.temperature}°C</strong>
-          <p>火力越高，溫度上升越快。</p>
+          <strong>${hasThermometer ? `${labMetrics.temperature}°C` : "估算"}</strong>
+          <p>${hasThermometer ? "火力越高，溫度上升越快；溫度計令讀數更清楚。" : "購買溫度計後可查看較清楚的溫度讀數。"}</p>
         </div>
         <div class="metric-card">
           <span>pH</span>
-          <strong>${labMetrics.ph}</strong>
-          <p>以模擬方式呈現酸鹼度隨濃度變化。</p>
+          <strong>${hasPhSensor ? labMetrics.ph : "推測範圍"}</strong>
+          <p>${hasPhSensor ? "pH Sensor 已解鎖，可比較酸鹼度隨濃度變化。" : "購買 pH Sensor 後可顯示精準 pH Measurement；現在只作概念推測。"}</p>
         </div>
         <div class="tea-color-sample" style="--tea-depth:${labMetrics.color}%">
           <span>${renderTeaAppearance()}</span>
@@ -2274,11 +3060,33 @@ function renderLab() {
   document.querySelectorAll("[data-lab]").forEach((input) => {
     input.addEventListener("input", () => {
       lab[input.dataset.lab] = Number(input.value);
+      labInquiry.trials = [];
+      labInquiry.evidence = null;
+      labInquiry.recorded = false;
       renderLab();
     });
   });
+  document.querySelectorAll("[data-lab-choice]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.labChoice;
+      labInquiry[key] = button.dataset.value;
+      if (key === "variable" || key === "result") {
+        labInquiry.trials = [];
+        labInquiry.evidence = null;
+      }
+      labInquiry.recorded = false;
+      playSfx("click");
+      renderLab();
+    });
+  });
+  $("#run-trials")?.addEventListener("click", runLabTrials);
   $("#record-lab").addEventListener("click", () => {
     addInsight(`科學實驗：水量 ${lab.water}ml、時間 ${lab.time}分鐘、火力 ${lab.heat}%、藥材 ${lab.ratio}% 時，苦味 ${labMetrics.bitterness}、pH ${labMetrics.ph}、濕熱應對指數 ${labMetrics.dampHeat}。`);
+    if (isLabInquiryComplete() && !labInquiry.recorded) {
+      labInquiry.recorded = true;
+      applyModifierChanges({ research: 6 });
+      addInsight(`CER 結論：${labMetricLabel()}的變化證據已記錄，可用於支持創新方案。`);
+    }
     const feedback = labTeachingFeedback();
     coachLine.textContent = feedback[0] || "已記錄實驗數據。這就是 STEAM 的 S 和 M：用變項和數據說明涼茶煲製。";
   });
@@ -2416,10 +3224,14 @@ function renderInnovation() {
         ${renderOptionGroup("sensor", "選擇科技/感測工具")}
         ${renderOptionGroup("audience", "選擇服務對象")}
         ${renderOptionGroup("value", "選擇重點價值觀")}
+        <label class="justification-box">
+          <span>Design Justification：為甚麼你的方案適合這個使用者？</span>
+          <textarea id="innovation-justification" maxlength="180" placeholder="例：因為碼頭工人工作時間長，智能涼茶煲可以用溫度感測提醒火候，減少浪費並保存老店手藝。">${escapeHtml(innovationJustification)}</textarea>
+        </label>
         <div class="button-row">
           <button class="solid-button" type="button" id="finish-innovation" ${isComplete ? "" : "disabled"}>完成並評分</button>
         </div>
-        <p class="mode-hint mode-${currentDifficulty}">${isComplete ? "設計已完成，可進入總評分。" : "請完成作品形式、感測工具、展示對象與保育目的四項選擇，才可取得創新分。"}</p>
+        <p class="mode-hint mode-${currentDifficulty}">${isComplete ? "設計已完成，可進入總評分。" : "請完成四項選擇，並寫下不少於 8 字的設計理由，才可取得創新分。"}</p>
       </section>
       <section class="concept-preview">
         <h3>方案預覽</h3>
@@ -2462,11 +3274,15 @@ function renderInnovation() {
   `;
   document.querySelectorAll("[data-innovate]").forEach((button) => {
     button.addEventListener("click", () => {
-      innovation[button.dataset.group] = button.dataset.innovate;
-      applyInnovationResourceEffect(button.dataset.group, button.dataset.innovate);
-      playSfx("sensor");
-      renderInnovation();
+      if (chooseInnovationOption(button.dataset.group, button.dataset.innovate)) {
+        playSfx("sensor");
+        renderInnovation();
+      }
     });
+  });
+  $("#innovation-justification")?.addEventListener("input", (event) => {
+    innovationJustification = event.target.value.trim();
+    $("#finish-innovation").disabled = !isInnovationComplete();
   });
   $("#finish-innovation").addEventListener("click", renderResult);
   setStage("innovation", "創新方案任務", "第六關：工程與設計");
@@ -2490,7 +3306,7 @@ function renderDesignFlow() {
 }
 
 function isInnovationComplete() {
-  return Boolean(innovation.product && innovation.sensor && innovation.audience && innovation.value);
+  return Boolean(innovation.product && innovation.sensor && innovation.audience && innovation.value && innovationJustification.trim().length >= 8);
 }
 
 function calculateInnovationScore() {
@@ -2498,13 +3314,15 @@ function calculateInnovationScore() {
     return { total: 0, technology: 0, userNeed: 0, feasibility: 0, sustainability: 0, culturalValue: 0 };
   }
   const frame = socialProblemFrames[activeTea.id] || {};
-  const technology = innovation.sensor === "temp-ph" && labMetrics ? 5 : innovation.sensor === "color-ai" && labMetrics?.color >= 45 ? 5 : innovation.sensor === "humidity" && frame.problem?.includes("濕") ? 5 : 4;
+  const effects = upgradeEffects();
+  const technology = effects.technology ? 5 : innovation.sensor === "temp-ph" && labMetrics ? 5 : innovation.sensor === "color-ai" && labMetrics?.color >= 45 ? 5 : innovation.sensor === "humidity" && frame.problem?.includes("濕") ? 5 : 4;
   const userNeed =
     (activeTea.npc.type === "worker" && innovation.audience === "community") ||
     (activeTea.npc.type === "student" && innovation.audience === "junior") ||
-    (activeTea.id === "old-hk" && innovation.product === "school-kiosk") ? 5 : 4;
+    (activeTea.id === "old-hk" && innovation.product === "school-kiosk") ||
+    innovationJustification.includes(activeTea.npc.name) ? 5 : 4;
   const feasibility = innovation.product === "school-kiosk" ? 5 : innovation.product === "smart-pot" && innovation.sensor === "humidity" ? 3 : 4;
-  const sustainability = innovation.product === "smart-pot" && innovation.sensor === "temp-ph" ? 5 : innovation.product === "school-kiosk" ? 4 : 3;
+  const sustainability = effects.waterSaving ? 5 : innovation.product === "smart-pot" && innovation.sensor === "temp-ph" ? 5 : innovation.product === "school-kiosk" ? 4 : 3;
   const culturalValue = innovation.value === "identity" || innovation.product === "virtual-gallery" ? 5 : innovation.value === "care" ? 5 : 4;
   const total = Math.round(((technology + userNeed + feasibility + sustainability + culturalValue) / 25) * 100);
   return { total, technology, userNeed, feasibility, sustainability, culturalValue };
@@ -2521,7 +3339,7 @@ function renderInnovationRubric(rubric) {
   return `<div class="rubric-grid">${rows.map(([label, value]) => `<span><b>${label}</b>${value}/5</span>`).join("")}</div>`;
 }
 
-function applyInnovationResourceEffect(group, id) {
+function innovationEffectsFor(group, id) {
   const effects = {
     product: {
       "smart-pot": { money: -28, satisfaction: 5, time: -4 },
@@ -2544,8 +3362,38 @@ function applyInnovationResourceEffect(group, id) {
       identity: { satisfaction: 4, money: 2 }
     }
   };
+  return effects[group]?.[id] || { satisfaction: 1 };
+}
+
+function chooseInnovationOption(group, id) {
+  if (innovationAppliedEffects[group] === id) {
+    coachLine.textContent = "這個創新選項已經選過，資源效果不會重複計算。";
+    return false;
+  }
+  const previousId = innovationAppliedEffects[group];
+  const previousEffect = previousId ? innovationEffectsFor(group, previousId) : {};
+  const nextEffect = innovationEffectsFor(group, id);
+  const projected = { ...resources };
+  Object.entries(previousEffect).forEach(([key, value]) => {
+    projected[key] = clamp((projected[key] || 0) - value, 0, key === "satisfaction" ? 100 : 999);
+  });
+  Object.entries(nextEffect).forEach(([key, value]) => {
+    projected[key] = (projected[key] || 0) + value;
+  });
+  const blocked = Object.entries(projected).find(([key, value]) => value < 0 && ["money", "water", "herbs", "time"].includes(key));
+  if (blocked) {
+    coachLine.textContent = `資源不足，不能選擇「${optionById(group, id)?.name || "這個方案"}」。${resourceLabel(blocked[0])}不夠。`;
+    playSfx("wrong");
+    return false;
+  }
+  if (previousId) {
+    applyResourceChange(reverseEffects(previousEffect), `撤回創新選擇：${optionById(group, previousId)?.name || "上一方案"}`, { silent: true, skipConsequences: true });
+  }
+  innovation[group] = id;
+  innovationAppliedEffects[group] = id;
   const option = optionById(group, id);
-  applyResourceChange(effects[group]?.[id] || { satisfaction: 1 }, `創新選擇：${option?.name || "未命名方案"}`);
+  applyResourceChange(nextEffect, `創新選擇：${option?.name || "未命名方案"}`);
+  return true;
 }
 
 function renderComparison(group, label) {
@@ -2605,6 +3453,7 @@ function calculateScoreBreakdown() {
   const history = Math.min(20,
     (historyCorrect ? 6 : historyAnswered ? 2 : 0) +
     (dilemmaCorrect ? 6 : dilemmaAnswered ? 2 : 0) +
+    (currentDifficulty === "expert" ? (reliabilityCorrect ? 3 : reliabilityAnswered ? 1 : 0) : 0) +
     (intelUnlocked ? 4 : 0) +
     (archiveUnlocked ? 4 : 0)
   );
@@ -2614,11 +3463,20 @@ function calculateScoreBreakdown() {
   const brewing = Math.max(0, Math.min(20, Math.round((brewingQuality / 100) * 20)));
   const metrics = labMetrics || calculateLabMetrics();
   const phScore = Math.abs(Number(metrics.ph) - 6.3) <= 0.7 ? 3 : 1;
-  const lab = Math.max(0, Math.min(20, Math.round((metrics.dampHeat / 100) * 13 + phScore + (metrics.flowerPenalty ? 0 : 4))));
+  const inquiryBonus = (labInquiry.trials.length >= 3 ? 3 : 0) + (labInquiry.conclusion ? 1 : 0) + (labInquiry.evidence === "trend" ? 2 : 0);
+  const lab = Math.max(0, Math.min(20, Math.round((metrics.dampHeat / 100) * 10 + phScore + (metrics.flowerPenalty ? 0 : 3) + inquiryBonus)));
   const innovationScore = calculateInnovationScore();
   const innovationPoints = Math.round((innovationScore.total / 100) * 20);
-  const reflection = Math.max(0, Math.min(5, Math.round(Math.min(5, insightLog.length) * 0.8 + (resources.satisfaction >= 80 ? 1 : 0))));
-  const difficultyAdjusted = Math.round((history + ingredients + brewing + lab + innovationPoints + reflection + difficulty().supportBonus - hintsUsed * difficulty().hintPenalty) * difficulty().scoreMultiplier);
+  const reflection = Math.max(0, Math.min(5, Math.round(Math.min(5, insightLog.length) * 0.75 + (innovationJustification.trim().length >= 24 ? 1 : 0) + (resources.satisfaction >= 80 ? 1 : 0))));
+  const modifierScore = Math.round(
+    (modifiers.authenticity || 0) * 0.25 +
+    (modifiers.culture || 0) * 0.2 +
+    (modifiers.research || 0) * 0.25 +
+    (modifiers.communityImpact || 0) * 0.25 -
+    (modifiers.timeOutPenalty || 0) -
+    (modifiers.satisfactionCrisis ? 10 : 0)
+  );
+  const difficultyAdjusted = Math.round((history + ingredients + brewing + lab + innovationPoints + reflection + modifierScore + difficulty().supportBonus - hintsUsed * difficulty().hintPenalty) * difficulty().scoreMultiplier);
   return {
     history,
     ingredients,
@@ -2628,7 +3486,8 @@ function calculateScoreBreakdown() {
     reflection,
     total: Math.max(0, Math.min(100, difficultyAdjusted)),
     innovationRubric: innovationScore,
-    brewingQuality
+    brewingQuality,
+    modifierScore
   };
 }
 
@@ -2655,20 +3514,66 @@ function renderScoreBreakdown(breakdown) {
   `;
 }
 
+function renderResourceResult(breakdown) {
+  return `
+    <article class="resource-result">
+      <h3>Resource Result</h3>
+      <div class="resource-result-grid">
+        <span><b>剩餘銅錢</b>${resources.money}</span>
+        <span><b>剩餘食水</b>${resources.water}L</span>
+        <span><b>剩餘藥材</b>${resources.herbs}</span>
+        <span><b>街坊滿意度</b>${resources.satisfaction}%</span>
+        <span><b>文化點影響</b>${modifiers.culture >= 0 ? "+" : ""}${modifiers.culture || 0}</span>
+        <span><b>研究點影響</b>${modifiers.research >= 0 ? "+" : ""}${modifiers.research || 0}</span>
+      </div>
+      <p>資源與事件修正：${breakdown.modifierScore >= 0 ? "+" : ""}${breakdown.modifierScore} 分。${modifiers.satisfactionCrisis ? "曾觸發街坊信任危機。" : "未觸發街坊信任危機。"}</p>
+    </article>
+  `;
+}
+
 function endingFrame(breakdown) {
-  if (breakdown.total >= 88 && resources.satisfaction >= 82) {
-    return ["街坊非遺館長", "你的方案既照顧街坊需要，也能把史料、科學數據和創新設計說清楚，適合作為展館或比賽作品展示。"];
-  }
-  if (breakdown.innovation >= 18) {
-    return ["STEAM 創新設計師", "你的科技方案很完整。下一步可加入真實感測器測試，讓構想由遊戲模型走向實作原型。"];
-  }
-  if (breakdown.history >= 17) {
-    return ["歷史考證師傅", "你善於從史料推論社會問題。若再強化實驗數據和設計流程，作品會更有跨學科說服力。"];
-  }
-  if (resources.water >= 35 && resources.money >= 55) {
-    return ["可持續涼茶掌櫃", "你懂得節省水、錢與時間。這個方向可延伸到環保煲製流程與校園資源管理。"];
-  }
-  return ["涼茶學徒", "你已完成一次完整任務。再試一次時，可先讀史料、再做實驗，讓每個決定都有更清楚的證據。"];
+  if (breakdown.total >= 88 && resources.satisfaction >= 82) return ["街坊非遺館長", "你的方案既照顧街坊需要，也能把史料、科學數據和創新設計說清楚，適合作為展館或比賽作品展示。"];
+  const candidates = [
+    ["傳統守護者", breakdown.history + Math.max(0, modifiers.authenticity || 0), "文化考證與史料理解最突出，適合把作品包裝成歷史閱讀與非遺傳承項目。"],
+    ["科學研究者", breakdown.lab + Math.max(0, modifiers.research || 0), "你最強的是控制變量、讀取數據和提出證據，下一步可加入真實感測器驗證。"],
+    ["社區茶師", resources.satisfaction / 5 + Math.max(0, modifiers.communityImpact || 0), "你的決策最能照顧街坊感受，展現涼茶舖作為社區互助空間的價值。"],
+    ["節能經營者", (resources.water + resources.money) / 8 + (upgradeEffects().waterSaving ? 4 : 0), "你善於管理水和銅錢，適合發展節水煲製和可持續校園學習站。"],
+    ["STEAM創新者", breakdown.innovation, "你的創新方案最突出，能把歷史閱讀轉化為科技設計與互動體驗。"]
+  ];
+  const best = candidates.sort((a, b) => b[1] - a[1])[0];
+  return [best[0], best[2]];
+}
+
+function renderForcedResult(title, reason) {
+  stopCooking();
+  lastScoreBreakdown = { history: 0, ingredients: 0, brewing: 0, lab: 0, innovation: 0, reflection: 0, total: 0, innovationRubric: calculateInnovationScore(), brewingQuality: 0, modifierScore: -100 };
+  $("#result-screen").innerHTML = `
+    <div class="result-layout">
+      <div class="rating-panel">
+        <div class="stamp-block">茶</div>
+        <div class="rating">0</div>
+        <p>${title}</p>
+      </div>
+      <div class="result-copy">
+        <article class="ending-card">
+          <h3>${title}</h3>
+          <p>${reason}</p>
+        </article>
+        <article>
+          <h3>反思</h3>
+          <p>資源管理也是 STEAM 決策的一部分。下次可先閱讀事件、選擇應對策略，再進入煲製。</p>
+        </article>
+        <div class="button-row">
+          <button class="solid-button" type="button" id="play-again">再挑戰一次</button>
+          <a class="ghost-button" href="#tea-menu">選另一款</a>
+        </div>
+      </div>
+    </div>
+  `;
+  $("#play-again").addEventListener("click", () => selectTea(activeTea.id));
+  coachLine.textContent = `${title}：${reason}`;
+  playSfx("wrong");
+  setStage("result", title, "資源後果");
 }
 
 function renderImprovementTips(breakdown) {
@@ -2693,13 +3598,14 @@ function renderStudyReport(total, rating, frame, badges, record) {
     <section id="study-report" class="study-report" aria-label="我的研習報告">
       <header>
         <span>香港歷史閱讀 × STEAM 研習報告</span>
-        <h1>一碗百苦：STEAM 探索解鎖老香港街坊的苦與樂</h1>
+        <h1>一碗百苦： STEAM 探索解鎖老香港街坊的苦與樂</h1>
         <p>學生：${escapeHtml(currentPlayerName())}　日期：${reportDate}　任務：${activeTea.name}　評級：${rating}（${total} 分）</p>
       </header>
       <section>
         <h2>一、史料閱讀與辨識</h2>
         <ul>${renderSourceTypeReport() || "<li>以遊戲內史料卡與 NPC 情報作閱讀材料。</li>"}</ul>
         ${renderArchiveAnswerReport(record)}
+        ${currentDifficulty === "expert" ? `<p><b>史料可靠性：</b>${reliabilityAnswered ? (reliabilityCorrect ? "能辨識年代、作者、目的與局限。" : "已嘗試判斷，但仍需更多互證。") : "未完成高手可靠性題。"}</p>` : ""}
       </section>
       <section>
         <h2>二、由史料推論香港問題</h2>
@@ -2718,6 +3624,7 @@ function renderStudyReport(total, rating, frame, badges, record) {
           </tbody>
         </table>
         <p><b>科學回饋：</b>${labTeachingFeedback()[0]}</p>
+        <p><b>探究流程：</b>假設：${labInquiry.hypothesis || "未填"}；自變項：${labVariableLabel()}；觀察結果：${labMetricLabel()}；結論：${labInquiry.conclusion || "未填"}；證據：${evidenceChoices().find((item) => item.id === labInquiry.evidence)?.label || "未填"}。</p>
       </section>
       <section>
         <h2>四、創新方案</h2>
@@ -2725,6 +3632,7 @@ function renderStudyReport(total, rating, frame, badges, record) {
         <p><b>感測工具：</b>${sensor.name}，${sensor.text}</p>
         <p><b>展示對象：</b>${audience.name}，${audience.text}</p>
         <p><b>保育目的：</b>${value.name}，${value.text}</p>
+        <p><b>設計理由：</b>${escapeHtml(innovationJustification)}</p>
         <p><b>創新 Rubric：</b>科技 ${breakdown.innovationRubric.technology}/5、人物需要 ${breakdown.innovationRubric.userNeed}/5、可行性 ${breakdown.innovationRubric.feasibility}/5、可持續 ${breakdown.innovationRubric.sustainability}/5、文化價值 ${breakdown.innovationRubric.culturalValue}/5。</p>
         <p><b>徽章：</b>${badges.join("、")}</p>
       </section>
@@ -2751,7 +3659,7 @@ function badgeForScore(total, record = loadRecord()) {
 function renderResult() {
   stopCooking();
   if (!isInnovationComplete()) {
-    coachLine.textContent = "創新方案還未完成。請先選齊作品形式、感測工具、展示對象和保育目的，才可以評分。";
+    coachLine.textContent = "創新方案還未完成。請先選齊作品形式、感測工具、展示對象、保育目的，並寫下設計理由，才可以評分。";
     playSfx("wrong");
     renderInnovation();
     return;
@@ -2796,6 +3704,7 @@ function renderResult() {
           <p>${endingText}</p>
         </article>
         ${renderScoreBreakdown(breakdown)}
+        ${renderResourceResult(breakdown)}
         <article>
           <h3>改善建議</h3>
           ${renderImprovementTips(breakdown)}
@@ -2864,11 +3773,18 @@ function resetGame() {
   historyCorrect = false;
   dilemmaAnswered = false;
   dilemmaCorrect = false;
+  reliabilityAnswered = false;
+  reliabilityCorrect = false;
   hintsUsed = 0;
   insightLog = [];
   labMetrics = null;
   intelUnlocked = false;
   innovation = { product: null, sensor: null, audience: null, value: null };
+  innovationAppliedEffects = { product: null, sensor: null, audience: null, value: null };
+  innovationJustification = "";
+  labInquiry = defaultLabInquiry();
+  forcedOutcome = null;
+  cookStarted = false;
   lastScoreBreakdown = null;
   stopNeedle();
   stopCooking();
@@ -2916,6 +3832,17 @@ personalRecordPanel?.addEventListener("click", (event) => {
   }
   if (event.target.closest("#clear-player-record")) {
     clearCurrentPlayerRecord();
+  }
+  const upgradeButton = event.target.closest("[data-buy-upgrade]");
+  if (upgradeButton) {
+    buyUpgrade(upgradeButton.dataset.buyUpgrade);
+  }
+});
+
+resourcePanel?.addEventListener("click", (event) => {
+  const eventButton = event.target.closest("[data-event][data-event-option]");
+  if (eventButton) {
+    applyEventChoice(eventButton.dataset.event, eventButton.dataset.eventOption);
   }
 });
 
