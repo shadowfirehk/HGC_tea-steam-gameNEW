@@ -1,212 +1,24 @@
 <!doctype html>
 <html lang="zh-HK">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="香港涼茶歷史與 STEAM 教學網頁遊戲：採藥、煲茶、科學實驗與創新方案。"
-    />
-    <meta property="og:title" content="涼茶歷史 STEAM 煲製局" />
-    <meta
-      property="og:description"
-      content="一款結合街坊情境、歷史問答、科學數據、工程設計與反思回顧的香港涼茶文化遊戲。"
-    />
-    <meta property="og:image" content="./assets/hong-kong-herbal-shop.webp" />
-    <title>涼茶歷史 STEAM 煲製局</title>
-    <link rel="stylesheet" href="./src/styles.css" />
-  </head>
-  <body>
-    <a class="skip-link" href="#app">跳到主要內容</a>
-    <div class="shop-backdrop" aria-hidden="true"></div>
-    <div class="texture" aria-hidden="true"></div>
-
-    <header class="topbar">
-      <div class="brand-lockup" aria-label="涼茶歷史 STEAM 煲製局">
-        <span class="brand-mark">茶</span>
-        <span>
-          <strong>涼茶歷史 STEAM 煲製局</strong>
-          <small>Hong Kong herbal tea STEAM game</small>
-        </span>
-      </div>
-      <nav aria-label="主要導覽">
-        <a href="#award-showcase">展示</a>
-        <a href="#app">開始</a>
-        <a href="#history">歷史</a>
-        <a href="#game-panel">進度</a>
-        <a href="#guide">圖鑑</a>
-      </nav>
-      <button class="music-toggle" id="music-toggle" type="button" aria-pressed="false">涼茶音樂：關</button>
-      <div class="audio-settings" aria-label="音訊設定">
-        <label>音樂 <input id="music-volume" type="range" min="0" max="100" value="35" /></label>
-        <label>音效 <input id="sfx-volume" type="range" min="0" max="100" value="65" /></label>
-        <label class="mute-check"><input id="audio-muted" type="checkbox" /> 靜音</label>
-      </div>
-    </header>
-
-    <main id="app" class="page-shell">
-      <section class="hero-section" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="kicker">香港歷史閱讀 × 社會探究 × STEAM 解難</p>
-          <h1 id="hero-title">一碗百苦：STEAM 探索解鎖老香港街坊的苦與樂</h1>
-          <p>
-            學生透過閱讀涼茶史料，推論香港不同年代的氣候、勞工、公共資源與非遺保育問題，再用 STEAM 遊戲實驗與創新設計提出解決方案。
-          </p>
-          <div class="hero-actions">
-            <a class="primary-action" href="#tea-menu">選任務卡開始</a>
-            <a class="ghost-button light-button" href="#award-showcase">評審快速看</a>
-          </div>
-        </div>
-
-        <aside class="coach-panel" aria-label="老師提示">
-          <div class="coach-face" aria-hidden="true">
-            <img src="./assets/tea-history-teacher-logo.png" alt="" />
-          </div>
-          <div>
-            <strong>涼茶歷史老師</strong>
-            <p id="coach-line">
-              歡迎來到涼茶歷史課。先讀史料，找出香港社會面對的問題，再用數據、工程和設計把一碗涼茶變成解難方案。
-            </p>
-          </div>
-        </aside>
-      </section>
-
-      <section class="lingnan-context" aria-label="嶺南歷史背景導論">
-        <div>
-          <span class="era-chip">序章導論</span>
-          <h2>從嶺南地理理解涼茶文化</h2>
-        </div>
-        <p>
-          香港位處嶺南。自古以來，嶺南氣候炎熱潮濕，古人稱之為「癘瘴之地」。為了適應這種環境，嶺南先民結合中醫藥理論，採集本地草藥煎熬成茶，這就是「涼茶文化」的起源。它不只是香港的故事，更是整個嶺南地區數百年來對抗自然、發展出「醫食同源」智慧的共同記憶。
-        </p>
-      </section>
-
-      <section class="pedagogy-strip" aria-label="學習流程">
-        <div><strong>1</strong><span>閱讀史料</span></div>
-        <div><strong>2</strong><span>推論問題</span></div>
-        <div><strong>3</strong><span>遊戲實驗</span></div>
-        <div><strong>4</strong><span>STEAM 設計</span></div>
-        <div><strong>5</strong><span>價值反思</span></div>
-      </section>
-
-      <section id="award-showcase" class="award-section" aria-labelledby="award-title">
-        <div class="award-lead">
-          <p class="kicker">評審展示模式</p>
-          <h2 id="award-title">閱讀史料，推論問題，設計解方</h2>
-          <p>
-            本作品以香港涼茶非物質文化遺產為主題，把歷史文本轉化成遊戲內的檔案、NPC 情報、配方線索和危機決策。學生要先閱讀，再推論香港社會問題，最後用 STEAM 實驗與創新方案回應問題。
-          </p>
-          <div class="button-row">
-            <a class="primary-action" href="#tea-menu">選任務卡開始</a>
-            <a class="ghost-button" href="#history">先看歷史史料</a>
-          </div>
-        </div>
-
-        <div class="award-grid">
-          <article>
-            <span>閱讀根據</span>
-            <h3>由史料出發</h3>
-            <p>學生閱讀涼茶起源、民間配方、清代涼茶舖、香港碼頭工人、1963 年制水和 2006 年非遺保育等資料，建立歷史脈絡。</p>
-          </article>
-          <article>
-            <span>核心問題</span>
-            <h3>香港面對甚麼問題？</h3>
-            <p>學生不只記憶年代，而要從史料推論濕熱氣候、基層勞工、公共衛生、水資源、社區互助和非遺傳承等問題。</p>
-          </article>
-          <article>
-            <span>STEAM 方法</span>
-            <h3>用遊戲實驗解難</h3>
-            <p>以水量、時間、火力、藥材比例模擬苦味、pH、茶色、溫度和濕熱應對指數，再設計智能涼茶煲、互動展館或校園學習站。</p>
-          </article>
-          <article>
-            <span>價值觀</span>
-            <h3>由解難走向反思</h3>
-            <p>玩家不只是取得高分，而是理解舊香港街坊互助、照顧弱勢、珍惜資源、尊重傳統和承擔非遺保育責任。</p>
-          </article>
-        </div>
-
-        <div class="judge-route" aria-label="評審一分鐘體驗路線">
-          <h3>評審一分鐘體驗路線</h3>
-          <ol>
-            <li>查閱歷史檔案，從文字中找出時代背景和社會需要。</li>
-            <li>回答推論題，證明已由史料讀出問題，才解鎖高階任務。</li>
-            <li>進入 NPC 個案，把歷史同理心轉化為配方和火候決策。</li>
-            <li>在「涼茶科學實驗室」改變變項，用數據驗證假設。</li>
-            <li>完成「創新方案任務」，選感測器、對象和保育目的，提出解決方案。</li>
-          </ol>
-        </div>
-      </section>
-
-      <section id="tea-menu" class="menu-section" aria-labelledby="menu-title">
-        <div class="section-heading">
-          <p class="kicker">第一步：由閱讀開始</p>
-          <h2 id="menu-title">先查歷史檔案，再解鎖涼茶任務</h2>
-          <p>每張卡都是一個香港社會問題：學生先閱讀史料並回答推論題，再進入街坊個案、科學實驗和 STEAM 創新設計。</p>
-        </div>
-        <div class="start-guide" aria-label="開始遊戲流程">
-          <div><strong>1</strong><span>查閱歷史檔案</span></div>
-          <div><strong>2</strong><span>答推論題解鎖配方</span></div>
-          <div><strong>3</strong><span>讀 NPC 史料情報</span></div>
-          <div><strong>4</strong><span>採藥、煲茶、做實驗</span></div>
-        </div>
-        <div id="tea-grid" class="tea-grid" aria-live="polite"></div>
-        <div id="personal-record" class="personal-record" aria-live="polite"></div>
-      </section>
-
-      <section id="history" class="history-section" aria-labelledby="history-title">
-        <div class="section-heading">
-          <h2 id="history-title">涼茶完整發展歷史</h2>
-          <p>從遠古藥草傳說到 2006 年列入國家級非物質文化遺產，涼茶見證華南地區千年的生活文化。</p>
-        </div>
-        <div id="timeline-panel" class="timeline-panel"></div>
-        <div class="culture-box">
-          <h3>為甚麼涼茶重要？</h3>
-          <ul id="culture-panel"></ul>
-        </div>
-      </section>
-
-      <section id="game-panel" class="game-panel" aria-live="polite">
-        <div class="screen-head">
-          <div>
-            <p id="stage-label" class="stage-label">準備上課</p>
-            <h2 id="stage-title">等待選擇任務卡</h2>
-          </div>
-          <div class="screen-actions">
-            <div id="difficulty-selector" class="difficulty-selector" aria-label="選擇遊戲模式"></div>
-            <button id="reset-button" class="ghost-button" type="button">重新開始</button>
-          </div>
-        </div>
-        <div id="resource-panel" class="resource-panel" aria-live="polite"></div>
-
-        <div id="history-screen" class="stage active-stage">
-          <div class="empty-state">
-            <div class="stamp-block">茶</div>
-            <h3>還未選任務卡</h3>
-            <p>請先到上方「先選一張涼茶任務卡」。點擊任務卡後，這裡會自動進入 NPC 個案和史料情報。</p>
-            <a class="primary-action" href="#tea-menu">前往選任務卡</a>
-          </div>
-        </div>
-
-        <div id="gather-screen" class="stage"></div>
-        <div id="prep-screen" class="stage"></div>
-        <div id="cook-screen" class="stage"></div>
-        <div id="lab-screen" class="stage"></div>
-        <div id="innovation-screen" class="stage"></div>
-        <div id="result-screen" class="stage"></div>
-      </section>
-
-      <section id="guide" class="guide-section" aria-labelledby="guide-title">
-        <div class="section-heading">
-          <h2 id="guide-title">藥材與文化圖鑑</h2>
-          <p>認識每味草木的線索與文化脈絡。遊戲內容作歷史與民俗教育用途，不作醫療建議。</p>
-        </div>
-        <div id="ingredient-guide" class="ingredient-guide"></div>
-      </section>
-    </main>
-
-    <div class="school-badge" aria-label="學校名稱">基督教聖約教會堅樂中學</div>
-    <div id="archive-modal-root" class="archive-modal-root" aria-live="polite"></div>
-
-    <script src="./src/app.js" defer></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="高小學生的涼茶小冒險：幫街坊找歷史線索、煲茶、做公平測試，再成為小小發明家。">
+  <meta property="og:title" content="一碗百苦 · 小茶師冒險">
+  <meta property="og:image" content="./assets/hong-kong-herbal-shop.webp">
+  <title>一碗百苦 · 小茶師冒險</title>
+  <link rel="stylesheet" href="./src/primary.css?v=primary1">
+  <script src="./src/primary-data.js?v=primary1" defer></script>
+  <script src="./src/primary.js?v=primary1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#app">跳到主要內容</a>
+  <header class="topbar"><a class="brand" href="#home" data-go="home"><img src="./assets/tea-history-teacher-logo.png" alt="阿茶仔"><span>一碗百苦<small>小茶師冒險</small></span></a><span id="player-name"></span><button type="button" data-go="settings" aria-label="設定" title="設定">⚙</button></header>
+  <main id="app" tabindex="-1"></main>
+  <div id="notice" role="status" aria-live="polite"></div>
+  <dialog id="guide-dialog" aria-labelledby="guide-title"></dialog>
+  <section id="report" aria-label="我的研習報告"></section>
+  <footer>基督教聖約教會堅樂中學</footer>
+  <noscript>請啟用瀏覽器的 JavaScript 來開始小茶師冒險。</noscript>
+</body>
 </html>
