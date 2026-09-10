@@ -14,18 +14,95 @@
     store = JSON.parse(localStorage.getItem(KEY));
     if (!store || store.version !== 1 || !Array.isArray(store.profiles) || !store.profiles.length || !store.profiles.some(p => p.id === store.active)) store = defaultStore();
   } catch { store = defaultStore(); storageOK = false; }
-  const profile = () => store.profiles.find(p => p.id === store.active);
+  const VISITOR_KEY = 'hgcTeaOpenDay.v1';
+  let visitor = null;
+  try { const saved = JSON.parse(sessionStorage.getItem(VISITOR_KEY)); if (saved?.visitor && saved.resources && saved.records) visitor = saved; } catch { /* A visitor can still play without session storage. */ }
+  const profile = () => visitor || store.profiles.find(p => p.id === store.active);
   const run = () => profile().run;
   const mission = () => D.missions.find(m => m.id === run()?.mission);
   const mode = () => D.modes[run()?.mode || profile().mode];
   let view = 'home', selectPage = 0, bookTab = 'tea', bookPage = 0, timer = null, noticeTimer, tick = 0, guideStep = 0, needle = 0;
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch { storageOK = false; } }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(store)); } catch { storageOK = false; }
+    try { if (visitor) sessionStorage.setItem(VISITOR_KEY, JSON.stringify(visitor)); else sessionStorage.removeItem(VISITOR_KEY); } catch { /* Keep the current visit in memory. */ }
+  }
+  const reduceMotion = () => store.settings.reduced || matchMedia('(prefers-reduced-motion: reduce)').matches;
   function notify(message) { $('#notice').textContent = message; $('#notice').classList.add('visible'); clearTimeout(noticeTimer); noticeTimer = setTimeout(() => $('#notice').classList.remove('visible'), 4500); }
   function button(text, action, value = '', primary = false, disabled = false) { return `<button type="button" data-action="${action}" data-value="${esc(value)}" ${primary ? 'class="primary"' : ''} ${disabled ? 'disabled' : ''}>${text}</button>`; }
   function image(id, kind = 'herb', cls = '') { const path = kind === 'npc' ? `npc/${id}.jpg` : `ingredient-photos/${id}.jpg`; return `<img class="${cls}" src="./assets/${path}" alt="${esc(kind === 'npc' ? '街坊角色插畫' : D.herbs[id]?.[0] || '傳統銅壺照片')}">`; }
   function guide(text, portrait = '', name = '阿茶仔') { return `<aside class="guide">${portrait ? image(portrait, 'npc') : '<img src="./assets/tea-history-teacher-logo.png" alt="阿茶仔">'}<div><strong>${name}</strong><p id="spoken">${text}</p></div>${button('🔊', 'speak')}</aside>`; }
   function heading(kicker, title) { return `<div class="heading"><p class="eyebrow">${kicker}</p><h1>${title}</h1></div>`; }
   function stars(n) { return `<span class="stars" aria-label="${n}顆星，最多3顆">${'★'.repeat(n)}${'☆'.repeat(3 - n)}</span>`; }
+  function startVisitor() {
+    visitor = { ...freshProfile('參觀小茶師'), visitor: true, tutorial: true };
+    selectPage = 0;
+    save(); navigate('select');
+  }
+  function rewardAnimation(label, big = false) {
+    notify(label);
+    if (reduceMotion()) return;
+    const layer = document.createElement('div');
+    layer.className = 'reward-animation'; layer.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < (big ? 18 : 7); i++) {
+      const star = document.createElement('span'); star.textContent = '★';
+      star.style.setProperty('--x', `${(i * 137 % 90) + 5}%`);
+      star.style.setProperty('--delay', `${i % 5 * 70}ms`);
+      star.style.setProperty('--turn', `${i % 2 ? 110 : -110}deg`);
+      layer.append(star);
+    }
+    document.body.append(layer); setTimeout(() => layer.remove(), 1900);
+  }
+  function flyMaterial(id, from) {
+    if (reduceMotion() || !from) return;
+    const target = $('.collection-basket')?.getBoundingClientRect(); if (!target) return;
+    const flyer = document.createElement('img'); flyer.src = `./assets/ingredient-photos/${id}.jpg`;
+    flyer.className = 'flying-material'; flyer.alt = '';
+    Object.assign(flyer.style, { left: `${from.left}px`, top: `${from.top}px`, width: '90px', height: '90px' });
+    document.body.append(flyer);
+    flyer.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${target.left + target.width / 2 - from.left - 45}px,${target.top - from.top}px) scale(.35)`, opacity: .25 }], { duration: 650, easing: 'cubic-bezier(.2,.8,.3,1)' });
+    setTimeout(() => flyer.remove(), 700);
+  }
+  function decorateScene() {
+    const app = $('#app');
+    if (visitor && view === 'select') app.querySelector('.pagination')?.remove();
+    if (visitor && view === 'settings') app.insertAdjacentHTML('afterbegin', `<div class="visitor-tools">${button('下一位小茶師', 'next-visitor')}${button('回到個人遊戲', 'leave-visitor')}</div>`);
+    if (view in stageIndex && run()) {
+      const labels = ['找線索', '幫街坊', '認藥材', '煲涼茶', '做實驗', '小發明', '領獎勵'];
+      const index = stageIndex[view];
+      app.querySelector('.journey>span').textContent = `${index + 1} / 7 · ${labels[index]}`;
+      app.querySelector('.journey').insertAdjacentHTML('afterend', `<ol class="adventure-track" aria-label="冒險路線">${labels.map((label, i) => `<li class="${i < index ? 'done' : ''} ${i === index ? 'current' : ''}" ${i === index ? 'aria-current="step"' : ''}><span>${['🔎', '♥', '🌿', '🍵', '🔬', '💡', '🏅'][i]}</span><small>${label}</small></li>`).join('')}</ol>`);
+      const cta = app.querySelector(':scope > button.primary');
+      if (cta) { const dock = document.createElement('div'); dock.className = 'action-dock'; cta.before(dock); dock.append(cta); }
+    }
+    if (view === 'clue') {
+      const figure = app.querySelector('.clue-image'), text = app.querySelector('.clue-text');
+      const layout = document.createElement('div'); layout.className = 'reading-layout'; figure.before(layout); layout.append(figure, text);
+    }
+    if (view === 'gather') {
+      const r = run(), m = mission();
+      app.querySelector('.heading').insertAdjacentHTML('afterend', `<div class="collection-basket" aria-label="材料收集籃"><strong>🧺 我的材料籃</strong><div>${m.materials.map((id, i) => `<span class="basket-slot ${i < r.materialIndex ? 'collected' : ''}">${i < r.materialIndex ? image(id) : '?'}</span>`).join('')}</div><span>${r.materialIndex} / ${m.materials.length}</span></div>`);
+    }
+    if (view === 'evidence' && run().evidenceDone) app.querySelector('.evidence-box').classList.add('evidence-stamped');
+    if (view === 'brew') {
+      const visual = app.querySelector('.brew-visual'); const controls = visual?.nextElementSibling;
+      if (controls?.matches('.choices,.timing')) { const layout = document.createElement('div'); layout.className = 'brew-layout'; visual.before(layout); layout.append(visual, controls); }
+    }
+    if (view === 'trial') {
+      const controls = app.querySelector('.choices'), cups = app.querySelector('.trial-cups');
+      controls.classList.add('trial-controls');
+      const layout = document.createElement('div'); layout.className = 'experiment-layout'; controls.before(layout); layout.append(controls, cups);
+      if (run().trials.length === 3) app.querySelector('.guide').remove();
+    }
+    if (view === 'result') {
+      const r = run(), m = mission();
+      app.querySelector('.reward').insertAdjacentHTML('afterend', `<section class="takeaways"><h2>今天帶走三個發現</h2><p>🔎 ${esc(m.found)}</p><p>🔬 ${esc(r.conclusion)}</p><p>♥ 好發明，從關心別人的需要開始。</p></section>`);
+      if (visitor) {
+        app.querySelector('.rubric').hidden = true;
+        const dock = app.querySelector('.action-dock'); dock.innerHTML = button('交給下一位小茶師', 'next-visitor', '', true);
+        app.querySelector('[data-action="select"]').textContent = '我還想幫另一位街坊';
+      }
+    }
+  }
   function resources() { const r = profile().resources; return `<div class="resources" aria-label="茶舖資源"><span>💰 <b>${r.money}</b><small>金幣</small></span><span>💧 <b>${r.water}</b><small>水</small></span><span>♥ <b aria-label="街坊開心度${Math.ceil(r.happy / 20)}級">${['😟', '😐', '🙂', '😀', '🤩'][clamp(Math.ceil(r.happy / 20) - 1, 0, 4)]}</b><small>街坊開心度</small></span></div>`; }
   function changeResources(effects, reason) {
     const before = { ...profile().resources };
@@ -35,7 +112,7 @@
     save(); return entry;
   }
   function effectView(entry) { return `<div class="effects">${['money', 'water', 'happy'].filter(k => entry.before[k] !== entry.after[k]).map(k => `<span>${{ money: '💰', water: '💧', happy: '♥' }[k]} ${k === 'happy' ? '街坊心情有變化' : `${entry.before[k]} → <b>${entry.after[k]}</b>`}</span>`).join('')}</div>`; }
-  function clearNotice() { clearTimeout(noticeTimer); $('#notice').classList.remove('visible'); }
+  function clearNotice() { clearTimeout(noticeTimer); $('#notice').classList.remove('visible'); document.querySelectorAll('.reward-animation,.flying-material').forEach(el => el.remove()); }
   function next(screen) { clearInterval(timer); timer = null; clearNotice(); if (run()) run().screen = screen; view = screen; save(); render(); window.scrollTo({ top: 0, behavior: 'instant' }); $('#app').focus({ preventScroll: true }); }
   function navigate(screen) { clearInterval(timer); timer = null; clearNotice(); view = screen; render(); window.scrollTo({ top: 0, behavior: 'instant' }); $('#app').focus({ preventScroll: true }); }
   function learnMore(m) { const s = D.sources[m.source]; return `<details><summary>想知更多</summary><p>誰說的？${esc(m.fictional ? '遊戲編寫者' : s.who)}</p><p>甚麼時候？${esc(m.era)}</p><p>為甚麼？${esc(m.fictional ? '讓我們練習找證據和關心別人' : s.why)}</p><p>這段是${m.fictional ? '教學創作，不是當年的真實證詞' : '根據現代介紹寫成的短摘要，不是原文引述'}。</p><a href="${s.url}" target="_blank" rel="noopener">${esc(s.name)} ↗</a><p>照片或插畫只協助觀察，並非這個故事的歷史現場。</p></details>`; }
@@ -43,12 +120,15 @@
   function options(items, action, selected = null, primary = false) { return `<div class="choices">${items.map(item => `<button type="button" data-action="${action}" data-value="${esc(item.value)}" class="choice ${selected === item.value ? 'selected' : ''} ${primary ? 'primary' : ''}" ${selected !== null ? `aria-pressed="${selected === item.value}"` : ''}>${item.html || esc(item.label)}</button>`).join('')}</div>`; }
   const stageIndex = { intro: 0, clue: 0, compare: 0, evidence: 0, story: 1, gather: 2, brew: 3, npc: 3, guess: 4, method: 4, trial: 4, observe: 4, conclude: 4, invent: 5, result: 6 };
   function render() {
+    $('#app').dataset.view = view;
+    $('#app').classList.toggle('visitor-mode', !!visitor);
     document.documentElement.classList.toggle('large', store.settings.large);
     document.documentElement.classList.toggle('reduced', store.settings.reduced);
     $('#player-name').textContent = profile().name;
     let content = screens[view]?.() || screens.home();
     if (view in stageIndex && run()) content = `<div class="journey"><button data-go="home" title="返回茶舖，保留進度" aria-label="返回茶舖">⌂</button><span>${esc(mission().tea)} · ${stageIndex[view] + 1} / 7</span><progress max="7" value="${stageIndex[view] + 1}" aria-label="任務進度"></progress></div>${resources()}${content}`;
     $('#app').innerHTML = content;
+    decorateScene();
     $('#app [data-action="speak"]')?.setAttribute('aria-label', '朗讀對話');
     $('#app [data-action="speak"]')?.setAttribute('title', '朗讀');
     if (view === 'brew' && run().brewing && !run().brewResult) startMeter();
@@ -57,11 +137,11 @@
   const screens = {
     home() {
       const completed = Object.keys(profile().records).length;
-      return `<section class="home-scene ${completed ? 'lit-shop' : ''}"><div class="home-title"><p class="eyebrow">香港涼茶文化 · 高小冒險</p><h1>一碗百苦</h1><p>STEAM 探索解鎖老香港街坊的苦與樂</p>${profile().upgrades.includes('sign') ? '<span class="shop-sign">小茶師的街坊茶舖 · 營業中</span>' : ''}</div></section><section class="home-actions">${button(run() && run().screen !== 'result' ? '🍵 繼續冒險' : '🍵 開始冒險', 'start', '', true)}${button('🏮 我的茶舖', 'shop')}${button('🏅 我的徽章', 'book')}${button('⚙ 設定', 'settings')}</section><p class="quiet">${completed} / ${D.missions.length} 位街坊的任務已完成</p>${!storageOK ? '<p class="inline-feedback">這個瀏覽器暫時不能保存記錄。離開前可到設定下載個人記錄。</p>' : ''}`;
+      return `<section class="home-scene ${completed ? 'lit-shop' : ''}"><div class="home-title"><p class="eyebrow">歡迎來到我們的中學 · 開放日</p><h1>一碗百苦</h1><p>當一次小茶師，幫街坊找出茶的秘密！</p>${profile().upgrades.includes('sign') ? '<span class="shop-sign">小茶師的街坊茶舖 · 營業中</span>' : ''}</div><img class="welcome-guide" src="./assets/tea-history-teacher-logo.png" alt="阿茶仔歡迎你"><div class="hanging-lantern" aria-hidden="true">茶</div></section><section class="home-actions">${button(visitor && run() && run().screen !== 'result' ? '🍵 繼續我的體驗' : '🍵 開始開放日體驗', 'visitor-start', '', true)}<div class="adventure-promise"><span>🔎 找線索</span><span>🍵 煲涼茶</span><span>🔬 做實驗</span></div>${button('🏮 我的茶舖', 'shop')}${button('🏅 我的徽章', 'book')}${button(visitor ? '回到個人遊戲' : (run() && run().screen !== 'result' ? '繼續個人冒險' : '完整七關冒險'), visitor ? 'leave-visitor' : 'start')}</section><p class="quiet">${visitor ? '訪客體驗 · 不用輸入姓名' : `${completed} / ${D.missions.length} 位街坊的任務已完成`}</p>${!storageOK ? '<p class="inline-feedback">這個瀏覽器暫時不能保存記錄。離開前可到設定下載個人記錄。</p>' : ''}`;
     },
     select() {
-      const cards = D.missions.slice(selectPage * 3, selectPage * 3 + 3);
-      return `${heading('約 8–12 分鐘的小冒險', '今天想幫哪位街坊？')}${guide('選一位街坊，聽聽他的故事。')}
+      const cards = visitor ? ['five-flower', 'sugarcane-root', 'old-hk'].map(id => D.missions.find(m => m.id === id)) : D.missions.slice(selectPage * 3, selectPage * 3 + 3);
+      return `${heading(visitor ? '開放日小任務 · 按自己的步伐玩' : '約 8–12 分鐘的小冒險', '今天想幫哪位街坊？')}${guide('選一位街坊，聽聽他的故事。')}
       <div class="mission-grid">${cards.map(m => `<button class="mission-card" data-action="mission" data-value="${m.id}">${image(m.portrait, 'npc')}<span><small>${m.era}</small><strong>${m.npc} · ${m.title}</strong><span>${m.tea}</span>${profile().records[m.id] ? stars(profile().records[m.id].stars) : '<small>等待你的幫忙</small>'}</span></button>`).join('')}</div><div class="pagination">${button('←', 'page', -1, false, selectPage === 0)}<span>${selectPage + 1} / ${Math.ceil(D.missions.length / 3)}</span>${button('→', 'page', 1, false, (selectPage + 1) * 3 >= D.missions.length)}</div>`;
     },
     intro() { const m = mission(); return `${heading(m.era, m.title)}${guide(m.request, m.portrait, m.npc)}<p class="quiet">${m.npc}是遊戲角色。一起從線索認識茶文化。</p>${button('知道！去找線索', 'next', 'clue', true)}`; },
@@ -109,8 +189,8 @@
         ${r.brewPage === 0 ? options(heatNames.map((name, i) => ({ value: i, label: `${'🔥'.repeat(i + 1)} ${name}` })), 'heat', r.heat) : options([1, 2, 3].map(i => ({ value: i, label: `${['', '⅓ 壺', '⅔ 壺', '滿壺'][i]}${r.mode === 'learn' ? '' : ` · ${i * 500} ml`}` })), 'fill', r.fill)}
         ${button(r.brewPage === 0 ? '下一步：加水' : '開始煲茶', r.brewPage === 0 ? 'brew-page' : 'brew-start', '', true)}${r.brewPage ? button('← 調整火力', 'brew-back') : ''}<p class="quiet">遊戲參數不是煎藥方法；真實加熱要由成人指導。</p>`;
       }
-      return `${heading('🍵 煲製進度', store.settings.reduced ? '慢慢調整到綠色區' : '指針到綠色區，按停火！')}${pot()}<div class="timing" role="meter" aria-label="煲製進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="target" style="left:${50 - mode().spot / 2}%;width:${mode().spot}%"></span><span id="needle"></span></div>
-      ${store.settings.reduced ? button('前進一格', 'meter-step') : ''}${button('停火', 'brew-stop', '', true)}<p class="quiet">可以再練習，不用重新開始任務。</p>`;
+      return `${heading('🍵 煲製進度', reduceMotion() ? '慢慢調整到綠色區' : '指針到綠色區，按停火！')}${pot()}<div class="timing" role="meter" aria-label="煲製進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="target" style="left:${50 - mode().spot / 2}%;width:${mode().spot}%"></span><span id="needle"></span></div>
+      ${reduceMotion() ? button('前進一格', 'meter-step') : ''}${button('停火', 'brew-stop', '', true)}<p class="quiet">可以再練習，不用重新開始任務。</p>`;
     },
     npc() { return `${heading('街坊的回應', '你幫到人啦！')}${guide('多謝你留心照顧！我們再試試，怎樣讓茶色不一樣？', mission().portrait, mission().npc)}${button('到小小實驗室', 'next', run().mode === 'master' ? 'method' : 'guess', true)}`; },
     guess() { return `${heading('🔬 我估 → 我試 → 我看看 → 我發現', run().variable === 'water' ? '加多一點水，茶色會更淺嗎？' : '煲久一點，茶色會更深嗎？')}${labSafety()}${guide('先猜一猜。猜錯也沒關係！')}${options([{ value: 'yes', label: '👍 我估會' }, { value: 'no', label: '👎 我估不會' }, { value: 'unsure', label: '🤔 我還不知道' }], 'guess')}`; },
@@ -118,7 +198,7 @@
     trial() {
       const r = run(), variable = r.variable, vals = variable === 'time' ? [10, 20, 30] : [500, 1000, 1500];
       return `${heading('🔬 我試', `只改${variable === 'time' ? '煲茶時間' : '水量'}`)}${labSafety()}${guide('其他條件不變，這才是公平測試！')}
-      <div class="locked">🔒 ${variable === 'time' ? '水量 1000 ml' : '時間 20 分鐘'} · 溫度 80°C · 材料 10 g</div>
+      <div class="locked">🔒 ${r.mode === 'learn' ? '同樣的水、火力和材料，只改時間' : `${variable === 'time' ? '水量 1000 ml' : '時間 20 分鐘'} · 溫度 80°C · 材料 10 g`}</div>
       ${options(vals.map((v, i) => ({ value: v, html: `<strong>${(variable === 'time' ? ['短時間', '中時間', '長時間'] : ['少水', '中水', '多水'])[i]}</strong>${r.mode === 'learn' ? '' : `<span>${v} ${variable === 'time' ? 'min' : 'ml'}</span>`}<small>${r.trials.some(t => t.value === v) ? '✓ 已有結果' : '按下試一試'}</small>` })), 'trial')}
       ${trialCups()}<p class="quiet">${r.trials.length} / 3 次結果${r.mode === 'learn' ? ' · 第一杯由阿茶仔示範' : ''}</p>${r.trials.length === 3 ? button('看看三杯的分別', 'next', 'observe', true) : ''}${scienceDetails()}`;
     },
@@ -161,14 +241,20 @@
       <details><summary>個人記錄與新身份</summary><p>記錄儲存在這部裝置的瀏覽器。新身份會有獨立進度。</p><label class="field">新玩家名字<input id="new-name" maxlength="16" placeholder="輸入暱稱"></label>${button('建立新身份', 'new-profile')}<label class="field">切換玩家<select id="profile">${store.profiles.map(p => `<option value="${p.id}" ${p.id === store.active ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}</select></label>${button('下載個人記錄', 'export')}<label class="field">匯入自己的記錄<input id="import" type="file" accept="application/json,.json"></label></details>
       <details><summary>教師資料與已完成報告</summary><p>高小版另存個人記錄，不會覆蓋原版進度。</p>${Object.entries(profile().records).filter(([, record]) => record.latest?.result).map(([id]) => button(`打印${D.missions.find(m => m.id === id).tea}報告`, 'past-report', id)).join('')}<p><a href="./classroom.html">開啟原版教學遊戲</a></p><p>本遊戲只模擬可觀察數據，不推算藥效。實驗配方並非飲用處方。</p><a href="./assets/ingredient-photos/sources.json" target="_blank">材料照片來源</a></details>${button('儲存並返回', 'home', '', true)}`; }
   };
-  function pot() { const r = run(); return `<div class="brew-visual"><figure>${image('pot')}<figcaption>傳統銅壺 · 圖片觀察</figcaption></figure><div class="water-vessel" aria-label="${r.fill || 0}份水"><div style="height:${(r.fill || 0) * 30}%;background:#63371d" class="water ${r.brewing && !r.brewResult ? `bubbles heat-${r.heat}` : ''}"><i></i><i></i><i></i></div></div><div class="pot-label">${'🔥'.repeat((r.heat ?? 1) + 1)}${profile().upgrades.includes('thermometer') ? `<p>🌡 ${[60, 80, 100][r.heat ?? 1]}°C</p>` : ''}${profile().upgrades.includes('saver') ? '<p>💧 節水器已安裝</p>' : ''}</div></div>`; }
+  function pot() {
+    const r = run(), boiling = r.brewing && !r.brewResult;
+    return `<div class="brew-visual ${boiling ? 'is-brewing' : ''}" data-heat="${r.heat}"><figure>${image('pot')}<figcaption>傳統銅壺 · 圖片觀察</figcaption></figure><div class="animated-kettle"><div class="steam-trails" aria-hidden="true"><i></i><i></i><i></i></div><div class="water-vessel" aria-label="${['', '三分一壺', '三分二壺', '滿壺'][r.fill] || '未加水'}"><div style="height:${(r.fill || 0) * 30}%;background:#63371d" class="water ${boiling ? `bubbles heat-${r.heat}` : ''}"><i></i><i></i><i></i><i></i><i></i></div></div><div class="flame-bed" aria-hidden="true">${'<i></i>'.repeat((r.heat ?? 1) + 1)}</div></div><div class="pot-label"><strong>${['小火', '中火', '大火'][r.heat ?? 1]}</strong>${profile().upgrades.includes('thermometer') ? `<p>🌡 ${[60, 80, 100][r.heat ?? 1]}°C</p>` : ''}${profile().upgrades.includes('saver') ? '<p>💧 節水器已安裝</p>' : ''}</div></div>`;
+  }
   function labSafety() { return '<p class="lab-safety">🔬 這是遊戲模擬！我們練習公平測試，數字不代表真實藥效。</p>'; }
   function simulate(value, variable) {
     const time = variable === 'time' ? value : 20, water = variable === 'water' ? value : 1000;
     const strength = clamp((1 - Math.exp(-time / 25)) * 1000 / water, 0, 1);
     return { value, time, water, temperature: 80, grams: 10, color: Math.round(strength * 100), bitterness: Math.round(strength * 60), ph: 6.5, rgb: `rgb(${Math.round(225 - strength * 155)},${Math.round(194 - strength * 159)},${Math.round(116 - strength * 99)})` };
   }
-  function trialCups() { return `<div class="trial-cups">${[...run().trials].sort((a, b) => a.value - b.value).map((t, i) => `<figure><div class="tea-cup" style="--tea:${t.rgb}"></div><figcaption>第${i + 1}杯${t.demo ? '（示範）' : ''}<strong>${run().variable === 'time' ? ['短', '中', '長'][[10, 20, 30].indexOf(t.value)] + '時間' : ['少', '中', '多'][[500, 1000, 1500].indexOf(t.value)] + '水'}</strong><span>${t.color < 40 ? '淺' : t.color < 65 ? '中' : '深'}</span></figcaption></figure>`).join('')}</div>`; }
+  function trialCups() {
+    const r = run(), values = r.variable === 'time' ? [10, 20, 30] : [500, 1000, 1500];
+    return `<div class="trial-cups">${values.map((value, i) => { const t = r.trials.find(t => t.value === value); return `<figure class="${t ? 'filled-sample' : 'empty-sample'}"><div class="tea-cup" style="--tea:${t?.rgb || '#e3eeea'}"><span class="sample-liquid"></span></div><figcaption><span>第${i + 1}杯${t?.demo ? '（示範）' : ''}</span><strong>${r.variable === 'time' ? ['短', '中', '長'][i] + '時間' : ['少', '中', '多'][i] + '水'}</strong><span>${t ? t.color < 40 ? '淺' : t.color < 65 ? '中' : '深' : '等你來試'}</span></figcaption></figure>`; }).join('')}</div>`;
+  }
   function chart() { return `<div class="pictograph" aria-label="三次實驗茶色比較圖"><span>深<br>中<br>淺</span>${[...run().trials].sort((a, b) => a.value - b.value).map((t, i) => `<div><span class="dot" style="bottom:${t.color}%;background:${t.rgb}"></span><small>第${i + 1}杯</small></div>`).join('')}</div>`; }
   function scienceDetails() { return `<details><summary>🔬 科學家資料</summary><div class="table-scroll"><table><caption>固定80°C及10g材料的教學模擬</caption><thead><tr><th>時間 min</th><th>水 ml</th><th>茶色</th><th>苦味</th><th>pH</th></tr></thead><tbody>${run().trials.map(t => `<tr><td>${t.time}</td><td>${t.water}</td><td>${t.color}</td><td>${t.bitterness}</td><td>${t.ph}</td></tr>`).join('')}</tbody></table></div><p>模擬濃度 = (1 − e^(−時間/25)) × 1000/水量，限制在0至1。茶色 = 濃度 × 100；苦味 = 濃度 × 60。</p><p>pH 固定為6.5作示例，不由顏色或苦味推算。溫度固定為80°C；不代表水在沸騰。</p><p>可在成人指導下，用溫度探針、pH試紙及固定光源拍照驗證。每組用相同材料，重複測量，不飲用實驗樣本。</p></details>`; }
   function newRun(id) {
@@ -194,11 +280,11 @@
     const correct = r.evidencePick === m.answer;
     r.answers.push({ type: '史料分析', question: m.question, answer: m.evidence[r.evidencePick], correct });
     if (!correct) { retry('evidenceErrors', m.help, m.evidence[m.answer]); return; }
-    r.evidenceDone = true; r.feedback = '找到支持想法的證據了！'; sfx(true); save(); render();
+    r.evidenceDone = true; r.feedback = '找到支持想法的證據了！'; sfx(true); save(); render(); rewardAnimation('線索找到啦！你有證據支持想法。');
   }
   function startMeter() {
     clearInterval(timer); tick = 0; needle = 0;
-    if (store.settings.reduced) return updateMeter();
+    if (reduceMotion()) return updateMeter();
     timer = setInterval(() => { tick += 0.7; needle = 50 - 50 * Math.cos(tick * Math.PI / 100); updateMeter(); }, 50);
   }
   function updateMeter() { const el = $('#needle'); if (!el) return; el.style.left = `${needle}%`; el.parentElement.setAttribute('aria-valuenow', Math.round(needle)); }
@@ -215,9 +301,17 @@
     const previous = profile().records[r.mission];
     if (!previous) changeResources({ money: 30, water: 15, happy: 10 }, '首次完成任務獎勵');
     profile().records[r.mission] = { stars: Math.max(previous?.stars || 0, finalStars), latest: JSON.parse(JSON.stringify(r)) };
-    sfx(true, true); next('result');
+    sfx(true, true); next('result'); rewardAnimation('任務完成！你是細心的小茶師。', true);
   }
   const actions = {
+    'visitor-start'() { if (visitor?.run && visitor.run.screen !== 'result') next(visitor.run.screen); else startVisitor(); },
+    'next-visitor'() {
+      $('#guide-dialog').innerHTML = `<h2 id="guide-title">交給下一位小茶師？</h2><p>這次訪客體驗會重新開始。已儲存的個人遊戲不會改變。</p>${button('下一位，開始！', 'confirm-visitor', '', true)}${button('我還想看看', 'close-dialog')}`;
+      $('#guide-dialog').showModal();
+    },
+    'confirm-visitor'() { $('#guide-dialog').close(); startVisitor(); },
+    'close-dialog'() { $('#guide-dialog').close(); },
+    'leave-visitor'() { visitor = null; save(); navigate('home'); },
     start() { if (!profile().tutorial) { guideStep = 0; showTutorial(); } else if (run() && run().screen !== 'result') next(run().screen); else navigate('select'); },
     tutorial() { if (guideStep < 2) { guideStep++; showTutorial(); } else { profile().tutorial = true; save(); $('#guide-dialog').close(); navigate('select'); } },
     mission: newRun,
@@ -235,7 +329,7 @@
       sfx(true); next('story');
     },
     'event-next'() { const r = run(); if (!r.eventResult) return; r.eventIndex++; r.eventResult = null; r.feedback = ''; next(r.eventIndex < r.eventIds.length ? 'story' : 'gather'); },
-    material(id) { const r = run(), wanted = mission().materials[r.materialIndex]; if (id !== wanted) { retry('materialErrors', D.herbs[wanted][1], `選${D.herbs[wanted][0]}：${D.herbs[wanted][1]}`); return; } r.materialIndex++; r.feedback = ''; sfx(true); next('gather'); },
+    material(id) { const r = run(), wanted = mission().materials[r.materialIndex]; if (id !== wanted) { retry('materialErrors', D.herbs[wanted][1], `選${D.herbs[wanted][0]}：${D.herbs[wanted][1]}`); return; } const from = $(`[data-action="material"][data-value="${id}"] img`)?.getBoundingClientRect(); r.materialIndex++; r.feedback = ''; sfx(true); next('gather'); flyMaterial(id, from); notify(`${D.herbs[id][0]}放入籃子了！`); },
     heat(v) { run().heat = clamp(Number(v), 0, 2); save(); render(); },
     fill(v) { run().fill = clamp(Number(v), 1, 3); save(); render(); },
     'brew-page'() { run().brewPage = 1; save(); render(); },
@@ -275,7 +369,7 @@
     },
     'book-tab'(v) { bookTab = v; bookPage = 0; render(); },
     'book-page'(v) { bookPage = Math.max(0, bookPage + Number(v)); render(); },
-    'new-profile'() { const name = $('#new-name').value.trim(); if (!name) { notify('先給新茶師起個名字吧。'); return; } if (store.profiles.length >= 20) { notify('這部裝置已有20位玩家，可先下載記錄備份。'); return; } const p = freshProfile(name); store.profiles.push(p); store.active = p.id; save(); navigate('home'); },
+    'new-profile'() { const name = $('#new-name').value.trim(); if (!name) { notify('先給新茶師起個名字吧。'); return; } if (store.profiles.length >= 20) { notify('這部裝置已有20位玩家，可先下載記錄備份。'); return; } const p = freshProfile(name); visitor = null; store.profiles.push(p); store.active = p.id; save(); navigate('home'); },
     export() { const blob = new Blob([JSON.stringify({ version: 1, profile: profile() }, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'my-tea-adventure.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); },
     speak() {
       if (!('speechSynthesis' in window)) { notify('這個瀏覽器未支援朗讀，可以慢慢看文字。'); return; }
@@ -309,7 +403,7 @@
   document.addEventListener('change', async event => {
     const el = event.target;
     if (el.name === 'mode' && D.modes[el.value]) { profile().mode = el.value; save(); }
-    if (el.id === 'profile') { store.active = el.value; save(); navigate('home'); }
+    if (el.id === 'profile') { visitor = null; store.active = el.value; save(); navigate('home'); }
     if (el.id === 'import' && el.files[0]) {
       try {
         if (el.files[0].size > 1000000) throw new Error('large');
@@ -319,7 +413,7 @@
         for (const key of ['money', 'water', 'happy']) { if (!Number.isFinite(p.resources[key])) throw new Error('resource'); imported.resources[key] = clamp(p.resources[key], 0, key === 'happy' ? 100 : 999); }
         imported.upgrades = [...new Set(p.upgrades.filter(u => ['thermometer', 'saver', 'sign'].includes(u)))];
         for (const m of D.missions) if (p.records[m.id]) { const r = p.records[m.id]; if (!Number.isInteger(r.stars) || r.stars < 1 || r.stars > 3) throw new Error('record'); imported.records[m.id] = { stars: r.stars }; }
-        imported.tutorial = true; store.profiles.push(imported); store.active = imported.id; save(); navigate('home'); notify('已匯入徽章和茶舖。未完成的任務可重新選擇。');
+        imported.tutorial = true; visitor = null; store.profiles.push(imported); store.active = imported.id; save(); navigate('home'); notify('已匯入徽章和茶舖。未完成的任務可重新選擇。');
       } catch { notify('未能讀取記錄，請選擇本遊戲下載的 JSON 檔案。'); }
     }
   });
@@ -347,7 +441,7 @@
     beat++; audioTimer = setTimeout(musicBeat, 60000 / settings[0]);
   }
   function audioUpdate() { clearTimeout(audioTimer); try { if (!store.settings.music || store.settings.muted || document.hidden) { if (store.settings.muted || document.hidden) audioContext?.suspend().catch(() => {}); return; } const c = context(); c?.resume().then(musicBeat).catch(() => notify('音樂暫時不能播放，遊戲可照常進行。')); } catch { notify('這個瀏覽器暫時不能播放音樂。'); } }
-  document.addEventListener('visibilitychange', () => { if (document.hidden) { clearTimeout(audioTimer); audioContext?.suspend().catch(() => {}); } else if (audioContext) audioUpdate(); });
+  document.addEventListener('visibilitychange', () => { document.documentElement.classList.toggle('page-hidden', document.hidden); if (document.hidden) { clearTimeout(audioTimer); audioContext?.suspend().catch(() => {}); } else if (audioContext) audioUpdate(); });
   document.addEventListener('pointerdown', () => { if (store.settings.music && !audioTimer) audioUpdate(); }, { once: true });
   window.addEventListener('beforeunload', save);
   history.scrollRestoration = 'manual';

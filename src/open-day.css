@@ -1,0 +1,239 @@
+/* Open-day tablet presentation. The classroom stylesheet remains independent. */
+:root { font-size: 22px; line-height: 1.6; --line: #b8d1c4; }
+body { padding-bottom: env(safe-area-inset-bottom); background: #f5faf7; }
+[hidden] { display: none !important; }
+h1 { font-size: 32px; }
+h2 { font-size: 26px; }
+button { min-height: 60px; min-width: 60px; font-size: 22px; -webkit-tap-highlight-color: transparent; }
+button:active { transform: scale(.98); }
+.primary, .choice, .choice strong { font-size: 24px; }
+.primary { min-height: 68px; }
+small, .quiet, figcaption, .tag, details p, .eyebrow { font-size: 19px; }
+.topbar { max-width: 1180px; padding: 10px 24px; }
+.brand { font-size: 26px; }
+.brand img { width: 76px; height: 76px; }
+.brand small, .topbar #player-name { font-size: 18px; }
+#app { max-width: 1140px; padding: 20px 32px 60px; }
+#app[data-view]:not([data-view=home]):not([data-view=select]):not([data-view=settings]):not([data-view=book]):not([data-view=shop]) { padding-bottom: 136px; }
+.heading { margin: 16px 0; }
+.guide { padding: 14px 20px; gap: 18px; min-height: 112px; background: #e7f4ed; border-left-width: 6px; }
+.guide p { font-size: 24px; }
+.guide > img { width: 108px; height: 108px; animation: guide-greet .6s ease-out; transform-origin: bottom center; }
+.guide button { min-width: 60px; min-height: 60px; }
+.home-scene { margin: 0 -32px; min-height: 310px; overflow: hidden; background-position: center 58%; }
+.home-title { padding: 28px 36px; padding-right: 235px; }
+.home-title h1 { font-size: 48px; }
+.home-title p { font-size: 25px; }
+.home-title .eyebrow { font-size: 20px; }
+.welcome-guide { position: absolute; width: 195px; height: 195px; object-fit: contain; right: 24px; bottom: 30px; border-radius: 50%; border: 3px solid #e2c478; filter: drop-shadow(0 6px 9px #0004); animation: welcome-bob 2.6s ease-in-out 3; }
+.hanging-lantern { position: absolute; top: -4px; right: 52px; background: #b63344; color: #fff2b3; width: 58px; height: 85px; border: 4px solid #e8bc55; border-radius: 40%; display: grid; place-items: center; font-size: 30px; font-weight: bold; transform-origin: top center; animation: lantern-swing 3s ease-in-out 4; }
+.home-actions { gap: 12px; padding-top: 20px; }
+.home-actions .primary { min-height: 74px; font-size: 28px; }
+.home-actions button:last-child { font-size: 20px; min-height: 58px; }
+.adventure-promise { grid-column: 1 / -1; display: flex; justify-content: center; gap: 28px; padding: 6px 0 14px; color: #315c4a; font-size: 21px; }
+.home-actions button { font-size: 23px; }
+.journey { gap: 14px; font-size: 20px; }
+.journey button { min-width: 56px; min-height: 56px; }
+.journey progress { height: 12px; }
+.adventure-track { display: flex; list-style: none; padding: 0; margin: 12px 0 8px; justify-content: space-between; gap: 8px; }
+.adventure-track li { display: flex; flex: 1; flex-direction: column; align-items: center; border-bottom: 4px solid #d5e5da; padding-bottom: 6px; color: #61796e; }
+.adventure-track li span { font-size: 24px; line-height: 1.3; }
+.adventure-track li small { font-size: 17px; }
+.adventure-track li.current { border-color: #b43742; color: #a72738; font-weight: 700; }
+.adventure-track li.done { border-color: #239565; color: #226845; }
+.resources { padding: 8px 0 12px; margin-bottom: 14px; }
+.resources > span { font-size: 23px; }
+.resources small { font-size: 18px; }
+.resources b { font-size: 26px; }
+#app:is([data-view=intro],[data-view=clue],[data-view=compare],[data-view=evidence],[data-view=gather],[data-view=npc],[data-view=guess],[data-view=method],[data-view=trial],[data-view=observe],[data-view=conclude],[data-view=invent],[data-view=result]) > .resources { display: none; }
+.mission-card > img { max-height: 235px; }
+.mission-card strong { font-size: 24px; }
+.mission-card small { font-size: 19px; }
+.mission-card:hover img { transform: scale(1.02); transition: transform .2s; }
+.mission-card img { transform-origin: center; }
+.mission-card > span { flex: 1; }
+.mission-card { border-bottom: 5px solid #329073; }
+.mission-card:nth-child(2) { border-bottom-color: #4f96b4; }
+.mission-card:nth-child(3) { border-bottom-color: #d9a82e; }
+.action-dock { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 5; padding: 12px 24px calc(12px + env(safe-area-inset-bottom)); background: #f5faf7; border-top: 1px solid #bed5c7; display: flex; justify-content: center; }
+.action-dock .primary { width: min(620px,100%); margin: 0; box-shadow: 0 4px 0 #0b503d; }
+.reading-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: 26px; align-items: center; }
+.reading-layout .clue-image { width: 100%; margin: 0; }
+.reading-layout .clue-image > img { height: 245px; object-fit: cover; }
+.reading-layout .clue-text { border-top: 4px solid #ddb84b; }
+.clue-text p { font-size: 25px; line-height: 1.85; }
+.clue-text mark { box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.choice { min-height: 96px; border-width: 2px; }
+.choice small { font-size: 20px; }
+.choice.selected { background: #d8efe1; }
+.choices { gap: 18px; }
+.evidence-box { min-height: 104px; font-size: 25px; position: relative; }
+.evidence-stamped { background: #d8efdc; border-style: solid; animation: stamp-in .55s ease-out; }
+.collection-basket { display: flex; align-items: center; gap: 22px; padding: 12px 0; border-bottom: 2px solid #b8d1c4; }
+.collection-basket > div { display: flex; gap: 12px; flex: 1; }
+.basket-slot { width: 68px; height: 68px; border: 2px dashed #9ab6a8; display: grid; place-items: center; border-radius: 8px; font-size: 30px; color: #527966; background: white; }
+.basket-slot img { width: 60px; height: 60px; object-fit: contain; }
+.basket-slot.collected { border-style: solid; border-color: #22805b; }
+.flying-material { position: fixed; z-index: 40; object-fit: contain; border: 3px solid #d3ad3d; background: white; border-radius: 8px; pointer-events: none; }
+.brew-layout { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; align-items: center; }
+.brew-layout .choices { grid-template-columns: 1fr; margin: 0; gap: 10px; }
+.brew-layout .choice { min-height: 64px; padding: 12px 18px; }
+.brew-visual { min-height: 290px; gap: 24px; flex-wrap: wrap; }
+.brew-visual figure { width: 220px; }
+.brew-visual figure img { border: 4px solid #e5c269; }
+.animated-kettle { position: relative; padding: 35px 10px 38px; }
+.water-vessel { width: 98px; height: 162px; border-color: #267660; }
+.water { transform-origin: bottom; animation: pour-water .55s ease-out; }
+.water:before { content: ''; position: absolute; top: -3px; left: 0; height: 8px; width: 100%; border-top: 3px solid #cfb87e; border-radius: 50%; }
+.is-brewing .water:before { animation: tea-surface 1.2s ease-in-out infinite; }
+.bubbles i:nth-child(4) { left: 75%; animation-delay: .35s; }
+.bubbles i:nth-child(5) { left: 30%; animation-delay: .9s; }
+.steam-trails { position: absolute; top: 5px; width: 98px; height: 55px; display: flex; justify-content: space-around; pointer-events: none; }
+.steam-trails i { border-left: 4px solid #89a7a0; width: 15px; height: 42px; border-radius: 50%; opacity: 0; }
+.is-brewing .steam-trails i { animation: tea-steam 2.1s ease-out infinite; }
+.steam-trails i:nth-child(2) { animation-delay: .7s; }
+.steam-trails i:nth-child(3) { animation-delay: 1.4s; }
+.flame-bed { position: absolute; bottom: 7px; left: 0; width: 100%; display: flex; justify-content: center; gap: 5px; height: 30px; }
+.flame-bed i { display: block; width: 20px; height: 28px; background: #e88729; border: 5px solid #f4c33d; border-radius: 60% 15% 50% 50%; transform: rotate(-15deg); }
+.is-brewing .flame-bed i { animation: tea-flame .6s ease-in-out infinite alternate; }
+.flame-bed i:nth-child(2) { animation-delay: .2s; }
+.flame-bed i:nth-child(3) { animation-delay: .35s; }
+.brew-visual[data-heat="0"] .flame-bed { transform: scale(.7); }
+.brew-visual[data-heat="2"] .flame-bed { transform: scale(1.2); }
+.pot-label { width: 100%; max-width: none; text-align: center; margin-top: -16px; }
+.pot-label p { font-size: 20px; }
+.timing { height: 64px; width: 100%; }
+#needle { width: 7px; }
+.timing::after { content: '停火區'; position: absolute; top: 14px; left: 0; width: 100%; text-align: center; font-size: 20px; pointer-events: none; color: #184c35; }
+.locked { font-size: 21px; }
+.lab-safety { font-size: 20px; }
+.trial-controls { grid-template-columns: repeat(3,minmax(0,1fr)); }
+.trial-controls .choice { padding: 16px 10px; min-height: 105px; }
+.experiment-layout { display: grid; grid-template-columns: .8fr 1.5fr; gap: 30px; align-items: center; }
+.experiment-layout .trial-controls { grid-template-columns: 1fr; gap: 10px; margin: 8px 0; }
+.experiment-layout .trial-controls .choice { min-height: 68px; padding: 9px 12px; flex-direction: row; flex-wrap: wrap; gap: 8px; }
+.experiment-layout .trial-cups { gap: 24px; margin: 10px 0; min-height: 180px; }
+.experiment-layout .trial-cups figure { width: 140px; min-width: 0; }
+.trial-cups { gap: 50px; margin: 28px 0; min-height: 210px; }
+.trial-cups figure { width: 160px; }
+.trial-cups figcaption { font-size: 21px; }
+.tea-cup { width: 112px; height: 88px; background: #e7eeea; overflow: visible; }
+.tea-cup .sample-liquid { position: absolute; inset: 0; background: var(--tea); border-radius: 0 0 22px 22px; transform-origin: bottom; }
+.filled-sample .sample-liquid { animation: pour-water .7s ease-out; }
+.empty-sample .tea-cup { border-top-color: #c5d6cd; border-style: dashed; }
+.empty-sample .sample-liquid { opacity: .3; }
+.pictograph { height: 180px; }
+.pictograph small, .pictograph > span { font-size: 20px; }
+.pictograph > span { line-height: 58px; }
+.pictograph .dot { animation: data-appear .45s ease-out; }
+.sentence { font-size: 25px; }
+.takeaways { border-top: 3px solid #e4bd48; padding: 20px 0; margin-top: 20px; }
+.takeaways p { font-size: 23px; }
+.reward { animation: stamp-in .6s ease-out; }
+.result-grid > div { font-size: 23px; }
+.celebrate .stars { font-size: 76px; }
+.reward-animation { position: fixed; inset: 0; z-index: 30; overflow: hidden; pointer-events: none; }
+.reward-animation > span { position: absolute; left: var(--x); top: 8%; font-size: 28px; color: #d49b12; animation: reward-fall 1.4s var(--delay) ease-out both; text-shadow: 0 1px 0 white; }
+.reward-animation > span:nth-child(3n) { color: #d45968; }
+.reward-animation > span:nth-child(3n+1) { color: #20916b; }
+.visitor-tools { display: flex; gap: 12px; flex-wrap: wrap; }
+#notice { bottom: 110px; max-width: min(650px,calc(100% - 32px)); font-size: 21px; }
+.large { font-size: 26px; }
+.large .guide p, .large .clue-text p, .large .choice, .large .choice strong, .large .sentence { font-size: 28px; }
+.large small, .large .quiet, .large details p { font-size: 22px; }
+.large button, .large .trial-cups figcaption { font-size: 26px; }
+.large h1 { font-size: 36px; }
+.large .resources small { font-size: 20px; }
+@keyframes guide-greet { 0% { transform: rotate(-5deg) scale(.92); } 70% { transform: rotate(3deg) scale(1.02); } 100% { transform: none; } }
+@keyframes welcome-bob { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-9px) rotate(2deg); } }
+@keyframes lantern-swing { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes stamp-in { 0% { transform: scale(.88); opacity: .3; } 70% { transform: scale(.99); opacity: 1; } 100% { transform: none; } }
+@keyframes pour-water { from { transform: scaleY(.05); } to { transform: scaleY(1); } }
+@keyframes tea-surface { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(1.8); } }
+@keyframes tea-steam { from { opacity: 0; transform: translateY(15px) scale(.7); } 30% { opacity: .65; } to { opacity: 0; transform: translateY(-32px) scale(1.1); } }
+@keyframes tea-flame { from { transform: rotate(-18deg) scaleY(.8); } to { transform: rotate(-8deg) scaleY(1.12); } }
+@keyframes data-appear { from { transform: scale(.2); } to { transform: scale(1); } }
+@keyframes reward-fall { 0% { opacity: 0; transform: translateY(-35px) rotate(0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(65vh) rotate(var(--turn)); } }
+.page-hidden *, .page-hidden *::before, .page-hidden *::after { animation-play-state: paused !important; }
+.reduced *, .reduced *::before, .reduced *::after { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+@media (min-width:700px) and (max-height:850px) {
+  .topbar { padding: 6px 24px; }
+  .brand img { width: 58px; height: 58px; }
+  #app { padding-top: 12px; }
+  .adventure-track { margin: 6px 0; }
+  .adventure-track li { flex-direction: row; gap: 6px; justify-content: center; padding-bottom: 3px; }
+  .resources { padding: 6px 0; margin-bottom: 8px; }
+  .heading { margin: 10px 0; }
+  .heading h1 { margin-bottom: 8px; }
+  .guide { margin: 12px 0; min-height: 90px; padding: 10px 16px; }
+  .guide > img { width: 80px; height: 80px; }
+  .brew-visual { min-height: 230px; margin: 8px 0; }
+  .home-scene { min-height: 270px; }
+  .home-actions { padding-top: 14px; }
+}
+@media (max-width:699px) {
+  :root { font-size: 21px; }
+  #app { padding: 16px 18px 50px; }
+  .topbar { padding: 8px 12px; }
+  .brand { font-size: 22px; }
+  .brand img { width: 60px; height: 60px; }
+  .brand small, .topbar #player-name { font-size: 16px; }
+  h1 { font-size: 28px; }
+  .home-scene { margin: 0 -18px; min-height: 320px; }
+  .home-title { padding: 25px 20px; padding-right: 20px; z-index: 1; }
+  .home-title h1 { font-size: 38px; }
+  .home-title p { max-width: 220px; font-size: 22px; }
+  .home-title .eyebrow { max-width: 210px; font-size: 18px; }
+  .welcome-guide { width: 118px; height: 118px; bottom: 140px; right: 8px; }
+  .hanging-lantern { width: 42px; height: 62px; font-size: 25px; right: 45px; }
+  .home-actions .primary { font-size: 24px; }
+  .adventure-promise { gap: 12px; font-size: 17px; flex-wrap: wrap; }
+  .guide { padding: 12px; gap: 10px; }
+  .guide > img { width: 65px; height: 65px; }
+  .guide p { font-size: 22px; }
+  .guide button { min-width: 48px; min-height: 52px; }
+  .adventure-track li small { display: none; }
+  .adventure-track li span { font-size: 23px; }
+  .resources small { font-size: 17px; }
+  .reading-layout, .brew-layout { display: block; }
+  .experiment-layout { display: block; }
+  .experiment-layout .trial-controls { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .experiment-layout .trial-controls .choice { min-height: 110px; flex-direction: column; }
+  .experiment-layout .trial-cups { gap: 18px; }
+  .experiment-layout .trial-cups figure { width: 88px; }
+  .reading-layout .clue-image > img { height: 180px; }
+  .clue-text p { font-size: 24px; }
+  .clue-text { margin-top: 18px; }
+  .choice, .choice strong { font-size: 22px; }
+  .collection-basket { gap: 10px; flex-wrap: wrap; }
+  .collection-basket strong { font-size: 20px; }
+  .basket-slot { width: 52px; height: 52px; }
+  .basket-slot img { width: 46px; height: 46px; }
+  .brew-visual { gap: 12px; min-height: 225px; }
+  .brew-visual figure { width: 160px; }
+  .water-vessel { width: 75px; height: 125px; }
+  .steam-trails { width: 75px; }
+  .pot-label { margin-top: -12px; }
+  .trial-controls { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+  .trial-controls .choice { min-height: 110px; padding: 10px 6px; }
+  .trial-controls .choice strong { font-size: 21px; }
+  .trial-controls .choice small { font-size: 17px; }
+  .trial-cups { gap: 18px; min-height: 185px; }
+  .trial-cups figure { width: 88px; }
+  .trial-cups figcaption { font-size: 18px; }
+  .tea-cup { width: 68px; height: 65px; }
+  .takeaways p { font-size: 22px; }
+  .action-dock { padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .action-dock .primary { min-height: 64px; font-size: 23px; }
+  .large .guide > div { flex-basis: 60%; }
+  .large .trial-controls { grid-template-columns: 1fr; }
+  .large .experiment-layout .trial-controls { grid-template-columns: 1fr; }
+  .large .trial-cups figcaption { font-size: 20px; }
+}
+@media print {
+  #report, #report p { font-size: 10pt !important; }
+  #report h1 { font-size: 19pt !important; }
+  #report h2 { font-size: 12pt !important; }
+  #report th, #report td { font-size: 9pt !important; }
+}
