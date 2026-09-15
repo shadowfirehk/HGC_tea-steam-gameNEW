@@ -318,12 +318,14 @@
     const cases = structuredClone(prototypeCases[i.product]);
     if (i.product === 'water') {
       for (const [key, amount] of [['first', 250], ['second', 500]]) {
+        cases[key].label = `測試水位 · ${amount}ml`;
         cases[key].active = amount >= i.setting;
         cases[key].reply = `${amount}ml${cases[key].active ? '已到' : '未到'}${i.setting}ml設定線，${cases[key].active ? '停止' : '繼續'}加水。`;
         cases[key].signal = cases[key].active;
       }
     } else if (i.product === 'cup') {
       for (const [key, width] of [['first', 28], ['second', i.setting]]) {
+        cases[key].label = `${key === 'first' ? '小把手' : '我的把手'} · ${width}格`;
         cases[key].active = width - 18 >= 40;
         cases[key].width = width;
         cases[key].reply = `把手寬${width}格，扣除邊框後有${width - 18}格空間。${cases[key].active ? '40格的手指模型放得下。' : '40格的手指模型放不下。'}`;
