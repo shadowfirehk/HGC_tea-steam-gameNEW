@@ -33,10 +33,10 @@
   function guide(text, portrait = '', name = '阿茶仔') { return `<aside class="guide">${portrait ? image(portrait, 'npc') : '<img src="./assets/tea-history-teacher-logo.png" alt="阿茶仔">'}<div><strong>${name}</strong><p id="spoken">${text}</p></div>${button('🔊', 'speak')}</aside>`; }
   function heading(kicker, title) { return `<div class="heading"><p class="eyebrow">${kicker}</p><h1>${title}</h1></div>`; }
   function stars(n) { return `<span class="stars" aria-label="${n}顆星，最多3顆">${'★'.repeat(n)}${'☆'.repeat(3 - n)}</span>`; }
-  function startVisitor() {
-    visitor = { ...freshProfile('參觀小茶師'), visitor: true, tutorial: true };
+  function startVisitor(quick = false) {
+    visitor = { ...freshProfile('參觀小茶師'), visitor: true, tutorial: true, quick };
     selectPage = 0;
-    save(); navigate('select');
+    save(); if (quick) newRun('sugarcane-root'); else navigate('select');
   }
   function rewardAnimation(label, big = false) {
     notify(label);
@@ -64,20 +64,33 @@
   }
   function decorateScene() {
     const app = $('#app');
+    if (view === 'home' && !visitor?.run) {
+      const full = app.querySelector('[data-action="visitor-start"]');
+      full.classList.remove('primary'); full.textContent = '完整開放日體驗';
+      app.querySelector('.home-actions').insertAdjacentHTML('afterbegin', button('3–5分鐘 · 幫婆婆慳水', 'quick-start', '', true));
+    }
     if (visitor && view === 'select') app.querySelector('.pagination')?.remove();
     if (visitor && view === 'settings') app.insertAdjacentHTML('afterbegin', `<div class="visitor-tools">${button('下一位小茶師', 'next-visitor')}${button('回到個人遊戲', 'leave-visitor')}</div>`);
     if (view in stageIndex && run()) {
-      const labels = ['找線索', '幫街坊', '認藥材', '煲涼茶', '做實驗', '小發明', '領獎勵'];
-      const index = stageIndex[view];
-      app.querySelector('.journey>span').textContent = `${index + 1} / 7 · ${labels[index]}`;
+      const quick = run().quick;
+      const labels = quick ? ['找證據', '做發明', '幫街坊'] : ['找線索', '幫街坊', '認藥材', '煲涼茶', '做實驗', '小發明', '領獎勵'];
+      const index = quick ? view === 'quick-result' ? 2 : view === 'invent' ? 1 : 0 : stageIndex[view];
+      app.querySelector('.journey>span').textContent = `${index + 1} / ${labels.length} · ${labels[index]}`;
+      app.querySelector('.journey progress').max = labels.length;
+      app.querySelector('.journey progress').value = index + 1;
       app.querySelector('.journey').insertAdjacentHTML('beforeend', '<button data-action="stage-help" class="stage-help" aria-label="阿茶仔提示" title="阿茶仔提示">?</button>');
-      app.querySelector('.journey').insertAdjacentHTML('afterend', `<ol class="adventure-track" aria-label="冒險路線">${labels.map((label, i) => `<li class="${i < index ? 'done' : ''} ${i === index ? 'current' : ''}" ${i === index ? 'aria-current="step"' : ''}><span>${['🔎', '♥', '🌿', '🍵', '🔬', '💡', '🏅'][i]}</span><small>${label}</small></li>`).join('')}</ol>`);
+      app.querySelector('.journey').insertAdjacentHTML('afterend', `<ol class="adventure-track" aria-label="冒險路線">${labels.map((label, i) => `<li class="${i < index ? 'done' : ''} ${i === index ? 'current' : ''}" ${i === index ? 'aria-current="step"' : ''}><span>${(quick ? ['🔎', '💡', '♥'] : ['🔎', '♥', '🌿', '🍵', '🔬', '💡', '🏅'])[i]}</span><small>${label}</small></li>`).join('')}</ol>`);
       const cta = app.querySelector(':scope > button.primary');
       if (cta) { const dock = document.createElement('div'); dock.className = 'action-dock'; cta.before(dock); dock.append(cta); }
     }
     if (view === 'clue') {
       const figure = app.querySelector('.clue-image'), text = app.querySelector('.clue-text');
       const layout = document.createElement('div'); layout.className = 'reading-layout'; figure.before(layout); layout.append(figure, text);
+      if (run().quick) app.querySelector('.heading').insertAdjacentHTML('afterend', '<p class="short-brief">婆婆想慳水：先找歷史證據，再做一個會自動停水的茶壺。</p>');
+    }
+    if (view === 'evidence' && run().quick && run().evidenceDone) {
+      const cta = app.querySelector('[data-action="next"][data-value="story"]');
+      cta.dataset.value = 'invent'; cta.textContent = '用證據幫婆婆設計';
     }
     if (view === 'gather') {
       const r = run(), m = mission();
@@ -121,7 +134,7 @@
   function learnMore(m) { const s = D.sources[m.source]; return `<details><summary>想知更多</summary><p>誰說的？${esc(m.fictional ? '遊戲編寫者' : s.who)}</p><p>甚麼時候？${esc(m.era)}</p><p>為甚麼？${esc(m.fictional ? '讓我們練習找證據和關心別人' : s.why)}</p><p>這段是${m.fictional ? '教學創作，不是當年的真實證詞' : '根據現代介紹寫成的短摘要，不是原文引述'}。</p><a href="${s.url}" target="_blank" rel="noopener">${esc(s.name)} ↗</a><p>照片或插畫只協助觀察，並非這個故事的歷史現場。</p></details>`; }
   function sourceTag(m) { return m.fictional ? '教學創作 · 不是史料原件' : '二手史料 · 教學摘要'; }
   function options(items, action, selected = null, primary = false) { return `<div class="choices">${items.map(item => `<button type="button" data-action="${action}" data-value="${esc(item.value)}" class="choice ${selected === item.value ? 'selected' : ''} ${primary ? 'primary' : ''}" ${selected !== null ? `aria-pressed="${selected === item.value}"` : ''}>${item.html || esc(item.label)}</button>`).join('')}</div>`; }
-  const stageIndex = { intro: 0, clue: 0, compare: 0, evidence: 0, story: 1, gather: 2, brew: 3, npc: 3, guess: 4, method: 4, trial: 4, observe: 4, conclude: 4, invent: 5, result: 6 };
+  const stageIndex = { intro: 0, clue: 0, compare: 0, evidence: 0, story: 1, gather: 2, brew: 3, npc: 3, guess: 4, method: 4, trial: 4, observe: 4, conclude: 4, invent: 5, result: 6, 'quick-result': 6 };
   function render() {
     clearInterval(timer); timer = null;
     $('#app').dataset.view = view;
@@ -221,7 +234,12 @@
         const matched = D.inventions.find(p => p.problem === i.problem), alternative = D.inventions.find(p => p.problem !== i.problem);
         return `${heading('💡 小小發明家 · 3 / 3', '你想發明甚麼？')}${guide(`要幫${esc(i.audience)}解決「${esc(i.problem)}」。`)}${options([matched, alternative].map(p => ({ value: p.id, html: `<span class="invention-icon">${p.icon}</span><strong>${p.name}</strong><small>${p.tool}</small>` })), 'product')}${button('← 再想想問題', 'invent-back', 1)}`;
       }
-      return `${heading('💡 測試我的發明', found.name)}${prototypeLab(i, found)}<p class="flow">${found.process}</p><details><summary>我的設計想法</summary><p>我選${found.name}，因為它可以幫${esc(i.audience)}${found.help}。</p><label class="field">加一句自己的想法（可不填）<input id="reason" maxlength="100" value="${esc(i.reason)}" placeholder="例如：提示燈要放在看得見的地方"></label></details>${button('完成並評分', 'finish', '', true, !prototypeReady(i))}${button('← 改良設計', 'invent-back', 3)}`;
+      if (!i.designVersion) prepareDesign(i, i.product);
+      return designScreen(i, found);
+    },
+    'quick-result'() {
+      const r = run();
+      return `${heading('開放日小任務完成', '婆婆收到你的慳水設計！')}${guide(designResponse(r.invent), mission().portrait, mission().npc)}<div class="reward"><strong>獲得「小小改良家」體驗章</strong></div><section class="takeaways"><h2>我帶走的發現</h2><p>歷史證據：${esc(mission().evidence[mission().answer])}。</p><p>設計設定：${esc(designSettingText(r.invent))}。</p><p>先猜、測試、聽意見，再改良。這次沒有進行煲茶和茶色實驗。</p></section>${button('交給下一位小茶師', 'next-visitor', '', true)}${button('繼續煲茶與科學實驗', 'extend-visit')}${button('打印我的體驗報告', 'print')}`;
     },
     result() {
       const r = run(), record = profile().records[r.mission], result = r.result;
@@ -264,15 +282,80 @@
     }
   };
   function prototypeReady(i) { return !!(i.tests?.first && i.tests?.second); }
+  const designConfigs = {
+    temperature: { initial: 0, label: '提示燈位置', unit: '', min: 0, max: 1, step: 1 },
+    water: { initial: 700, label: '自動停水線', unit: 'ml', min: 300, max: 700, step: 100 },
+    cup: { initial: 42, label: '模型把手寬度', unit: '格', min: 28, max: 70, step: 14 },
+    queue: { initial: 20, label: '模型號碼大小', unit: '格', min: 20, max: 64, step: 22 }
+  };
+  const designColors = { amber: '#eabb32', blue: '#439bd3', rose: '#d85268' };
+  function prepareDesign(i, product) {
+    Object.assign(i, { product, designVersion: 2, phase: 'test', revision: 0, setting: designConfigs[product].initial, tint: 'amber', tests: {}, lastTest: null, prediction: null, reviewedRevision: -1, rounds: [] });
+  }
+  function designReady(i) { return prototypeReady(i) && !!i.prediction && i.revision > 0 && i.reviewedRevision === i.revision; }
+  function designSettingText(i, value = i.setting) {
+    const c = designConfigs[i.product];
+    return `${c.label}：${i.product === 'temperature' ? value ? '正面' : '側面' : `${value}${c.unit}`}`;
+  }
+  function designEffective(i) { return { temperature: i.setting === 1, water: i.setting === 500, cup: i.setting >= 58, queue: i.setting >= 42 }[i.product]; }
+  function designResponse(i) {
+    const product = D.inventions.find(p => p.id === i.product);
+    if (product.problem !== i.problem) return `這個發明有自己的用途，但我遇到的是「${i.problem}」。下次可以選一個更貼近需要的設計。`;
+    if (designEffective(i)) return {
+      temperature: '提示燈放在正面，我容易看見了！亮起時提醒我先等一等。還要用實物測試，不能只靠燈號判斷飲用安全。',
+      water: '我只需要500ml，現在水到線就停！謝謝你聽我的需要，避免多加水。',
+      cup: '大把手留出了更多空間！謝謝你留意我的手；下一步請我試握真正的模型。',
+      queue: '號碼放大後，模型看清楚多了！我可以坐下等叫號。實物還要在不同距離試看。'
+    }[i.product];
+    return {
+      temperature: '我站在茶壺前面，側面的燈很難看見。可以把提示燈移到正面嗎？',
+      water: i.setting > 500 ? '我只需要500ml，可是到500ml還在加水。請把停水線調低，試試剛好500ml。' : '我需要500ml，但現在太早停水，還未夠用。請把停水線調高一點。',
+      cup: '我的手指模型需要40格空間。把手扣除兩邊共18格厚度後，空間還不夠。可以加闊嗎？',
+      queue: '小號碼離遠看不清楚。我想坐在後面等，能不能把號碼放大一點？'
+    }[i.product];
+  }
+  function designCases(i) {
+    const cases = structuredClone(prototypeCases[i.product]);
+    if (i.product === 'water') {
+      for (const [key, amount] of [['first', 250], ['second', 500]]) {
+        cases[key].active = amount >= i.setting;
+        cases[key].reply = `${amount}ml${cases[key].active ? '已到' : '未到'}${i.setting}ml設定線，${cases[key].active ? '停止' : '繼續'}加水。`;
+        cases[key].signal = cases[key].active;
+      }
+    } else if (i.product === 'cup') {
+      for (const [key, width] of [['first', 28], ['second', i.setting]]) {
+        cases[key].active = width - 18 >= 40;
+        cases[key].width = width;
+        cases[key].reply = `把手寬${width}格，扣除邊框後有${width - 18}格空間。${cases[key].active ? '40格的手指模型放得下。' : '40格的手指模型放不下。'}`;
+        cases[key].signal = cases[key].active;
+      }
+    } else for (const item of Object.values(cases)) item.signal = i.product === 'queue' ? item.value : item.active;
+    return cases;
+  }
+  function designModel(i, test) {
+    if (i.product === 'water') return `<div class="model-tank"><span class="model-water" style="height:${test ? test.value === '500ml' ? 65 : 32.5 : 0}%"></span><span class="model-line" style="top:${100 - i.setting / 500 * 65}%">${i.setting}ml</span></div>`;
+    if (i.product === 'cup') return `<div class="model-cup"><span class="model-handle" style="width:${test?.width || i.setting}px"></span><span class="model-finger" style="width:40px;height:40px;top:30px"></span></div>`;
+    if (i.product === 'queue') return `<div class="model-number" style="font-size:${i.setting}px;color:${designColors[i.tint]}">${test?.value || '--'}</div>`;
+    return `<div class="model-lamp ${test?.active ? 'lamp-on' : ''} ${i.setting ? 'front-lamp' : 'side-lamp'}" style="--signal-color:${designColors[i.tint]}"><span></span></div>`;
+  }
+  function designScreen(i, product) {
+    const title = heading(`小小發明家 · ${i.revision ? '改良版' : '第一版'}`, product.name);
+    const customer = ['長者', '婆婆'].includes(i.audience) ? ['elder', '婆婆'] : i.audience === '工人' ? ['worker', '強叔'] : ['student', '阿晴'];
+    const feedback = guide(designResponse(i), ...customer);
+    if (i.phase === 'review') return `${title}<section class="customer-trial ${designEffective(i) && product.problem === i.problem ? 'customer-happy' : ''}">${feedback}<div class="customer-device" aria-label="街坊試用的設計模型">${designModel(i, designCases(i).second)}</div></section><p class="model-note">街坊試用情節是教學模擬，不是實物測試結果。</p>${i.revision > 0 ? button('完成並評分', 'finish', '', true) : ''}${button(i.revision ? '再改良一次' : '聽了意見，我來改良！', 'design-improve', '', i.revision === 0)}${button('換另一款發明', 'invent-back', 3)}`;
+    if (i.phase === 'improve') {
+      const c = designConfigs[i.product];
+      const preview = { ...i, setting: i.draftSetting };
+      return `${title}${feedback}<section class="design-editor"><div class="prototype-model" aria-hidden="true">${designModel(preview, null)}</div><div><label class="field">${c.label}<strong id="design-value">${esc(designSettingText(i, i.draftSetting))}</strong>${i.product === 'temperature' ? `<select id="design-setting"><option value="0" ${i.draftSetting === 0 ? 'selected' : ''}>側面</option><option value="1" ${i.draftSetting === 1 ? 'selected' : ''}>正面</option></select>` : `<input id="design-setting" type="range" min="${c.min}" max="${c.max}" step="${c.step}" value="${i.draftSetting}">`}</label>${['temperature', 'queue'].includes(i.product) ? `<fieldset class="signal-swatches"><legend>提示顏色</legend>${Object.entries(designColors).map(([key, color]) => `<button data-action="design-color" data-value="${key}" aria-label="${{ amber: '金黃', blue: '藍色', rose: '玫紅' }[key]}" title="${{ amber: '金黃', blue: '藍色', rose: '玫紅' }[key]}" aria-pressed="${i.tint === key}" style="--swatch:${color}"><span></span></button>`).join('')}</fieldset>` : ''}</div></section><p class="model-note">改變設定後，用原來兩種情況再試，才可以比較前後。</p>${button('用新設計再測試', 'design-retest', '', true, i.draftSetting === i.setting)}`;
+    }
+    return `${title}${prototypeLab(i, product)}<details><summary>我的設計想法</summary><p>${product.process}</p><label class="field">加一句自己的想法（可不填）<input id="reason" maxlength="100" value="${esc(i.reason)}"></label></details>${button('請街坊試用', 'design-review', '', true, !prototypeReady(i))}${button('換另一款發明', 'invent-back', 3)}`;
+  }
   function prototypeLab(i, product) {
-    const cases = prototypeCases[product.id], test = cases[i.lastTest];
+    const cases = designCases(i), test = cases[i.lastTest];
     const count = Object.keys(cases).filter(key => i.tests?.[key]).length;
-    let visual;
-    if (product.id === 'water') visual = `<div class="model-tank"><span class="model-water" style="height:${test ? test.active ? 76 : 38 : 0}%"></span><span class="model-line">500ml</span></div>`;
-    else if (product.id === 'cup') visual = `<div class="model-cup ${test?.active ? 'wide-handle' : ''}"><span class="model-handle"></span><span class="model-finger"></span></div>`;
-    else if (product.id === 'queue') visual = `<div class="model-number">${test?.value || '--'}</div>`;
-    else visual = `<div class="model-lamp ${test?.active ? 'lamp-on' : ''}"><span></span></div>`;
-    return `<section class="prototype-lab" aria-label="發明模型測試"><div class="prototype-stage"><div class="prototype-model" aria-hidden="true">${visual}</div><div class="prototype-readout" role="status" aria-live="polite" aria-atomic="true"><strong>${test?.value || '等待測試'}</strong><p>${test?.reply || '街坊遇到兩種情況，你的發明會怎樣回應？'}</p></div></div><p class="prototype-progress">已測試 ${count} / 2 種情況${count === 2 ? ' · 可以評分，也可以改良！' : ''}</p><div class="prototype-controls">${Object.entries(cases).map(([key, item]) => `<button data-action="prototype-test" data-value="${key}" aria-pressed="${i.lastTest === key}" class="${i.lastTest === key ? 'selected' : ''}">${i.tests?.[key] ? '✓ ' : ''}${item.label}</button>`).join('')}</div><p class="model-note">${product.id === 'temperature' ? '45°C只是模型的示範門檻，不是飲用安全標準。' : '這是模型預測；製作實物後，要再量度和測試。'}</p></section>`;
+    const same = cases.first.signal === cases.second.signal;
+    const question = { temperature: '80°C和35°C，提示燈會一樣嗎？', water: `停水線是${i.setting}ml。在250ml和500ml時，開關會一樣嗎？`, cup: '手指模型在兩種把手中，都一樣放得下嗎？', queue: '通知1號和2號時，燈牌會顯示相同號碼嗎？' }[i.product];
+    return `<section class="prototype-lab" aria-label="發明模型測試"><p class="design-setting-label">${esc(designSettingText(i))}</p>${!i.prediction ? `<h2>我先猜：${question}</h2>${options([{ value: 'same', label: '我估一樣' }, { value: 'different', label: '我估不一樣' }], 'design-predict')}<p class="model-note">猜想可以修正，不會因為猜錯而扣分。</p>` : `<div class="prototype-stage"><div class="prototype-model" aria-hidden="true">${designModel(i, test)}</div><div class="prototype-readout" role="status" aria-live="polite" aria-atomic="true"><strong>${test?.value || '等待測試'}</strong><p>${test?.reply || question}</p></div></div><p class="prototype-progress">已測試 ${count} / 2 種情況</p><div class="prototype-controls">${Object.entries(cases).map(([key, item]) => `<button data-action="prototype-test" data-value="${key}" aria-pressed="${i.lastTest === key}" class="${i.lastTest === key ? 'selected' : ''}">${i.tests?.[key] ? '✓ ' : ''}${item.label}</button>`).join('')}</div>${count === 2 ? `<p class="prediction-feedback" role="status">${(i.prediction === 'same') === same ? '數據支持你的猜想！' : '結果和猜想不同，這是新發現！'}這兩種情況的回應${same ? '一樣' : '不一樣'}。</p>` : ''}`}<p class="model-note">${product.id === 'temperature' ? '45°C只是模型的示範門檻，不是飲用安全標準。' : '這是模型預測；製作實物後，要再量度和測試。'}</p></section>`;
   }
   function stageHelp() {
     const r = run();
@@ -290,19 +373,28 @@
       trial: '試齊三個條件，其他條件保持不變。不要只看最喜歡的一杯。',
       observe: '由第一杯看到第三杯：哪一杯深？哪一杯淺？找出變化的方向。',
       conclude: '用「我看到……所以我認為……」說明發現。數據不支持猜想時，可以修正想法。',
-      invent: '先想幫誰和解決甚麼問題，再選工具。試齊兩種情況，觀察發明是否回應了需要。',
+      invent: '先猜兩種情況的反應，再動手測試。聽街坊的意見，改一個設定，用相同情況再試一次。',
+      'quick-result': '你已完成歷史閱讀和設計改良。還有時間，可以繼續煲茶和茶色實驗。',
       result: '想一想：哪條歷史線索最有用？你用甚麼實驗證據改良了設計？'
     };
     return help[view];
   }
   function printReport(r) {
+    if (r?.quick) {
+      $('#report').innerHTML = `<header><h1>一碗百苦 · 我的開放日體驗</h1><p>${esc(profile().name)} · 歷史閱讀與節水設計</p></header><h2>歷史證據</h2><p>${esc(mission().clue)}</p><p>${sourceTag(mission())} · ${esc(D.sources[mission().source].name)}</p><p>我的答案：${r.answers.map(a => `${esc(a.answer)}（${a.correct ? '有證據支持' : '再思考'}）`).join('；')}</p><h2>我的設計改良</h2>${designReport(r.invent)}<p>${esc(designResponse(r.invent))}</p><p>本次完成短任務，未進行煲茶和茶色實驗；模型不代表真實藥效或飲用安全。</p><footer>基督教聖約教會堅樂中學</footer>`;
+      window.print(); return;
+    }
     $('#report').innerHTML = reportHTML(r);
     if (r?.invent.tests) {
-      const tests = document.createElement('p');
-      tests.textContent = `模型測試：${Object.values(r.invent.tests).map(t => `${t.input} → ${t.output}`).join('；')}（教學模型，尚須實物驗證）。`;
+      const tests = document.createElement('div');
+      tests.innerHTML = designReport(r.invent);
       $('#report').querySelectorAll('h2')[3]?.before(tests);
     }
     window.print();
+  }
+  function designReport(i) {
+    const rounds = i.rounds?.length ? i.rounds : [{ setting: i.setting, tests: i.tests, prediction: i.prediction }];
+    return rounds.map((r, index) => `<p>模型測試第${index + 1}版${r.setting === undefined ? '' : `，${esc(designSettingText(i, r.setting))}`}。我估：${r.prediction ? r.prediction === 'same' ? '一樣' : '不一樣' : '未記錄'}。${Object.values(r.tests || {}).map(t => `${esc(t.input)} → ${esc(t.output)}`).join('；')}</p>`).join('');
   }
   function pot() {
     const r = run(), boiling = r.brewing && !r.brewResult;
@@ -325,7 +417,10 @@
     const difficulty = profile().mode;
     profile().run = { id: uid(), mission: id, mode: difficulty, screen: 'intro', started: Date.now(), resources: [], answers: [], hints: 0, feedback: '', evidencePick: null, evidenceDone: false, evidenceErrors: 0, compareErrors: 0, materialIndex: 0, materialErrors: 0, eventIds: difficulty === 'learn' ? [m.event] : [m.event, m.event === 'visit' ? 'queue' : 'visit'], eventIndex: 0, eventResult: null, brewPage: 0, heat: 1, fill: 2, brewing: false, brewPaid: false, brewResult: null, guess: null, variable: 'time', trials: [], conclusion: '', invent: { step: 0, audience: '', problem: '', product: '', reason: '' }, result: null };
     if (!Object.keys(profile().records).length) profile().resources = { money: mode().money, water: mode().water, happy: 75 };
-    next('intro');
+    if (visitor?.quick) {
+      run().quick = true; run().invent = { step: 3, audience: '婆婆', problem: '水不夠', product: '', reason: '' };
+      next('clue');
+    } else next('intro');
   }
   function showTutorial() {
     const lines = ['幫街坊完成涼茶任務！', '看線索、選材料、試一試！', '完成任務，讓你的茶舖升級！'];
@@ -356,15 +451,17 @@
   }
   function updateMeter() { const el = $('#needle'); if (!el) return; run().meter = { tick, needle }; el.style.left = `${needle}%`; el.parentElement.setAttribute('aria-valuenow', Math.round(needle)); }
   function complete() {
-    const r = run(); if (r.result || !r.conclusion || r.trials.length !== 3 || !r.invent.product) return;
-    if (!prototypeReady(r.invent)) { notify('先試齊兩種情況，看看發明怎樣回應。'); return; }
+    const r = run(); if (r.result || !r.evidenceDone || !r.invent.product) return;
+    if (!designReady(r.invent)) { notify('先猜、測試，聽街坊意見後改良並再試一次。'); return; }
+    if (r.quick) { r.shortDone = true; r.finished = Date.now(); next('quick-result'); rewardAnimation('你是小小改良家！', true); return; }
+    if (!r.conclusion || r.trials.length !== 3) return;
     const p = D.inventions.find(x => x.id === r.invent.product);
-    const helpful = p.problem === r.invent.problem ? 3 : 1;
+    const helpful = p.problem !== r.invent.problem ? 1 : designEffective(r.invent) ? 3 : 2;
     const rubric = { '♥ 有沒有幫到人？': helpful, '🛠 做不做得到？': 3, '🌱 有沒有浪費？': p.waste };
     const sections = { '🔎 找線索': r.evidenceErrors > 1 ? 2 : 3, '🍵 煲茶': r.brewResult.stars, '🔬 做實驗': 3, '💡 發明': helpful === 3 ? 3 : 2 };
     const finalStars = clamp(Math.round(Object.values(sections).reduce((a, b) => a + b, 0) / 4), 1, 3);
     const best = Object.entries(sections).sort((a, b) => b[1] - a[1])[0][0];
-    r.result = { stars: finalStars, sections, rubric, best, improve: helpful < 3 ? '選一個更貼近街坊問題的發明。' : r.fill > mission().fill ? '煲少一點，看看能節省多少水。' : '把你的發現告訴另一位同學。' };
+    r.result = { stars: finalStars, sections, rubric, best, improve: p.problem !== r.invent.problem ? '選一個更貼近街坊問題的發明。' : !designEffective(r.invent) ? '參考街坊意見，調整設定後用相同條件再試。' : r.fill > mission().fill ? '煲少一點，看看能節省多少水。' : '把你的發現告訴另一位同學。' };
     r.finished = Date.now();
     const previous = profile().records[r.mission];
     if (!previous) changeResources({ money: 30, water: 15, happy: 10 }, '首次完成任務獎勵');
@@ -372,6 +469,21 @@
     sfx(true, true); next('result'); rewardAnimation('任務完成！你是細心的小茶師。', true);
   }
   const actions = {
+    'quick-start'() { startVisitor(true); },
+    'extend-visit'() { if (!run()?.quick || !run().shortDone) return; run().quick = false; visitor.quick = false; next('story'); },
+    'design-predict'(value) { const i = run()?.invent; if (view !== 'invent' || i?.phase !== 'test' || i.prediction || !['same', 'different'].includes(value)) return; i.prediction = value; save(); render(); },
+    'design-review'() {
+      const i = run()?.invent; if (!i?.prediction || !prototypeReady(i) || i.phase !== 'test') return;
+      i.reviewedRevision = i.revision;
+      i.rounds.push({ setting: i.setting, prediction: i.prediction, tests: structuredClone(i.tests), feedback: designResponse(i) });
+      i.phase = 'review'; next('invent');
+    },
+    'design-improve'() { const i = run()?.invent; if (i?.phase !== 'review') return; i.draftSetting = i.setting; i.phase = 'improve'; next('invent'); },
+    'design-color'(value) { const i = run()?.invent; if (i?.phase !== 'improve' || !designColors[value]) return; i.tint = value; save(); render(); },
+    'design-retest'() {
+      const i = run()?.invent; if (i?.phase !== 'improve' || i.draftSetting === i.setting) return;
+      i.setting = i.draftSetting; i.revision++; i.tests = {}; i.lastTest = null; i.prediction = null; i.phase = 'test'; next('invent');
+    },
     'stage-help'() {
       if (!(view in stageIndex) || !run()) return;
       pauseMeter(); stopSpeech(); run().hints++;
@@ -380,8 +492,9 @@
       $('#guide-dialog').showModal(); save();
     },
     'prototype-test'(value) {
-      const i = run()?.invent, cases = prototypeCases[i?.product];
-      if (view !== 'invent' || i?.step !== 4 || !cases?.[value]) return;
+      const i = run()?.invent;
+      if (view !== 'invent' || i?.step !== 4 || i.phase !== 'test' || !i.prediction) return;
+      const cases = designCases(i); if (!cases[value]) return;
       i.tests ||= {};
       i.tests[value] = { input: cases[value].label, output: cases[value].reply };
       i.lastTest = value; save(); sfx(true); render();
@@ -392,7 +505,7 @@
       $('#guide-dialog').innerHTML = `<h2 id="guide-title">交給下一位小茶師？</h2><p>這次訪客體驗會重新開始。已儲存的個人遊戲不會改變。</p>${button('下一位，開始！', 'confirm-visitor', '', true)}${button('我還想看看', 'close-dialog')}`;
       $('#guide-dialog').showModal();
     },
-    'confirm-visitor'() { $('#guide-dialog').close(); startVisitor(); },
+    'confirm-visitor'() { const quick = !!visitor?.quick; $('#guide-dialog').close(); startVisitor(quick); },
     'close-dialog'() { $('#guide-dialog').close(); },
     'leave-visitor'() { visitor = null; save(); navigate('home'); },
     start() { if (!profile().tutorial) { guideStep = 0; showTutorial(); } else if (run() && run().screen !== 'result') next(run().screen); else navigate('select'); },
@@ -442,7 +555,7 @@
     conclusion(v) { if (run().trials.length !== 3) return; run().answers.push({ type: '實驗結論', answer: v === 'change' ? (run().variable === 'time' ? '煲得越久茶色越深' : '水越多茶色越淺') : '三杯顏色一樣', correct: v === 'change' }); if (v !== 'change') { retry('conclusionErrors', '比較第一杯和第三杯。', run().variable === 'time' ? '時間越長，模擬茶色越深' : '水量越多，模擬茶色越淺'); return; } run().conclusion = run().variable === 'time' ? '我看到煲得越久茶色越深，所以我認為時間會影響茶色。' : '我看到水越多茶色越淺，所以我認為水量會影響茶色。'; run().feedback = ''; sfx(true); save(); render(); },
     audience(v) { run().invent.audience = v; run().invent.step = 1; next('invent'); },
     problem(v) { if (v === 'other') run().invent.step = 2; else { run().invent.problem = v; run().invent.step = 3; } next('invent'); },
-    product(v) { if (!D.inventions.some(p => p.id === v)) return; const i = run().invent; if (i.product !== v) { i.tests = {}; i.lastTest = null; } i.product = v; i.step = 4; next('invent'); },
+    product(v) { if (!D.inventions.some(p => p.id === v)) return; const i = run().invent; if (i.product !== v || !i.designVersion) prepareDesign(i, v); i.step = 4; next('invent'); },
     'invent-back'(v) { run().invent.step = Number(v); next('invent'); },
     finish: complete,
     upgrade(id) {
@@ -479,6 +592,14 @@
   });
   document.addEventListener('input', event => {
     const el = event.target;
+    if (el.id === 'design-setting' && run()?.invent.phase === 'improve') {
+      const i = run().invent, c = designConfigs[i.product];
+      i.draftSetting = clamp(c.min + Math.round((Number(el.value) - c.min) / c.step) * c.step, c.min, c.max);
+      $('#design-value').textContent = designSettingText(i, i.draftSetting);
+      $('[data-action="design-retest"]').disabled = i.draftSetting === i.setting;
+      $('.design-editor .prototype-model').innerHTML = designModel({ ...i, setting: i.draftSetting }, null);
+      save();
+    }
     if (el.id === 'reason' && run()) { run().invent.reason = el.value.slice(0, 100); save(); }
     if (el.id === 'name') { profile().name = el.value.slice(0, 16) || '小茶師'; save(); $('#player-name').textContent = profile().name; }
     if (el.dataset.setting) { const key = el.dataset.setting; store.settings[key] = el.type === 'checkbox' ? el.checked : Number(el.value); save(); document.documentElement.classList.toggle('large', store.settings.large); document.documentElement.classList.toggle('reduced', store.settings.reduced); audioUpdate(); }

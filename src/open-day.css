@@ -43,13 +43,44 @@ small, .quiet, figcaption, .tag, details p, .eyebrow { font-size: 19px; }
 .prototype-readout strong { font-size: 32px; color: #12634f; }
 .prototype-readout p { margin: 6px 0; font-size: 24px; min-height: 3.2em; }
 .prototype-progress { font-size: 21px; margin: 12px 0; font-weight: 700; color: #245b45; }
+.home-actions [data-action=visitor-start] { grid-column: 1 / -1; }
+.short-brief { font-size: 24px; padding-left: 14px; border-left: 5px solid #d1aa38; }
+.design-setting-label { font-size: 22px; font-weight: 700; margin: 0 0 12px; }
+.prediction-feedback { color: #255b45; font-weight: 700; font-size: 22px; border-left: 5px solid #d1aa38; padding-left: 12px; }
+.design-editor { display: grid; grid-template-columns: 190px minmax(0,1fr); align-items: center; gap: 28px; border-block: 2px solid #b8d1c4; padding: 24px 0; }
+.design-editor input[type=range] { width: 100%; height: 60px; touch-action: pan-y; accent-color: #167058; }
+.design-editor select { min-height: 60px; font-size: 24px; }
+.design-editor .field { margin: 0; }
+.signal-swatches { display: flex; gap: 14px; border: 0; padding: 12px 0; }
+.signal-swatches button { width: 60px; height: 60px; padding: 8px; }
+.signal-swatches button span { display: block; width: 100%; height: 100%; background: var(--swatch); border-radius: 50%; }
+.signal-swatches [aria-pressed=true] { outline: 3px solid #205940; outline-offset: 2px; }
+.model-lamp.lamp-on span { background: var(--signal-color,#eabb32); }
+.side-lamp { transform: perspective(350px) rotateY(58deg); }
+.customer-trial { display: grid; grid-template-columns: minmax(0,1fr) 190px; gap: 26px; align-items: center; min-height: 255px; overflow: clip; }
+.customer-trial .guide { margin: 0; min-width: 0; }
+.customer-trial .guide > img { width: 140px; height: 170px; object-fit: cover; border-radius: 8px; animation: customer-arrive .7s ease-out; }
+.customer-trial.customer-happy .guide > img { animation: customer-thanks .8s ease-in-out 2; }
+.customer-device { min-height: 190px; display: grid; place-items: center; animation: device-delivery .75s ease-out; }
+#app[data-view=quick-result] > .resources { display: none; }
+.large .prototype-readout p, .large .prediction-feedback, .large .short-brief { font-size: 28px; }
+@keyframes device-delivery { from { transform: translateX(30px) rotate(5deg); opacity: .3; } to { transform: translateX(0) rotate(0); opacity: 1; } }
+@keyframes customer-arrive { from { transform: translateX(-18px); opacity: .3; } to { transform: translateX(0); opacity: 1; } }
+@keyframes customer-thanks { 50% { transform: translateY(-7px) rotate(-3deg); } }
+@media (max-width:699px) {
+  .design-editor { grid-template-columns: 1fr; gap: 12px; }
+  .customer-trial { grid-template-columns: 1fr; gap: 16px; }
+  .customer-trial .guide { flex-wrap: wrap; }
+  .customer-trial .guide > img { width: 90px; height: 110px; }
+  .customer-trial .guide > div { flex: 1; min-width: 150px; }
+}
 .prototype-controls { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
 .prototype-controls button { min-height: 74px; border-width: 2px; padding: 12px; }
 .prototype-controls .selected { background: #d8efe1; border-color: #167058; }
 .model-note { font-size: 19px; margin: 12px 0 0; color: #4c6256; }
 .model-lamp { width: 112px; height: 136px; border: 5px solid #395b51; border-radius: 8px; background: #e1e9e4; display: grid; place-items: center; }
 .model-lamp span { width: 72px; height: 72px; border: 4px solid #65796d; border-radius: 50%; background: #829589; }
-.model-lamp.lamp-on span { background: #eabb32; border-color: #765818; box-shadow: 0 0 0 9px #f5d979; animation: lamp-arrival .45s ease-out; }
+.model-lamp.lamp-on span { background: var(--signal-color,#eabb32); border-color: #765818; box-shadow: 0 0 0 9px #f5d979; animation: lamp-arrival .45s ease-out; }
 .model-tank { position: relative; width: 130px; height: 155px; border: 5px solid #395b51; border-top-width: 2px; border-radius: 0 0 8px 8px; overflow: hidden; background: #f5fcff; }
 .model-water { position: absolute; bottom: 0; width: 100%; background: #66bed7; animation: water-arrival .65s ease-out; transform-origin: bottom; }
 .model-line { position: absolute; left: 0; right: 0; top: 24%; border-top: 3px dashed #214f66; color: #173e50; font-size: 20px; padding-left: 8px; }
