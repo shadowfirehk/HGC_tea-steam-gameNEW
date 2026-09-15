@@ -70,6 +70,7 @@
       const labels = ['找線索', '幫街坊', '認藥材', '煲涼茶', '做實驗', '小發明', '領獎勵'];
       const index = stageIndex[view];
       app.querySelector('.journey>span').textContent = `${index + 1} / 7 · ${labels[index]}`;
+      app.querySelector('.journey').insertAdjacentHTML('beforeend', '<button data-action="stage-help" class="stage-help" aria-label="阿茶仔提示" title="阿茶仔提示">?</button>');
       app.querySelector('.journey').insertAdjacentHTML('afterend', `<ol class="adventure-track" aria-label="冒險路線">${labels.map((label, i) => `<li class="${i < index ? 'done' : ''} ${i === index ? 'current' : ''}" ${i === index ? 'aria-current="step"' : ''}><span>${['🔎', '♥', '🌿', '🍵', '🔬', '💡', '🏅'][i]}</span><small>${label}</small></li>`).join('')}</ol>`);
       const cta = app.querySelector(':scope > button.primary');
       if (cta) { const dock = document.createElement('div'); dock.className = 'action-dock'; cta.before(dock); dock.append(cta); }
@@ -113,13 +114,16 @@
   }
   function effectView(entry) { return `<div class="effects">${['money', 'water', 'happy'].filter(k => entry.before[k] !== entry.after[k]).map(k => `<span>${{ money: '💰', water: '💧', happy: '♥' }[k]} ${k === 'happy' ? '街坊心情有變化' : `${entry.before[k]} → <b>${entry.after[k]}</b>`}</span>`).join('')}</div>`; }
   function clearNotice() { clearTimeout(noticeTimer); $('#notice').classList.remove('visible'); document.querySelectorAll('.reward-animation,.flying-material').forEach(el => el.remove()); }
-  function next(screen) { clearInterval(timer); timer = null; clearNotice(); if (run()) run().screen = screen; view = screen; save(); render(); window.scrollTo({ top: 0, behavior: 'instant' }); $('#app').focus({ preventScroll: true }); }
-  function navigate(screen) { clearInterval(timer); timer = null; clearNotice(); view = screen; render(); window.scrollTo({ top: 0, behavior: 'instant' }); $('#app').focus({ preventScroll: true }); }
+  function stopSpeech() { try { window.speechSynthesis?.cancel(); } catch { /* Text remains available without speech. */ } }
+  function pauseMeter() { clearInterval(timer); timer = null; document.documentElement.classList.add('brew-paused'); save(); }
+  function next(screen) { pauseMeter(); stopSpeech(); clearNotice(); if (run()) run().screen = screen; view = screen; save(); render(); window.scrollTo({ top: 0, behavior: 'instant' }); $('#app').focus({ preventScroll: true }); }
+  function navigate(screen) { pauseMeter(); stopSpeech(); clearNotice(); view = screen; render(); window.scrollTo({ top: 0, behavior: 'instant' }); $('#app').focus({ preventScroll: true }); }
   function learnMore(m) { const s = D.sources[m.source]; return `<details><summary>想知更多</summary><p>誰說的？${esc(m.fictional ? '遊戲編寫者' : s.who)}</p><p>甚麼時候？${esc(m.era)}</p><p>為甚麼？${esc(m.fictional ? '讓我們練習找證據和關心別人' : s.why)}</p><p>這段是${m.fictional ? '教學創作，不是當年的真實證詞' : '根據現代介紹寫成的短摘要，不是原文引述'}。</p><a href="${s.url}" target="_blank" rel="noopener">${esc(s.name)} ↗</a><p>照片或插畫只協助觀察，並非這個故事的歷史現場。</p></details>`; }
   function sourceTag(m) { return m.fictional ? '教學創作 · 不是史料原件' : '二手史料 · 教學摘要'; }
   function options(items, action, selected = null, primary = false) { return `<div class="choices">${items.map(item => `<button type="button" data-action="${action}" data-value="${esc(item.value)}" class="choice ${selected === item.value ? 'selected' : ''} ${primary ? 'primary' : ''}" ${selected !== null ? `aria-pressed="${selected === item.value}"` : ''}>${item.html || esc(item.label)}</button>`).join('')}</div>`; }
   const stageIndex = { intro: 0, clue: 0, compare: 0, evidence: 0, story: 1, gather: 2, brew: 3, npc: 3, guess: 4, method: 4, trial: 4, observe: 4, conclude: 4, invent: 5, result: 6 };
   function render() {
+    clearInterval(timer); timer = null;
     $('#app').dataset.view = view;
     $('#app').classList.toggle('visitor-mode', !!visitor);
     document.documentElement.classList.toggle('large', store.settings.large);
@@ -205,7 +209,7 @@
     observe() { return `${heading('🔬 我看看', '三杯有甚麼不同？')}${labSafety()}${trialCups()}${chart()}${scienceDetails()}${button('說說我的發現', 'next', 'conclude', true)}`; },
     conclude() {
       const r = run(), more = r.variable === 'time' ? '煲得越久，茶色越深' : '水越多，茶色越淺';
-      return `${heading('🔬 我發現', '你的實驗告訴你甚麼？')}${trialCups()}${r.conclusion ? `<p class="sentence">我看到${more}，所以我認為${r.variable === 'time' ? '時間' : '水量'}會影響茶色。</p>${guide(r.guess === 'yes' && r.variable === 'time' ? '數據支持了你的猜想！' : '跟著觀察修正想法，就是科學家的做法。')}${button('成為小小發明家', 'next', 'invent', true)}` : options([{ value: 'same', label: '三杯顏色完全一樣' }, { value: 'change', label: more }], 'conclusion')}<div class="inline-feedback" role="status">${esc(r.feedback || '')}</div>`;
+      return `${heading('🔬 我發現', '你的實驗告訴你甚麼？')}${trialCups()}${r.conclusion ? `<p class="sentence">我看到${more}，所以我認為${r.variable === 'time' ? '時間' : '水量'}會影響茶色。</p>${guide(r.guess === 'yes' ? '數據支持了你的猜想！' : '跟著觀察修正想法，就是科學家的做法。')}${button('成為小小發明家', 'next', 'invent', true)}` : options([{ value: 'same', label: '三杯顏色完全一樣' }, { value: 'change', label: more }], 'conclusion')}<div class="inline-feedback" role="status">${esc(r.feedback || '')}</div>`;
     },
     invent() {
       const r = run(), i = r.invent, found = D.inventions.find(p => p.id === i.product);
@@ -217,7 +221,7 @@
         const matched = D.inventions.find(p => p.problem === i.problem), alternative = D.inventions.find(p => p.problem !== i.problem);
         return `${heading('💡 小小發明家 · 3 / 3', '你想發明甚麼？')}${guide(`要幫${esc(i.audience)}解決「${esc(i.problem)}」。`)}${options([matched, alternative].map(p => ({ value: p.id, html: `<span class="invention-icon">${p.icon}</span><strong>${p.name}</strong><small>${p.tool}</small>` })), 'product')}${button('← 再想想問題', 'invent-back', 1)}`;
       }
-      return `${heading('💡 我的設計', found.name)}<div class="prototype"><span>${found.icon}</span><strong>${found.tool}</strong></div><p class="flow">${found.process}</p><p class="sentence">我選${found.name}，因為它可以幫${esc(i.audience)}${found.help}。</p><label class="field">加一句自己的想法（可不填）<input id="reason" maxlength="100" value="${esc(i.reason)}" placeholder="例如：提示燈要放在看得見的地方"></label>${button('完成並評分', 'finish', '', true)}${button('← 改良設計', 'invent-back', 3)}`;
+      return `${heading('💡 測試我的發明', found.name)}${prototypeLab(i, found)}<p class="flow">${found.process}</p><details><summary>我的設計想法</summary><p>我選${found.name}，因為它可以幫${esc(i.audience)}${found.help}。</p><label class="field">加一句自己的想法（可不填）<input id="reason" maxlength="100" value="${esc(i.reason)}" placeholder="例如：提示燈要放在看得見的地方"></label></details>${button('完成並評分', 'finish', '', true, !prototypeReady(i))}${button('← 改良設計', 'invent-back', 3)}`;
     },
     result() {
       const r = run(), record = profile().records[r.mission], result = r.result;
@@ -241,6 +245,65 @@
       <details><summary>個人記錄與新身份</summary><p>記錄儲存在這部裝置的瀏覽器。新身份會有獨立進度。</p><label class="field">新玩家名字<input id="new-name" maxlength="16" placeholder="輸入暱稱"></label>${button('建立新身份', 'new-profile')}<label class="field">切換玩家<select id="profile">${store.profiles.map(p => `<option value="${p.id}" ${p.id === store.active ? 'selected' : ''}>${esc(p.name)}</option>`).join('')}</select></label>${button('下載個人記錄', 'export')}<label class="field">匯入自己的記錄<input id="import" type="file" accept="application/json,.json"></label></details>
       <details><summary>教師資料與已完成報告</summary><p>高小版另存個人記錄，不會覆蓋原版進度。</p>${Object.entries(profile().records).filter(([, record]) => record.latest?.result).map(([id]) => button(`打印${D.missions.find(m => m.id === id).tea}報告`, 'past-report', id)).join('')}<p><a href="./classroom.html">開啟原版教學遊戲</a></p><p>本遊戲只模擬可觀察數據，不推算藥效。實驗配方並非飲用處方。</p><a href="./assets/ingredient-photos/sources.json" target="_blank">材料照片來源</a></details>${button('儲存並返回', 'home', '', true)}`; }
   };
+  const prototypeCases = {
+    temperature: {
+      first: { label: '較熱的茶 · 80°C', value: '80°C', active: true, reply: '超過模型設定的45°C，提示燈亮起。' },
+      second: { label: '較涼的茶 · 35°C', value: '35°C', active: false, reply: '低於模型設定的45°C，提示燈熄滅。這不代表可以安全飲用。' }
+    },
+    water: {
+      first: { label: '水未到線 · 250ml', value: '250ml', active: false, reply: '水位未到500ml，加水開關保持開啟。' },
+      second: { label: '水剛到線 · 500ml', value: '500ml', active: true, reply: '感測器發現水到設定線，自動停止加水。' }
+    },
+    cup: {
+      first: { label: '試試小把手', value: '小把手', active: false, reply: '手指模型的空間很少。怎樣讓把手更容易握住？' },
+      second: { label: '換上大把手', value: '大把手', active: true, reply: '手指模型的空間增加了！仍要請使用者試握，才能知道是否舒適。' }
+    },
+    queue: {
+      first: { label: '通知 1 號街坊', value: '01', active: false, reply: '師傅按一下，1號燈亮起。其他街坊可以坐著等。' },
+      second: { label: '通知 2 號街坊', value: '02', active: true, reply: '師傅再按一下，換成2號。提示燈方便等候，但不會令煲茶加快。' }
+    }
+  };
+  function prototypeReady(i) { return !!(i.tests?.first && i.tests?.second); }
+  function prototypeLab(i, product) {
+    const cases = prototypeCases[product.id], test = cases[i.lastTest];
+    const count = Object.keys(cases).filter(key => i.tests?.[key]).length;
+    let visual;
+    if (product.id === 'water') visual = `<div class="model-tank"><span class="model-water" style="height:${test ? test.active ? 76 : 38 : 0}%"></span><span class="model-line">500ml</span></div>`;
+    else if (product.id === 'cup') visual = `<div class="model-cup ${test?.active ? 'wide-handle' : ''}"><span class="model-handle"></span><span class="model-finger"></span></div>`;
+    else if (product.id === 'queue') visual = `<div class="model-number">${test?.value || '--'}</div>`;
+    else visual = `<div class="model-lamp ${test?.active ? 'lamp-on' : ''}"><span></span></div>`;
+    return `<section class="prototype-lab" aria-label="發明模型測試"><div class="prototype-stage"><div class="prototype-model" aria-hidden="true">${visual}</div><div class="prototype-readout" role="status" aria-live="polite" aria-atomic="true"><strong>${test?.value || '等待測試'}</strong><p>${test?.reply || '街坊遇到兩種情況，你的發明會怎樣回應？'}</p></div></div><p class="prototype-progress">已測試 ${count} / 2 種情況${count === 2 ? ' · 可以評分，也可以改良！' : ''}</p><div class="prototype-controls">${Object.entries(cases).map(([key, item]) => `<button data-action="prototype-test" data-value="${key}" aria-pressed="${i.lastTest === key}" class="${i.lastTest === key ? 'selected' : ''}">${i.tests?.[key] ? '✓ ' : ''}${item.label}</button>`).join('')}</div><p class="model-note">${product.id === 'temperature' ? '45°C只是模型的示範門檻，不是飲用安全標準。' : '這是模型預測；製作實物後，要再量度和測試。'}</p></section>`;
+  }
+  function stageHelp() {
+    const r = run();
+    const help = {
+      intro: '先聽街坊遇到甚麼困難，再從資料找出線索。',
+      clue: '誰寫這段資料？是當年的原件，還是今天寫的摘要？找一句與街坊需要有關的證據。',
+      compare: '年代和寫作目的不同，說法也可能不同。一個人的經驗不能代表所有人。',
+      evidence: mission().help,
+      story: '除了金幣和用水，也想想街坊的感受。不同選擇會帶來甚麼影響？',
+      gather: '看看照片的形狀和顏色，再找出這一味材料。錯了可以再觀察，不會扣走材料。',
+      brew: r.brewing && !r.brewResult ? '煲茶已暫停，放心慢慢看。指針在綠色區時停火；關閉提示後會從原來位置繼續。' : '先選火力，再選水量。火力改變加熱；水加得太多會浪費。完成後可以免費再試一次。',
+      npc: '回想街坊原來的困難：你的選擇幫到他甚麼？',
+      guess: '先說出你的猜想。猜錯也沒關係，稍後用三杯數據檢查。',
+      method: '一次只改一個條件，其他條件相同，才是公平比較。',
+      trial: '試齊三個條件，其他條件保持不變。不要只看最喜歡的一杯。',
+      observe: '由第一杯看到第三杯：哪一杯深？哪一杯淺？找出變化的方向。',
+      conclude: '用「我看到……所以我認為……」說明發現。數據不支持猜想時，可以修正想法。',
+      invent: '先想幫誰和解決甚麼問題，再選工具。試齊兩種情況，觀察發明是否回應了需要。',
+      result: '想一想：哪條歷史線索最有用？你用甚麼實驗證據改良了設計？'
+    };
+    return help[view];
+  }
+  function printReport(r) {
+    $('#report').innerHTML = reportHTML(r);
+    if (r?.invent.tests) {
+      const tests = document.createElement('p');
+      tests.textContent = `模型測試：${Object.values(r.invent.tests).map(t => `${t.input} → ${t.output}`).join('；')}（教學模型，尚須實物驗證）。`;
+      $('#report').querySelectorAll('h2')[3]?.before(tests);
+    }
+    window.print();
+  }
   function pot() {
     const r = run(), boiling = r.brewing && !r.brewResult;
     return `<div class="brew-visual ${boiling ? 'is-brewing' : ''}" data-heat="${r.heat}"><figure>${image('pot')}<figcaption>傳統銅壺 · 圖片觀察</figcaption></figure><div class="animated-kettle"><div class="steam-trails" aria-hidden="true"><i></i><i></i><i></i></div><div class="water-vessel" aria-label="${['', '三分一壺', '三分二壺', '滿壺'][r.fill] || '未加水'}"><div style="height:${(r.fill || 0) * 30}%;background:#63371d" class="water ${boiling ? `bubbles heat-${r.heat}` : ''}"><i></i><i></i><i></i><i></i><i></i></div></div><div class="flame-bed" aria-hidden="true">${'<i></i>'.repeat((r.heat ?? 1) + 1)}</div></div><div class="pot-label"><strong>${['小火', '中火', '大火'][r.heat ?? 1]}</strong>${profile().upgrades.includes('thermometer') ? `<p>🌡 ${[60, 80, 100][r.heat ?? 1]}°C</p>` : ''}${profile().upgrades.includes('saver') ? '<p>💧 節水器已安裝</p>' : ''}</div></div>`;
@@ -283,13 +346,18 @@
     r.evidenceDone = true; r.feedback = '找到支持想法的證據了！'; sfx(true); save(); render(); rewardAnimation('線索找到啦！你有證據支持想法。');
   }
   function startMeter() {
-    clearInterval(timer); tick = 0; needle = 0;
-    if (reduceMotion()) return updateMeter();
-    timer = setInterval(() => { tick += 0.7; needle = 50 - 50 * Math.cos(tick * Math.PI / 100); updateMeter(); }, 50);
+    clearInterval(timer); timer = null;
+    if (view !== 'brew' || !run()?.brewing || run().brewResult || document.hidden || $('#guide-dialog').open) return;
+    tick = run().meter?.tick || 0; needle = run().meter?.needle || 0;
+    document.documentElement.classList.remove('brew-paused');
+    updateMeter();
+    if (reduceMotion()) return;
+    timer = setInterval(() => { tick = (tick + 0.7) % 200; needle = 50 - 50 * Math.cos(tick * Math.PI / 100); updateMeter(); }, 50);
   }
-  function updateMeter() { const el = $('#needle'); if (!el) return; el.style.left = `${needle}%`; el.parentElement.setAttribute('aria-valuenow', Math.round(needle)); }
+  function updateMeter() { const el = $('#needle'); if (!el) return; run().meter = { tick, needle }; el.style.left = `${needle}%`; el.parentElement.setAttribute('aria-valuenow', Math.round(needle)); }
   function complete() {
     const r = run(); if (r.result || !r.conclusion || r.trials.length !== 3 || !r.invent.product) return;
+    if (!prototypeReady(r.invent)) { notify('先試齊兩種情況，看看發明怎樣回應。'); return; }
     const p = D.inventions.find(x => x.id === r.invent.product);
     const helpful = p.problem === r.invent.problem ? 3 : 1;
     const rubric = { '♥ 有沒有幫到人？': helpful, '🛠 做不做得到？': 3, '🌱 有沒有浪費？': p.waste };
@@ -304,6 +372,21 @@
     sfx(true, true); next('result'); rewardAnimation('任務完成！你是細心的小茶師。', true);
   }
   const actions = {
+    'stage-help'() {
+      if (!(view in stageIndex) || !run()) return;
+      pauseMeter(); stopSpeech(); run().hints++;
+      const text = stageHelp();
+      $('#guide-dialog').innerHTML = `<img src="./assets/tea-history-teacher-logo.png" alt="阿茶仔"><h2 id="guide-title">阿茶仔陪你想一想</h2><p>${esc(text)}</p>${button(view === 'brew' && run().brewing && !run().brewResult ? '繼續煲茶' : '我再試試', 'close-dialog', '', true)}`;
+      $('#guide-dialog').showModal(); save();
+    },
+    'prototype-test'(value) {
+      const i = run()?.invent, cases = prototypeCases[i?.product];
+      if (view !== 'invent' || i?.step !== 4 || !cases?.[value]) return;
+      i.tests ||= {};
+      i.tests[value] = { input: cases[value].label, output: cases[value].reply };
+      i.lastTest = value; save(); sfx(true); render();
+      $(`[data-action="prototype-test"][data-value="${value}"]`)?.focus({ preventScroll: true });
+    },
     'visitor-start'() { if (visitor?.run && visitor.run.screen !== 'result') next(visitor.run.screen); else startVisitor(); },
     'next-visitor'() {
       $('#guide-dialog').innerHTML = `<h2 id="guide-title">交給下一位小茶師？</h2><p>這次訪客體驗會重新開始。已儲存的個人遊戲不會改變。</p>${button('下一位，開始！', 'confirm-visitor', '', true)}${button('我還想看看', 'close-dialog')}`;
@@ -341,10 +424,10 @@
         $('#guide-dialog').showModal(); return;
       }
       if (!r.brewPaid) { changeResources({ water: -cost }, '煲製用水'); r.brewPaid = true; }
-      r.brewing = true; save(); render();
+      r.meter = { tick: 0, needle: 0 }; r.brewing = true; save(); render();
     },
     refill(v) { if (v === 'buy' && profile().resources.money < 10) return; changeResources(v === 'buy' ? { money: -10, water: 20 } : { water: 10, happy: -5 }, v === 'buy' ? '補買水' : '小批煲製，預留用水'); if (v !== 'buy') run().fill = 1; $('#guide-dialog').close(); save(); render(); },
-    'meter-step'() { needle = (needle + 10) % 110; updateMeter(); },
+    'meter-step'() { needle = (needle + 10) % 110; tick = Math.acos(1 - needle / 50) * 100 / Math.PI; updateMeter(); save(); },
     'brew-stop'() {
       const r = run(); if (!r.brewing || r.brewResult) return; clearInterval(timer); timer = null;
       const timing = Math.abs(needle - 50) <= mode().spot / 2, heatOK = r.heat === mission().heat, waterOK = r.fill <= mission().fill;
@@ -359,7 +442,7 @@
     conclusion(v) { if (run().trials.length !== 3) return; run().answers.push({ type: '實驗結論', answer: v === 'change' ? (run().variable === 'time' ? '煲得越久茶色越深' : '水越多茶色越淺') : '三杯顏色一樣', correct: v === 'change' }); if (v !== 'change') { retry('conclusionErrors', '比較第一杯和第三杯。', run().variable === 'time' ? '時間越長，模擬茶色越深' : '水量越多，模擬茶色越淺'); return; } run().conclusion = run().variable === 'time' ? '我看到煲得越久茶色越深，所以我認為時間會影響茶色。' : '我看到水越多茶色越淺，所以我認為水量會影響茶色。'; run().feedback = ''; sfx(true); save(); render(); },
     audience(v) { run().invent.audience = v; run().invent.step = 1; next('invent'); },
     problem(v) { if (v === 'other') run().invent.step = 2; else { run().invent.problem = v; run().invent.step = 3; } next('invent'); },
-    product(v) { if (!D.inventions.some(p => p.id === v)) return; run().invent.product = v; run().invent.step = 4; next('invent'); },
+    product(v) { if (!D.inventions.some(p => p.id === v)) return; const i = run().invent; if (i.product !== v) { i.tests = {}; i.lastTest = null; } i.product = v; i.step = 4; next('invent'); },
     'invent-back'(v) { run().invent.step = Number(v); next('invent'); },
     finish: complete,
     upgrade(id) {
@@ -377,11 +460,11 @@
       try {
         const voices = speechSynthesis.getVoices(), voice = voices.find(v => /zh[-_]HK|yue/i.test(v.lang)) || voices.find(v => /^zh/i.test(v.lang));
         if (!voice) { notify('暫時沒有可用的中文聲音，文字會保留在畫面。'); return; }
-        speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(content); utterance.voice = voice; utterance.lang = voice.lang; utterance.rate = 0.85; utterance.onerror = () => notify('暫時無法朗讀，可以繼續看文字。'); speechSynthesis.speak(utterance);
+        speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(content); utterance.voice = voice; utterance.lang = voice.lang; utterance.rate = 0.85; utterance.onerror = e => { if (!['canceled', 'interrupted'].includes(e.error)) notify('暫時無法朗讀，可以繼續看文字。'); }; speechSynthesis.speak(utterance);
       } catch { notify('暫時無法朗讀，可以繼續看文字。'); }
     },
-    print() { $('#report').innerHTML = reportHTML(); window.print(); },
-    'past-report'(id) { const r = profile().records[id]?.latest; if (!r?.result) return; $('#report').innerHTML = reportHTML(r); window.print(); }
+    print() { printReport(run()); },
+    'past-report'(id) { const r = profile().records[id]?.latest; if (!r?.result) return; printReport(r); }
   };
   for (const screen of ['home', 'shop', 'book', 'settings', 'select']) actions[screen] = () => navigate(screen);
   function reportHTML(r = run()) {
@@ -421,6 +504,7 @@
   document.addEventListener('dragover', e => { if (e.target.closest('#evidence-box')) e.preventDefault(); });
   document.addEventListener('drop', e => { if (!e.target.closest('#evidence-box') || view !== 'evidence') return; e.preventDefault(); const v = e.dataTransfer.getData('text/plain'); if (!/^[0-2]$/.test(v)) return; run().evidencePick = Number(v); submitEvidence(); });
   $('#guide-dialog').addEventListener('cancel', e => { if (!profile().tutorial) e.preventDefault(); });
+  $('#guide-dialog').addEventListener('close', () => startMeter());
   // Pentatonic phrases alternate by scene; audio only starts after an explicit setting gesture.
   let audioContext = null, audioTimer = null, audioScene = 'menu', beat = 0;
   function context() { if (!audioContext) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; audioContext = new C(); } return audioContext; }
@@ -441,7 +525,7 @@
     beat++; audioTimer = setTimeout(musicBeat, 60000 / settings[0]);
   }
   function audioUpdate() { clearTimeout(audioTimer); try { if (!store.settings.music || store.settings.muted || document.hidden) { if (store.settings.muted || document.hidden) audioContext?.suspend().catch(() => {}); return; } const c = context(); c?.resume().then(musicBeat).catch(() => notify('音樂暫時不能播放，遊戲可照常進行。')); } catch { notify('這個瀏覽器暫時不能播放音樂。'); } }
-  document.addEventListener('visibilitychange', () => { document.documentElement.classList.toggle('page-hidden', document.hidden); if (document.hidden) { clearTimeout(audioTimer); audioContext?.suspend().catch(() => {}); } else if (audioContext) audioUpdate(); });
+  document.addEventListener('visibilitychange', () => { document.documentElement.classList.toggle('page-hidden', document.hidden); if (document.hidden) { pauseMeter(); stopSpeech(); clearTimeout(audioTimer); audioContext?.suspend().catch(() => {}); } else { startMeter(); if (audioContext) audioUpdate(); } });
   document.addEventListener('pointerdown', () => { if (store.settings.music && !audioTimer) audioUpdate(); }, { once: true });
   window.addEventListener('beforeunload', save);
   history.scrollRestoration = 'manual';

@@ -35,6 +35,41 @@ small, .quiet, figcaption, .tag, details p, .eyebrow { font-size: 19px; }
 .journey { gap: 14px; font-size: 20px; }
 .journey button { min-width: 56px; min-height: 56px; }
 .journey progress { height: 12px; }
+.journey > span { min-width: 0; }
+.journey .stage-help { flex: 0 0 56px; border: 2px solid #167058; border-radius: 50%; font-weight: 700; }
+.prototype-lab { padding: 16px 0; border-block: 2px solid #b8d1c4; }
+.prototype-stage { display: grid; grid-template-columns: 190px minmax(0,1fr); gap: 28px; align-items: center; min-height: 170px; }
+.prototype-model { height: 160px; display: grid; place-items: center; }
+.prototype-readout strong { font-size: 32px; color: #12634f; }
+.prototype-readout p { margin: 6px 0; font-size: 24px; min-height: 3.2em; }
+.prototype-progress { font-size: 21px; margin: 12px 0; font-weight: 700; color: #245b45; }
+.prototype-controls { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+.prototype-controls button { min-height: 74px; border-width: 2px; padding: 12px; }
+.prototype-controls .selected { background: #d8efe1; border-color: #167058; }
+.model-note { font-size: 19px; margin: 12px 0 0; color: #4c6256; }
+.model-lamp { width: 112px; height: 136px; border: 5px solid #395b51; border-radius: 8px; background: #e1e9e4; display: grid; place-items: center; }
+.model-lamp span { width: 72px; height: 72px; border: 4px solid #65796d; border-radius: 50%; background: #829589; }
+.model-lamp.lamp-on span { background: #eabb32; border-color: #765818; box-shadow: 0 0 0 9px #f5d979; animation: lamp-arrival .45s ease-out; }
+.model-tank { position: relative; width: 130px; height: 155px; border: 5px solid #395b51; border-top-width: 2px; border-radius: 0 0 8px 8px; overflow: hidden; background: #f5fcff; }
+.model-water { position: absolute; bottom: 0; width: 100%; background: #66bed7; animation: water-arrival .65s ease-out; transform-origin: bottom; }
+.model-line { position: absolute; left: 0; right: 0; top: 24%; border-top: 3px dashed #214f66; color: #173e50; font-size: 20px; padding-left: 8px; }
+.model-cup { position: relative; width: 98px; height: 112px; border: 6px solid #327997; background: #e5f2f8; border-radius: 0 0 16px 16px; margin-right: 40px; }
+.model-handle { position: absolute; left: 100%; top: 14px; width: 30px; height: 64px; border: 9px solid #327997; border-radius: 0 18px 18px 0; }
+.wide-handle .model-handle { width: 62px; }
+.model-finger { position: absolute; left: calc(100% + 8px); top: 38px; width: 27px; height: 27px; border: 3px solid #bc694d; border-radius: 50%; background: #f9d4be; }
+.wide-handle .model-finger { left: calc(100% + 18px); }
+.model-number { width: 155px; height: 115px; display: grid; place-items: center; border: 6px solid #365950; border-radius: 8px; background: #193f35; color: #f7de73; font: 700 64px monospace; animation: lamp-arrival .45s ease-out; }
+.brew-paused .animated-kettle *, .brew-paused .animated-kettle *::before, .brew-paused .animated-kettle *::after { animation-play-state: paused !important; }
+@keyframes lamp-arrival { from { opacity: .4; } to { opacity: 1; } }
+@keyframes water-arrival { from { transform: scaleY(.35); } to { transform: scaleY(1); } }
+@media (max-width:699px) {
+  .journey { gap: 8px; }
+  .journey progress { display: none; }
+  .prototype-stage { grid-template-columns: 1fr; gap: 8px; }
+  .prototype-readout p { font-size: 22px; }
+  .prototype-controls { grid-template-columns: 1fr; gap: 10px; }
+  .prototype-progress { font-size: 20px; }
+}
 .adventure-track { display: flex; list-style: none; padding: 0; margin: 12px 0 8px; justify-content: space-between; gap: 8px; }
 .adventure-track li { display: flex; flex: 1; flex-direction: column; align-items: center; border-bottom: 4px solid #d5e5da; padding-bottom: 6px; color: #61796e; }
 .adventure-track li span { font-size: 24px; line-height: 1.3; }
