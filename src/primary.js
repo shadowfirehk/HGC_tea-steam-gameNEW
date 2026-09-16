@@ -21,7 +21,7 @@
   const run = () => profile().run;
   const mission = () => D.missions.find(m => m.id === run()?.mission);
   const mode = () => D.modes[run()?.mode || profile().mode];
-  let view = 'home', selectPage = 0, bookTab = 'tea', bookPage = 0, timer = null, noticeTimer, tick = 0, guideStep = 0, needle = 0;
+  let view = 'home', selectPage = 0, bookTab = 'tea', bookPage = 0, timer = null, noticeTimer, catchRespawn = null, tick = 0, guideStep = 0, needle = 0;
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(store)); } catch { storageOK = false; }
     try { if (visitor) sessionStorage.setItem(VISITOR_KEY, JSON.stringify(visitor)); else sessionStorage.removeItem(VISITOR_KEY); } catch { /* Keep the current visit in memory. */ }
@@ -67,30 +67,31 @@
     if (view === 'home' && !visitor?.run) {
       const full = app.querySelector('[data-action="visitor-start"]');
       full.classList.remove('primary'); full.textContent = '完整開放日體驗';
-      app.querySelector('.home-actions').insertAdjacentHTML('afterbegin', button('3–5分鐘 · 幫婆婆慳水', 'quick-start', '', true));
+      app.querySelector('.home-actions').insertAdjacentHTML('afterbegin', button('捕藥煲茶 · 幫婆婆慳水', 'quick-start', '', true));
+      app.querySelector('.adventure-promise').innerHTML = '<span>🔎 找線索</span><span>🌿 捉藥材</span><span>🍵 煲涼茶</span>';
     }
     if (visitor && view === 'select') app.querySelector('.pagination')?.remove();
     if (visitor && view === 'settings') app.insertAdjacentHTML('afterbegin', `<div class="visitor-tools">${button('下一位小茶師', 'next-visitor')}${button('回到個人遊戲', 'leave-visitor')}</div>`);
     if (view in stageIndex && run()) {
       const quick = run().quick;
-      const labels = quick ? ['找證據', '做發明', '幫街坊'] : ['找線索', '幫街坊', '認藥材', '煲涼茶', '做實驗', '小發明', '領獎勵'];
-      const index = quick ? view === 'quick-result' ? 2 : view === 'invent' ? 1 : 0 : stageIndex[view];
+      const labels = quick ? run().quickPlay ? ['找證據', '捉藥材', '煲涼茶', '幫街坊'] : ['找證據', '做發明', '幫街坊'] : ['找線索', '幫街坊', '認藥材', '煲涼茶', '做實驗', '小發明', '領獎勵'];
+      const index = quick ? run().quickPlay ? ({ gather: 1, brew: 2, 'quick-result': 3 }[view] || 0) : view === 'quick-result' ? 2 : view === 'invent' ? 1 : 0 : stageIndex[view];
       app.querySelector('.journey>span').textContent = `${index + 1} / ${labels.length} · ${labels[index]}`;
       app.querySelector('.journey progress').max = labels.length;
       app.querySelector('.journey progress').value = index + 1;
       app.querySelector('.journey').insertAdjacentHTML('beforeend', '<button data-action="stage-help" class="stage-help" aria-label="阿茶仔提示" title="阿茶仔提示">?</button>');
-      app.querySelector('.journey').insertAdjacentHTML('afterend', `<ol class="adventure-track" aria-label="冒險路線">${labels.map((label, i) => `<li class="${i < index ? 'done' : ''} ${i === index ? 'current' : ''}" ${i === index ? 'aria-current="step"' : ''}><span>${(quick ? ['🔎', '💡', '♥'] : ['🔎', '♥', '🌿', '🍵', '🔬', '💡', '🏅'])[i]}</span><small>${label}</small></li>`).join('')}</ol>`);
+      app.querySelector('.journey').insertAdjacentHTML('afterend', `<ol class="adventure-track" aria-label="冒險路線">${labels.map((label, i) => `<li class="${i < index ? 'done' : ''} ${i === index ? 'current' : ''}" ${i === index ? 'aria-current="step"' : ''}><span>${(quick ? run().quickPlay ? ['🔎', '🌿', '🍵', '♥'] : ['🔎', '💡', '♥'] : ['🔎', '♥', '🌿', '🍵', '🔬', '💡', '🏅'])[i]}</span><small>${label}</small></li>`).join('')}</ol>`);
       const cta = app.querySelector(':scope > button.primary');
       if (cta) { const dock = document.createElement('div'); dock.className = 'action-dock'; cta.before(dock); dock.append(cta); }
     }
     if (view === 'clue') {
       const figure = app.querySelector('.clue-image'), text = app.querySelector('.clue-text');
       const layout = document.createElement('div'); layout.className = 'reading-layout'; figure.before(layout); layout.append(figure, text);
-      if (run().quick) app.querySelector('.heading').insertAdjacentHTML('afterend', '<p class="short-brief">婆婆想慳水：先找歷史證據，再做一個會自動停水的茶壺。</p>');
+      if (run().quick) app.querySelector('.heading').insertAdjacentHTML('afterend', `<p class="short-brief">${run().quickPlay ? '婆婆想慳水：找出歷史線索，捉齊藥材，再練習少水煲茶。' : '婆婆想慳水：先找歷史證據，再做一個會自動停水的茶壺。'}</p>`);
     }
     if (view === 'evidence' && run().quick && run().evidenceDone) {
       const cta = app.querySelector('[data-action="next"][data-value="story"]');
-      cta.dataset.value = 'invent'; cta.textContent = '用證據幫婆婆設計';
+      cta.dataset.value = run().quickPlay ? 'gather' : 'invent'; cta.textContent = run().quickPlay ? '開始捕捉藥材' : '用證據幫婆婆設計';
     }
     if (view === 'gather') {
       const r = run(), m = mission();
@@ -100,6 +101,10 @@
     if (view === 'brew') {
       const visual = app.querySelector('.brew-visual'); const controls = visual?.nextElementSibling;
       if (controls?.matches('.choices,.timing')) { const layout = document.createElement('div'); layout.className = 'brew-layout'; visual.before(layout); layout.append(visual, controls); }
+      if (run().quickPlay && run().brewResult) {
+        const cta = app.querySelector('[data-action="next"][data-value="npc"]');
+        cta.dataset.action = 'quick-finish'; cta.textContent = '端給婆婆，完成任務';
+      }
     }
     if (view === 'trial') {
       const controls = app.querySelector('.choices'), cups = app.querySelector('.trial-cups');
@@ -137,6 +142,7 @@
   const stageIndex = { intro: 0, clue: 0, compare: 0, evidence: 0, story: 1, gather: 2, brew: 3, npc: 3, guess: 4, method: 4, trial: 4, observe: 4, conclude: 4, invent: 5, result: 6, 'quick-result': 6 };
   function render() {
     clearInterval(timer); timer = null;
+    clearTimeout(catchRespawn); catchRespawn = null;
     $('#app').dataset.view = view;
     $('#app').classList.toggle('visitor-mode', !!visitor);
     document.documentElement.classList.toggle('large', store.settings.large);
@@ -195,7 +201,7 @@
       if (!wanted) return `${heading('材料找到啦', '你的材料貼紙到手！')}${guide(m.found)}<div class="material-row">${m.materials.map(id => `<figure>${image(id)}<figcaption>${D.herbs[id][0]}</figcaption></figure>`).join('')}</div><p class="quiet">這是材料觀察練習，不是完整處方。</p>${button('去煲茶', 'next', 'brew', true)}`;
       const pool = [wanted, ...Object.keys(D.herbs).filter(id => !m.materials.includes(id)).slice(r.materialIndex, r.materialIndex + mode().choices - 1)];
       const rotated = pool.slice(r.materialIndex + 1).concat(pool.slice(0, r.materialIndex + 1));
-      return `${heading(`選材料 · ${r.materialIndex + 1} / ${m.materials.length}`, `哪張是${D.herbs[wanted][0]}？`)}${guide(r.mode === 'learn' ? D.herbs[wanted][1] : '仔細看乾藥材的樣子。')}${options(rotated.map(id => ({ value: id, html: `${image(id)}<span>${r.mode === 'learn' || r.materialErrors >= 2 ? D.herbs[id][0] : D.herbs[id][1]}</span>` })), 'material')}<div class="inline-feedback" role="status">${esc(r.feedback || '')}</div>`;
+      return `${heading(`捕捉藥材 · ${r.materialIndex + 1} / ${m.materials.length}`, `捉住${D.herbs[wanted][0]}！`)}<div class="catch-toolbar"><p>${D.herbs[wanted][1]}</p><strong id="catch-count" role="status">${r.catchHits || 0} / 3</strong>${!reduceMotion() ? `<button data-action="catch-pause" aria-label="${r.catchPaused ? '繼續移動' : '暫停移動'}" title="${r.catchPaused ? '繼續移動' : '暫停移動'}" aria-pressed="${!!r.catchPaused}">${r.catchPaused ? '▶' : 'Ⅱ'}</button>` : ''}</div><div class="catch-board ${r.catchPaused ? 'catch-paused' : ''}" style="--lanes:${rotated.length};--catch-speed:${{ learn: 5.2, challenge: 4.2, master: 3.2 }[r.mode]}s" role="group" aria-label="捕捉藥材區">${rotated.map((id, index) => `<div class="catch-lane"><button class="catch-target" data-action="material" data-value="${id}" style="--catch-delay:-${index * 1.1}s" aria-label="捕捉${D.herbs[id][0]}">${image(id)}<span>${r.mode === 'learn' ? D.herbs[id][0] : D.herbs[id][1]}</span></button></div>`).join('')}</div><p id="catch-feedback" class="catch-feedback" role="status">${esc(r.feedback || '捉到3個，就可以收進材料籃。')}</p>`;
     },
     brew() {
       const r = run(), m = mission(), heatNames = ['小火', '中火', '大火'];
@@ -207,7 +213,7 @@
         ${button(r.brewPage === 0 ? '下一步：加水' : '開始煲茶', r.brewPage === 0 ? 'brew-page' : 'brew-start', '', true)}${r.brewPage ? button('← 調整火力', 'brew-back') : ''}<p class="quiet">遊戲參數不是煎藥方法；真實加熱要由成人指導。</p>`;
       }
       return `${heading('🍵 煲製進度', reduceMotion() ? '慢慢調整到綠色區' : '指針到綠色區，按停火！')}${pot()}<div class="timing" role="meter" aria-label="煲製進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="target" style="left:${50 - mode().spot / 2}%;width:${mode().spot}%"></span><span id="needle"></span></div>
-      ${reduceMotion() ? button('前進一格', 'meter-step') : ''}${button('停火', 'brew-stop', '', true)}<p class="quiet">可以再練習，不用重新開始任務。</p>`;
+      ${reduceMotion() ? button('前進一格', 'meter-step') : ''}${button('停火', 'brew-stop', '', true)}<p class="quiet">反應挑戰加速了！可以免費重試；遊戲速度不是真實煎藥時間。</p>`;
     },
     npc() { return `${heading('街坊的回應', '你幫到人啦！')}${guide('多謝你留心照顧！我們再試試，怎樣讓茶色不一樣？', mission().portrait, mission().npc)}${button('到小小實驗室', 'next', run().mode === 'master' ? 'method' : 'guess', true)}`; },
     guess() { return `${heading('🔬 我估 → 我試 → 我看看 → 我發現', run().variable === 'water' ? '加多一點水，茶色會更淺嗎？' : '煲久一點，茶色會更深嗎？')}${labSafety()}${guide('先猜一猜。猜錯也沒關係！')}${options([{ value: 'yes', label: '👍 我估會' }, { value: 'no', label: '👎 我估不會' }, { value: 'unsure', label: '🤔 我還不知道' }], 'guess')}`; },
@@ -239,6 +245,7 @@
     },
     'quick-result'() {
       const r = run();
+      if (r.quickPlay) return `${heading('開放日小任務完成', '婆婆收到你的茶！')}${guide('多謝你！你認出了材料，也練習了加水和停火。慳水要從留意每一滴開始。', mission().portrait, mission().npc)}<div class="celebrate">${stars(r.brewResult.stars)}</div><section class="takeaways"><h2>我的小茶師成績</h2><p>捕捉到 ${r.catchTotal || 0} 個正確藥材。</p><p>歷史證據：${esc(mission().evidence[mission().answer])}。</p><p>煲茶：${r.fill * 500}ml水，停火位置${r.brewResult.timing}/100。</p></section>${button('交給下一位小茶師', 'next-visitor', '', true)}${button('再挑戰煲茶', 'quick-brew-retry')}${button('繼續科學實驗與發明', 'extend-visit')}${button('打印我的體驗報告', 'print')}`;
       return `${heading('開放日小任務完成', '婆婆收到你的慳水設計！')}${guide(designResponse(r.invent), mission().portrait, mission().npc)}<div class="reward"><strong>獲得「小小改良家」體驗章</strong></div><section class="takeaways"><h2>我帶走的發現</h2><p>歷史證據：${esc(mission().evidence[mission().answer])}。</p><p>設計設定：${esc(designSettingText(r.invent))}。</p><p>先猜、測試、聽意見，再改良。這次沒有進行煲茶和茶色實驗。</p></section>${button('交給下一位小茶師', 'next-visitor', '', true)}${button('繼續煲茶與科學實驗', 'extend-visit')}${button('打印我的體驗報告', 'print')}`;
     },
     result() {
@@ -292,7 +299,7 @@
   function prepareDesign(i, product) {
     Object.assign(i, { product, designVersion: 2, phase: 'test', revision: 0, setting: designConfigs[product].initial, tint: 'amber', tests: {}, lastTest: null, prediction: null, reviewedRevision: -1, rounds: [] });
   }
-  function designReady(i) { return prototypeReady(i) && !!i.prediction && i.revision > 0 && i.reviewedRevision === i.revision; }
+  function designReady(i) { return prototypeReady(i) && !!i.prediction && i.reviewedRevision === i.revision; }
   function designSettingText(i, value = i.setting) {
     const c = designConfigs[i.product];
     return `${c.label}：${i.product === 'temperature' ? value ? '正面' : '側面' : `${value}${c.unit}`}`;
@@ -344,7 +351,7 @@
     const title = heading(`小小發明家 · ${i.revision ? '改良版' : '第一版'}`, product.name);
     const customer = ['長者', '婆婆'].includes(i.audience) ? ['elder', '婆婆'] : i.audience === '工人' ? ['worker', '強叔'] : ['student', '阿晴'];
     const feedback = guide(designResponse(i), ...customer);
-    if (i.phase === 'review') return `${title}<section class="customer-trial ${designEffective(i) && product.problem === i.problem ? 'customer-happy' : ''}">${feedback}<div class="customer-device" aria-label="街坊試用的設計模型">${designModel(i, designCases(i).second)}</div></section><p class="model-note">街坊試用情節是教學模擬，不是實物測試結果。</p>${i.revision > 0 ? button('完成並評分', 'finish', '', true) : ''}${button(i.revision ? '再改良一次' : '聽了意見，我來改良！', 'design-improve', '', i.revision === 0)}${button('換另一款發明', 'invent-back', 3)}`;
+    if (i.phase === 'review') return `${title}<section class="customer-trial ${designEffective(i) && product.problem === i.problem ? 'customer-happy' : ''}">${feedback}<div class="customer-device" aria-label="街坊試用的設計模型">${designModel(i, designCases(i).second)}</div></section><p class="model-note">街坊試用情節是教學模擬，不是實物測試結果。</p>${button('完成並評分', 'finish', '', true)}${button('我想再改良（選玩）', 'design-improve')}${button('換另一款發明', 'invent-back', 3)}`;
     if (i.phase === 'improve') {
       const c = designConfigs[i.product];
       const preview = { ...i, setting: i.draftSetting };
@@ -367,7 +374,7 @@
       compare: '年代和寫作目的不同，說法也可能不同。一個人的經驗不能代表所有人。',
       evidence: mission().help,
       story: '除了金幣和用水，也想想街坊的感受。不同選擇會帶來甚麼影響？',
-      gather: '看看照片的形狀和顏色，再找出這一味材料。錯了可以再觀察，不會扣走材料。',
+      gather: '點一下正確的乾藥材照片，捉齊3個。捉錯不扣資源；需要慢慢看時，可以暫停移動。',
       brew: r.brewing && !r.brewResult ? '煲茶已暫停，放心慢慢看。指針在綠色區時停火；關閉提示後會從原來位置繼續。' : '先選火力，再選水量。火力改變加熱；水加得太多會浪費。完成後可以免費再試一次。',
       npc: '回想街坊原來的困難：你的選擇幫到他甚麼？',
       guess: '先說出你的猜想。猜錯也沒關係，稍後用三杯數據檢查。',
@@ -375,13 +382,17 @@
       trial: '試齊三個條件，其他條件保持不變。不要只看最喜歡的一杯。',
       observe: '由第一杯看到第三杯：哪一杯深？哪一杯淺？找出變化的方向。',
       conclude: '用「我看到……所以我認為……」說明發現。數據不支持猜想時，可以修正想法。',
-      invent: '先猜兩種情況的反應，再動手測試。聽街坊的意見，改一個設定，用相同情況再試一次。',
-      'quick-result': '你已完成歷史閱讀和設計改良。還有時間，可以繼續煲茶和茶色實驗。',
+      invent: '先猜，再試兩種情況。聽過街坊的意見便可完成；想挑戰的話，可以自行改良再試。',
+      'quick-result': r.quickPlay ? '你已完成捕藥和煲茶！還有時間，可以再練習停火，或繼續科學實驗。' : '你已完成歷史閱讀和設計改良。還有時間，可以繼續煲茶和茶色實驗。',
       result: '想一想：哪條歷史線索最有用？你用甚麼實驗證據改良了設計？'
     };
     return help[view];
   }
   function printReport(r) {
+    if (r?.quickPlay) {
+      $('#report').innerHTML = `<header><h1>一碗百苦 · 我的捕藥挑戰</h1><p>${esc(profile().name)}</p></header><h2>歷史證據</h2><p>${esc(mission().clue)}</p><p>${sourceTag(mission())} · ${esc(D.sources[mission().source].name)}</p><h2>捕捉與煲茶</h2><p>捉到${r.catchTotal || 0}個正確藥材；辨認重試${r.materialErrors}次。</p><p>水量${r.fill * 500}ml；火力${['小火', '中火', '大火'][r.heat]}；停火位置${r.brewResult.timing}/100。</p><p>本次未做茶色實驗或發明設計。遊戲參數不是真實煎藥方法，實驗樣本不可飲用。</p><footer>基督教聖約教會堅樂中學</footer>`;
+      window.print(); return;
+    }
     if (r?.quick) {
       $('#report').innerHTML = `<header><h1>一碗百苦 · 我的開放日體驗</h1><p>${esc(profile().name)} · 歷史閱讀與節水設計</p></header><h2>歷史證據</h2><p>${esc(mission().clue)}</p><p>${sourceTag(mission())} · ${esc(D.sources[mission().source].name)}</p><p>我的答案：${r.answers.map(a => `${esc(a.answer)}（${a.correct ? '有證據支持' : '再思考'}）`).join('；')}</p><h2>我的設計改良</h2>${designReport(r.invent)}<p>${esc(designResponse(r.invent))}</p><p>本次完成短任務，未進行煲茶和茶色實驗；模型不代表真實藥效或飲用安全。</p><footer>基督教聖約教會堅樂中學</footer>`;
       window.print(); return;
@@ -420,7 +431,7 @@
     profile().run = { id: uid(), mission: id, mode: difficulty, screen: 'intro', started: Date.now(), resources: [], answers: [], hints: 0, feedback: '', evidencePick: null, evidenceDone: false, evidenceErrors: 0, compareErrors: 0, materialIndex: 0, materialErrors: 0, eventIds: difficulty === 'learn' ? [m.event] : [m.event, m.event === 'visit' ? 'queue' : 'visit'], eventIndex: 0, eventResult: null, brewPage: 0, heat: 1, fill: 2, brewing: false, brewPaid: false, brewResult: null, guess: null, variable: 'time', trials: [], conclusion: '', invent: { step: 0, audience: '', problem: '', product: '', reason: '' }, result: null };
     if (!Object.keys(profile().records).length) profile().resources = { money: mode().money, water: mode().water, happy: 75 };
     if (visitor?.quick) {
-      run().quick = true; run().invent = { step: 3, audience: '婆婆', problem: '水不夠', product: '', reason: '' };
+      run().quick = true; run().quickPlay = true;
       next('clue');
     } else next('intro');
   }
@@ -449,12 +460,14 @@
     document.documentElement.classList.remove('brew-paused');
     updateMeter();
     if (reduceMotion()) return;
-    timer = setInterval(() => { tick = (tick + 0.7) % 200; needle = 50 - 50 * Math.cos(tick * Math.PI / 100); updateMeter(); }, 50);
+    let last = performance.now();
+    const speed = { learn: 28, challenge: 38, master: 48 }[run().mode];
+    timer = setInterval(() => { const now = performance.now(); tick = (tick + Math.min(100, now - last) * speed / 1000) % 200; last = now; needle = 50 - 50 * Math.cos(tick * Math.PI / 100); updateMeter(); }, 40);
   }
   function updateMeter() { const el = $('#needle'); if (!el) return; run().meter = { tick, needle }; el.style.left = `${needle}%`; el.parentElement.setAttribute('aria-valuenow', Math.round(needle)); }
   function complete() {
     const r = run(); if (r.result || !r.evidenceDone || !r.invent.product) return;
-    if (!designReady(r.invent)) { notify('先猜、測試，聽街坊意見後改良並再試一次。'); return; }
+    if (!designReady(r.invent)) { notify('試齊兩種情況，請街坊試用後便可評分。'); return; }
     if (r.quick) { r.shortDone = true; r.finished = Date.now(); next('quick-result'); rewardAnimation('你是小小改良家！', true); return; }
     if (!r.conclusion || r.trials.length !== 3) return;
     const p = D.inventions.find(x => x.id === r.invent.product);
@@ -472,7 +485,10 @@
   }
   const actions = {
     'quick-start'() { startVisitor(true); },
-    'extend-visit'() { if (!run()?.quick || !run().shortDone) return; run().quick = false; visitor.quick = false; next('story'); },
+    'extend-visit'() { if (!run()?.quick || !run().shortDone) return; const play = run().quickPlay; run().quick = false; run().quickPlay = false; visitor.quick = false; next(play ? 'guess' : 'story'); },
+    'quick-finish'() { const r = run(); if (!r?.quickPlay || !r.evidenceDone || r.materialIndex < mission().materials.length || !r.brewResult) return; r.shortDone = true; r.finished = Date.now(); next('quick-result'); rewardAnimation('捕藥煲茶挑戰完成！', true); },
+    'quick-brew-retry'() { if (!run()?.quickPlay) return; run().shortDone = false; run().brewResult = null; run().brewing = false; run().brewPage = 0; next('brew'); },
+    'catch-pause'() { if (view !== 'gather') return; run().catchPaused = !run().catchPaused; save(); render(); },
     'design-predict'(value) { const i = run()?.invent; if (view !== 'invent' || i?.phase !== 'test' || i.prediction || !['same', 'different'].includes(value)) return; i.prediction = value; save(); render(); },
     'design-review'() {
       const i = run()?.invent; if (!i?.prediction || !prototypeReady(i) || i.phase !== 'test') return;
@@ -527,7 +543,20 @@
       sfx(true); next('story');
     },
     'event-next'() { const r = run(); if (!r.eventResult) return; r.eventIndex++; r.eventResult = null; r.feedback = ''; next(r.eventIndex < r.eventIds.length ? 'story' : 'gather'); },
-    material(id) { const r = run(), wanted = mission().materials[r.materialIndex]; if (id !== wanted) { retry('materialErrors', D.herbs[wanted][1], `選${D.herbs[wanted][0]}：${D.herbs[wanted][1]}`); return; } const from = $(`[data-action="material"][data-value="${id}"] img`)?.getBoundingClientRect(); r.materialIndex++; r.feedback = ''; sfx(true); next('gather'); flyMaterial(id, from); notify(`${D.herbs[id][0]}放入籃子了！`); },
+    material(id) {
+      const r = run(); if (view !== 'gather') return;
+      const wanted = mission().materials[r.materialIndex]; if (!wanted) return;
+      const target = $(`[data-action="material"][data-value="${id}"]`); if (!target || target.disabled) return;
+      if (id !== wanted) { r.materialErrors++; r.hints++; r.feedback = `再看看：${D.herbs[wanted][0]}是${D.herbs[wanted][1]}。`; $('#catch-feedback').textContent = r.feedback; sfx(false); save(); return; }
+      const from = target.querySelector('img').getBoundingClientRect();
+      r.catchHits = (r.catchHits || 0) + 1; r.catchTotal = (r.catchTotal || 0) + 1; sfx(true);
+      if (r.catchHits >= 3) { r.materialIndex++; r.catchHits = 0; r.feedback = ''; save(); render(); flyMaterial(id, from); notify(`${D.herbs[id][0]}收齊了！`); return; }
+      target.disabled = true; target.classList.add('caught');
+      $('#catch-count').textContent = `${r.catchHits} / 3`;
+      r.feedback = `捉到了！還差${3 - r.catchHits}個。`; $('#catch-feedback').textContent = r.feedback;
+      flyMaterial(id, from); save();
+      catchRespawn = setTimeout(() => { if (target.isConnected) { target.disabled = false; target.classList.remove('caught'); } }, 650);
+    },
     heat(v) { run().heat = clamp(Number(v), 0, 2); save(); render(); },
     fill(v) { run().fill = clamp(Number(v), 1, 3); save(); render(); },
     'brew-page'() { run().brewPage = 1; save(); render(); },
